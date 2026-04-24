@@ -39,20 +39,32 @@ jobs:
         with:
           dotnet-version: '10.x'
       - run: ls -l
-      - run: dotnet run --project converter/generator/generator.csproj -- index
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
+      - name: Run Converter
+        run: dotnet run --project converter/generator/generator.csproj -- index
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
+          name: index
           path: index/out
 
   deploy:
+    needs: build_index
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: Chekout
+        uses: actions/checkout@v6
+      - name: Download artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: index
+      - run: ls -l
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v5
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
