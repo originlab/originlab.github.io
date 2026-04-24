@@ -38,7 +38,7 @@ jobs:
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.x'
-      - run: ls -l
+      #- run: ls -l
       - name: Run Converter
         run: dotnet run --project converter/generator/generator.csproj -- index
       - name: Upload artifact
@@ -64,7 +64,7 @@ jobs:
         with:
           name: index
           path: _site
-      - run: ls -l
+      #- run: ls -l _site
       - name: Setup Pages
         uses: actions/configure-pages@v6
       - name: Upload pages artifact
