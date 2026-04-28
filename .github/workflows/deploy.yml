@@ -35,10 +35,10 @@ jobs:
         with:
           repository: originlab/DocGHPagesConverter
           path: converter
+      - run: ls -l -R
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.x'
-      #- run: ls -l
       - name: Run Converter
         run: dotnet run --project converter/generator/generator.csproj -- index
       - name: Upload artifact
