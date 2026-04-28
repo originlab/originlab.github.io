@@ -41,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: index
-          path: index/out
+          path: converter/templates/wwwroot/out
 
   deploy:
     needs: build_index
