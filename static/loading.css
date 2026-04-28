@@ -1,4 +1,7 @@
-﻿.loading {
+﻿#main-content {
+    display: none;
+}
+.loading {
     margin: auto;
     position: relative;
     width: 85px;
