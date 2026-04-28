@@ -7,7 +7,7 @@ async function fetchApplyLayout(layoutUrl, containerId, mainContentId) {
     var parser = new DOMParser();
     var layout = parser.parseFromString(await ps[0].text(), 'text/html');
     var container = layout.getElementById(containerId);
-    container.replaceChildren(document.getElementById(mainContentId).childNodes);
+    container.replaceChildren(...document.getElementById(mainContentId).childNodes);
     var title = document.title;
     document.replaceChild(
         document.adoptNode(layout.documentElement),
