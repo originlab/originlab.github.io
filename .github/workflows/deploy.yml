@@ -26,22 +26,17 @@ jobs:
   build_index:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Index
-        uses: actions/checkout@v6
-        with:
-          path: index
       - name: Checkout Converter
         uses: actions/checkout@v6
         with:
           repository: originlab/DocGHPagesConverter
           submodules: recursive
           path: converter
-      #- run: ls -l -R
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.x'
       - name: Run Converter
-        run: dotnet run --project converter/generator/generator.csproj -- index
+        run: dotnet run --project converter/generator/generator.csproj -- converter/templates/wwwroot/index
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
