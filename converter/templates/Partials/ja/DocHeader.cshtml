@@ -10,23 +10,18 @@
 <div class="col-sm-9">
     <div class="form-inline pull-right hidden-xs">
         <div class="form-group">
-            <label for="docSearchInput">Find</label>
-            <input class="form-control" type="text" placeholder="keywords" id="docSearchInput" />
-        </div>
-        <div class="form-group">
-            <label for="docSearchBook">in</label>
             <select id="docSearchBook" class="form-control" title="Scope for the search">
-                <option selected="selected" value="">All Books</option>
+                <option selected="selected" value="">全ての書籍</option>
                 <optgroup label="Non-Programming Books">
-                    <option value="User-Guide">User Guide</option>
-                    <option value="Tutorials">Tutorials</option>
-                    <option value="Quick-Help">Quick Help</option>
-                    <option value="Origin-Help">Origin Help</option>
+                    <option value="User-Guide">ユーザガイド</option>
+                    <option value="Tutorials">チュートリアル</option>
+                    <option value="Quick-Help">クイックヘルプ</option>
+                    <option value="Origin-Help">Originヘルプ</option>
                 </optgroup>
                 <optgroup label="Programming Books">
-                    <option value="X-Function">X-Function</option>
+                    <option value="X-Function">Xファンクション</option>
                     <option value="OriginC">Origin C</option>
-                    <option value="LabTalk">LabTalk Programming</option>
+                    <option value="LabTalk">LabTalk プログラミング</option>
                     <option value="python">Python</option>
                     <option value="ExternalPython">Python (External)</option>
                     <option value="COM">Automation Server</option>
@@ -34,11 +29,15 @@
                     <option value="App">Apps</option>
                     <option value="AppDev">App Development</option>
                     <option value="CodeBuild">Code Builder</option>
-                    <option value="License">License</option>
-                    <option value="MOCA">MOCA</option>
+                    <option value="License">ライセンス</option>
                     <option value="Orglab">Orglab</option>
                 </optgroup>
             </select>
+            <label for="docSearchBook">から</label>
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" placeholder="何か" id="docSearchInput" />
+            <label for="docSearchInput">検索</label>
         </div>
         <div class="form-group">
             <button class="btn btn-default" type="button" title="Search" onclick="searchDoc('ja', 'docSearchInput', 'docSearchBook')">

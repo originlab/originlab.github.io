@@ -10,15 +10,11 @@
 <div class="col-sm-9">
     <div class="form-inline pull-right hidden-xs">
         <div class="form-group">
-            <label for="docSearchInput">Find</label>
-            <input class="form-control" type="text" placeholder="keywords" id="docSearchInput" />
-        </div>
-        <div class="form-group">
-            <label for="docSearchBook">in</label>
+            <label for="docSearchBook">在</label>
             <select id="docSearchBook" class="form-control" title="Scope for the search">
-                <option selected="selected" value="">All Books</option>
+                <option selected="selected" value="">所有书本</option>
                 <optgroup label="Non-Programming Books">
-                    <option value="User-Guide">User Guide</option>
+                    <option value="User-Guide">用户手册</option>
                     <option value="Tutorials">Tutorials</option>
                     <option value="Quick-Help">Quick Help</option>
                     <option value="Origin-Help">Origin Help</option>
@@ -35,10 +31,13 @@
                     <option value="AppDev">App Development</option>
                     <option value="CodeBuild">Code Builder</option>
                     <option value="License">License</option>
-                    <option value="MOCA">MOCA</option>
                     <option value="Orglab">Orglab</option>
                 </optgroup>
             </select>
+        </div>
+        <div class="form-group">
+            <label for="docSearchInput">搜索</label>
+            <input class="form-control" type="text" placeholder="关键字" id="docSearchInput" />
         </div>
         <div class="form-group">
             <button class="btn btn-default" type="button" title="Search" onclick="searchDoc('zh', 'docSearchInput', 'docSearchBook')">
