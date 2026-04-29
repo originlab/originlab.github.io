@@ -6,10 +6,12 @@ on:
 jobs:
   build:
     env:
-      book_folder: ${{ github.event.repository.name }}
+      is_index: github.event.repository.name == "originlab.github.io"
+      book_folder: case(env.is_index, 'converter/templates/wwwroot/index', github.event.repository.name)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
+        if: ${{ !env.is_index }}
         uses: actions/checkout@v6
         with:
           path: ${{ env.book_folder }}
