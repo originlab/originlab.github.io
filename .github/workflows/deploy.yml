@@ -56,6 +56,7 @@ jobs:
 
   dispatch_books_deployment:
     needs: deploy_index
+    environment: deploy
     runs-on: ubuntu-slim
     strategy:
       matrix:
