@@ -1,27 +1,12 @@
-## Shared deployment workflow for sub sites.
-name: Deploy static content to Pages
+## Shared build workflow for sub sites.
+name: Build static content for Pages
 
 on:
   workflow_call:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     env:
       book_folder: ${{ github.event.repository.name }}
     runs-on: ubuntu-latest
@@ -52,6 +37,4 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: ${{ env.book_folder }}/out
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+
