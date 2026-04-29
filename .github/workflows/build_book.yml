@@ -6,8 +6,8 @@ on:
 jobs:
   build:
     env:
-      is_index: github.event.repository.name == "originlab.github.io"
-      book_folder: case(env.is_index, 'converter/templates/wwwroot/index', github.event.repository.name)
+      is_index: ${{ github.event.repository.name == 'originlab.github.io' }}
+      book_folder: ${{ case(env.is_index, 'converter/templates/wwwroot/index', github.event.repository.name) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
