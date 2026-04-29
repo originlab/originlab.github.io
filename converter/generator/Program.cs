@@ -12,7 +12,7 @@ class Program
 
         var isBuildingIndex = Path.GetFileName(srcBookPath) == "index";
 
-        var booksXmlPath = Path.GetFullPath(isBuildingIndex ? "../books" : "../converter/templates/wwwroot/books", srcBookPath);
+        var booksXmlPath = Path.GetFullPath(isBuildingIndex ? "../wwwroot/books" : "../originlab.github.io/wwwroot/books", srcBookPath);
         if (!Directory.Exists(booksXmlPath))
         {
             throw new ArgumentException("Expect the books folder exists!", nameof(args));
