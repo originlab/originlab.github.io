@@ -38,8 +38,9 @@ jobs:
       - name: Chekout
         uses: actions/checkout@v6
         with:
+          sparse-checkout: |
+            wwwroot/
           path: _site
-      - run: rm -rf _site/index
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
