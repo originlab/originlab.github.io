@@ -6,5 +6,9 @@ function searchSite(inputId) {
 function searchDoc(lang, inputId, selectId) {
     var terms = document.getElementById(inputId).value;
     var book = document.getElementById(selectId).value;
-    document.location.href = `https://www.google.com/search?sitesearch=www.originlab.com/doc/${lang}/${book}&q=` + encodeURIComponent(terms);
+    if (lang != 'en') {
+        document.location.href = `https://www.google.com/search?sitesearch=docs.originlab.com/${book}/${lang}&q=` + encodeURIComponent(terms);
+    } else {
+        document.location.href = `https://www.google.com/search?sitesearch=docs.originlab.com/${book}&q=` + encodeURIComponent(terms);
+    }
 }
