@@ -3,10 +3,12 @@
 }
 
 async function fetchApplyLayout(layoutUrl, containerId, mainContentId) {
-    var ps = await Promise.all([fetch(layoutUrl), DOMContentLoadedEvent()]);
+    var domLoadTask = DOMContentLoadedEvent();
+    var ps = await fetch(layoutUrl);
     var parser = new DOMParser();
     var layout = parser.parseFromString(await ps[0].text(), 'text/html');
     var container = layout.getElementById(containerId);
+    await domLoadTask;
     container.replaceChildren(...document.getElementById(mainContentId).childNodes);
     var title = document.title;
     document.replaceChild(
