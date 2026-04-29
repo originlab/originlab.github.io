@@ -43,7 +43,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
-          name: index
+          name: book
           path: _site
       #- run: ls -l _site
       - name: Setup Pages
