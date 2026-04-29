@@ -32,7 +32,7 @@ async function fetchApplyLayout(layoutUrl, containerId, mainContentId) {
         } else {
             script.innerHTML = s.innerHTML;
         }
-        document.append(script);
+        document.body.append(script);
     });
 }
 
