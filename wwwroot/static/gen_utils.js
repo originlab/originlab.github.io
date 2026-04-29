@@ -8,14 +8,32 @@ async function fetchApplyLayout(layoutUrl, containerId, mainContentId) {
     var parser = new DOMParser();
     var layout = parser.parseFromString(await response.text(), 'text/html');
     var container = layout.getElementById(containerId);
+    var scripts = [...layout.scripts];
+
     await domLoadEvent;
-    container.replaceChildren(...document.getElementById(mainContentId).childNodes);
+
     var title = document.title;
+
+    container.replaceChildren(...document.getElementById(mainContentId).childNodes);
     document.replaceChild(
         document.adoptNode(layout.documentElement),
         document.documentElement
     );
+
     document.title = title;
+
+    [...document.scripts].forEach(s => s.remove());
+    scripts.forEach(s => {
+        var script = document.createElement("script");
+        script.async = s.async;
+        script.defer = s.defer;
+        if (s.src != "") {
+            script.src = s.src;
+        } else {
+            script.innerHTML = s.innerHTML;
+        }
+        document.append(script);
+    });
 }
 
 function tryRedirectToLower() {
