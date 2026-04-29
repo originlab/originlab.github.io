@@ -6,9 +6,14 @@ function searchSite(inputId) {
 function searchDoc(lang, inputId, selectId) {
     var terms = document.getElementById(inputId).value;
     var book = document.getElementById(selectId).value;
-    if (lang != 'en') {
-        document.location.href = `https://www.google.com/search?sitesearch=docs.originlab.com/${book}/${lang}&q=` + encodeURIComponent(terms);
+    if (book != '') {
+        if (lang != 'en') {
+            document.location.href = `https://www.google.com/search?sitesearch=docs.originlab.com/${book}/${lang}&q=` + encodeURIComponent(terms);
+        } else {
+            document.location.href = `https://www.google.com/search?sitesearch=docs.originlab.com/${book}&q=` + encodeURIComponent(terms);
+        }
     } else {
-        document.location.href = `https://www.google.com/search?sitesearch=docs.originlab.com/${book}&q=` + encodeURIComponent(terms);
+        if (lang == 'zh') { lang = 'zh-CN' }
+        document.location.href = `https://www.google.com/search?sitesearch=docs.originlab.com&lr=lang_${lang}&q=` + encodeURIComponent(terms);
     }
 }
