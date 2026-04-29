@@ -1,11 +1,9 @@
-## Shared build workflow for sub sites.
-name: Build static content for Pages
+name: Build static book contents
 
 on:
   workflow_call:
 
 jobs:
-
   build:
     env:
       book_folder: ${{ github.event.repository.name }}
@@ -31,10 +29,9 @@ jobs:
       #- run: ls -l -R
       - name: Run Converter
         run: dotnet run --project converter/generator/generator.csproj -- ${{ env.book_folder }}
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
+      - name: Upload book artifact
+        uses: actions/upload-artifact@v7
         with:
+          name: book
           path: ${{ env.book_folder }}/out
 
