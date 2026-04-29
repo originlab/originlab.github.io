@@ -28,7 +28,7 @@ jobs:
     with:
       is_index: true
 
-  deploy:
+  deploy_index:
     needs: build_index
     environment:
       name: github-pages
@@ -53,3 +53,8 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+  deploy_books:
+    needs: deploy_index
+    uses: ./.github/workflows/deploy_books.yml
+    
