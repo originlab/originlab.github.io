@@ -4,9 +4,9 @@
 
 async function fetchApplyLayout(layoutUrl, containerId, mainContentId) {
     var domLoadTask = DOMContentLoadedEvent();
-    var ps = await fetch(layoutUrl);
+    var response = await fetch(layoutUrl);
     var parser = new DOMParser();
-    var layout = parser.parseFromString(await ps[0].text(), 'text/html');
+    var layout = parser.parseFromString(await response.text(), 'text/html');
     var container = layout.getElementById(containerId);
     await domLoadTask;
     container.replaceChildren(...document.getElementById(mainContentId).childNodes);
