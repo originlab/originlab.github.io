@@ -54,8 +54,32 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v5
 
-  deploy_books:
+  dispatch_books_deployment:
     needs: deploy_index
-    uses: ./.github/workflows/deploy_books.yml
-    secrets: inherit
+    runs-on: ubuntu-slim
+    strategy:
+      matrix:
+        site:
+          - user-guide
+          - tutorials
+          - quick-help
+          - origin-help
+          - x-function
+          - originc
+          - labtalk
+          - python
+          - externalpython
+          - com
+          - labview
+          - app
+          - appdev
+          - codebuild
+          - orglab
+          - license
+    steps:
+      - name: Dispatch deploy.yml for originlab/${{ matrix.site }}
+        run: gh workflow run deploy.yml --repo originlab/${{ matrix.site }}
+        env:
+          GH_TOKEN: ${{ secrets.PAT_DOC_WORKFLOW }}
+
     
