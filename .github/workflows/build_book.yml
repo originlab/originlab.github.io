@@ -35,5 +35,5 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: book
-          path: ${{ env.book_folder }}/out
+          path: ${{ case(env.is_index, 'converter/templates/wwwroot', env.book_folder) }}/out
 
