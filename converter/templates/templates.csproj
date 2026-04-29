@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <RootNamespace>OriginLab.DocumentGeneration.Templates</RootNamespace>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="System.IO.Hashing" Version="10.0.7" />
+    <PackageReference Include="Razor.Templating.Core" Version="3.1.0" />
+  </ItemGroup>
+
+</Project>

@@ -2,6 +2,7 @@
 *.[Bb][Aa][Kk]
 *.fpj
 _vti_cnf
+launchSettings.json
 
 # Ignore binary files
 *.db

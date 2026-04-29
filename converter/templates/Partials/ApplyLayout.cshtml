@@ -1,0 +1,7 @@
+@model ApplyLayoutModel
+
+<script src="~/static/gen_utils.js" asp-append-version="true"></script>
+<link rel="stylesheet" href="~/static/loading.css" asp-append-version="true" />
+<script>
+    fetchApplyLayout('@(Model.LayoutPageUrl)', '@(Model.ContainerId)', '@(Model.MainContentId)')
+</script>
