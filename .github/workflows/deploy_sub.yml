@@ -1,0 +1,57 @@
+## Shared deployment workflow for sub sites.
+name: Deploy static content to Pages
+
+on:
+  workflow_call:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      book_folder: ${{ github.event.repository.name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v6
+        with:
+          path: ${{ env.book_folder }}
+      - name: Checkout Converter
+        uses: actions/checkout@v6
+        with:
+          repository: originlab/DocGHPagesConverter
+          path: converter
+      - name: Checkout Index
+        uses: actions/checkout@v6
+        with:
+          repository: originlab/originlab.github.io
+          path: converter/templates/wwwroot
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+      #- run: ls -l -R
+      - name: Run Converter
+        run: dotnet run --project converter/generator/generator.csproj -- ${{ env.book_folder }}
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ${{ env.book_folder }}/out
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
