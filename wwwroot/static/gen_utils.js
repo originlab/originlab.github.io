@@ -36,10 +36,12 @@ async function fetchApplyLayout(layoutUrl, containerId, mainContentId) {
     });
 }
 
-function tryRedirectToLower() {
+function tryRedirectToLowerOrEnglish() {
     var currentURL = window.location.href;
     var lowerCaseURL = currentURL.toLowerCase();
     if (currentURL != lowerCaseURL) {
         location.replace(lowerCaseURL);
+    } else if (currentURL.lastIndexOf('/') == currentURL.length - 3) {
+        location.replace(currentURL.substring(0, currentURL.lastIndexOf('/')));
     }
 }
