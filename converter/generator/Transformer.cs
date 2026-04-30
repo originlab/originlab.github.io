@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Xml.Linq;
 using AngleSharp.Common;
 using AngleSharp.Dom;
@@ -20,6 +21,7 @@ internal abstract class Transformer
 
     protected string BookUrlName => field ??= GetBookUrlName();
     protected readonly Dictionary<string, (string book, string url)> PageLinks;
+    protected readonly Dictionary<string, string> MovedPages;
 
     readonly Dictionary<string, List<(string message, TextPosition? position)>> Problems = [];
     readonly Dictionary<string, int> ProblemCounts = [];
@@ -44,6 +46,20 @@ internal abstract class Transformer
                      let file = $"{dirName}/{p.Attribute("file")!.Value}"
                      select (file, book: sep < 0 ? url : url[..sep], url: sep < 0 ? "" : url[(sep + 1)..]))
                      .ToDictionary(p => p.file, p => (p.book.ToLowerInvariant(), p.url.ToLowerInvariant()), StringComparer.OrdinalIgnoreCase);
+
+        using (var movedJson = File.OpenRead(Path.Combine(booksXmlFolder, "Moved.json")))
+        {
+#pragma warning disable CA1869 // Cache and reuse 'JsonSerializerOptions' instances
+            MovedPages = JsonSerializer.Deserialize<Dictionary<string, string>>(movedJson, new JsonSerializerOptions
+            {
+                AllowTrailingCommas = true,
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                PropertyNameCaseInsensitive = true,
+                AllowDuplicateProperties = true,
+            })
+            ?.ToDictionary(StringComparer.OrdinalIgnoreCase) ?? [];
+#pragma warning restore CA1869 // Cache and reuse 'JsonSerializerOptions' instances
+        }
 
         SourceFolder = Path.GetFullPath(sourceFolder);
         SourceFolderEn = Path.Combine(SourceFolder, "en");
@@ -139,27 +155,32 @@ internal abstract class Transformer
                 {
                     var fullPath = Path.GetFullPath(href, sourceDir);
                     if (fullPath.StartsWith(SourceFolder)
-                        && Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(fullPath.AsSpan()))) is { IsEmpty: false } targetBookDirContainer
-                        && PageLinks.TryGetValue(fullPath[(targetBookDirContainer.Length + 1)..].Replace('\\', '/'), out var link))
+                        && Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(fullPath.AsSpan()))) is { IsEmpty: false } targetBookDirContainer)
                     {
-                        if (language == "en")
-                        {
-                            a.SetAttribute("href", $"/{link.book}/{link.url}{hash}");
-                        }
-                        else
-                        {
-                            a.SetAttribute("href", $"/{link.book}/{link.url}/{language}{hash}");
-                        }
+                        var targetFile = fullPath[(targetBookDirContainer.Length + 1)..].Replace('\\', '/');
 
-                        //if (String.IsNullOrWhiteSpace(a.Title) || a.Title.Contains(':'))
-                        //{
-                        //    a.Title = link.title;
-                        //}
+                        if (PageLinks.TryGetValue(targetFile, out var link)
+                            || (MovedPages.TryGetValue(targetFile, out var movedToFile) && PageLinks.TryGetValue(movedToFile, out link)))
+                        {
+                            if (language == "en")
+                            {
+                                a.SetAttribute("href", $"/{link.book}/{link.url}{hash}");
+                            }
+                            else
+                            {
+                                a.SetAttribute("href", $"/{link.book}/{link.url}/{language}{hash}");
+                            }
+
+                            //if (String.IsNullOrWhiteSpace(a.Title) || a.Title.Contains(':'))
+                            //{
+                            //    a.Title = link.title;
+                            //}
+
+                            return;
+                        }
                     }
-                    else
-                    {
-                        ReportProblem(sourceFile, $"Mapping unknown for href: {href}", a.SourceReference?.Position);
-                    }
+
+                    ReportProblem(sourceFile, $"Mapping unknown for href: {href}", a.SourceReference?.Position);
                 }
                 else if (!href.StartsWith('#')
                     && !href.StartsWith("mailto:")
