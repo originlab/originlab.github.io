@@ -8,23 +8,28 @@ namespace OriginLab.DocumentGeneration.Templates;
 
 public class Template
 {
-    private static IRazorTemplateEngine TemplateEngine => field ??= GetTemplateEngine();
+    private static IRazorTemplateEngine Engine => field ??= GetTemplateEngine();
 
     public static Task<string> RenderDocumentPageAsync(DocumentPageModel documentPageModel)
     {
-        return TemplateEngine.RenderAsync("/DocumentPage.cshtml", documentPageModel);
+        return Engine.RenderAsync("/DocumentPage.cshtml", documentPageModel);
     }
 
     public static Task<string> RenderApplyLayoutScriptsAsync(ApplyLayoutModel applyLayoutModel)
     {
-        return TemplateEngine.RenderPartialAsync("/Partials/ApplyLayout.cshtml", applyLayoutModel);
+        return Engine.RenderPartialAsync("/Partials/ApplyLayout.cshtml", applyLayoutModel);
+    }
+
+    public static Task<string> RenderEnFallbackBannerAsync(string language)
+    {
+        return Engine.RenderPartialAsync($"/Partials/{language}/EnFallbackBanner.cshtml");
     }
 
     public static async Task<string> Render404PageAsync(string? language = null)
     {
         if (String.IsNullOrEmpty(language))
         {
-            return await TemplateEngine.RenderPartialAsync("/Partials/404.cshtml");
+            return await Engine.RenderPartialAsync("/Partials/404.cshtml");
         }
 
         throw new NotImplementedException();

@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration;
 
@@ -35,6 +36,8 @@ internal sealed class BookTransformer : Transformer
     async Task TransformAsync(string language, string layoutScripts)
     {
         var srcDir = Path.Combine(SourceFolder, language, BookDirName);
+        var srcEnDir = Path.Combine(SourceFolderEn, BookDirName);
+        string? fallbackBanner = null;
 
         foreach (var (url, file) in Pages)
         {
@@ -48,13 +51,10 @@ internal sealed class BookTransformer : Transformer
             {
                 Transform(srcFile, dstFile, language, layoutScripts);
             }
-            else if (language != "en")
+            else if (language != "en" && File.Exists(srcFile = Path.Combine(srcEnDir, file)))
             {
-                File.WriteAllText(dstFile, $"""
-                    <script>
-                    location.replace('/{BookUrlName}/{url}')
-                    </script>
-                    """);
+                fallbackBanner ??= await Template.RenderEnFallbackBannerAsync(language);
+                Transform(srcFile, dstFile, language, layoutScripts, fallbackBanner);
             }
             else
             {

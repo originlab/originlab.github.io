@@ -61,7 +61,7 @@ internal abstract class Transformer
 
     public abstract Task TransformFilesAsync();
 
-    protected void Transform(string sourceFile, string destinationFile, string language, string layoutScripts)
+    protected void Transform(string sourceFile, string destinationFile, string language, string headerHtml, string? bannerHtml = null)
     {
         using var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read);
         var parser = new HtmlParser(new HtmlParserOptions
@@ -70,20 +70,31 @@ internal abstract class Transformer
         });
         var document = parser.ParseDocument(fs);
 
-        Transform(document, sourceFile, language, layoutScripts);
+        var headerNodes = parser.ParseFragment(headerHtml, document.Head!);
+        var bannerNodes = String.IsNullOrWhiteSpace(bannerHtml) ? null : parser.ParseFragment(bannerHtml, document.Body!);
+
+        Transform(document, sourceFile, language, headerNodes, bannerNodes);
 
         using var sw = new StreamWriter(destinationFile);
         document.ToHtml(sw, HtmlMarkupFormatter.Instance);
     }
 
-    void Transform(IHtmlDocument document, string sourceFile, string language, string layoutScripts)
+    void Transform(IHtmlDocument document, string sourceFile, string language, INodeList headerNodes, INodeList? bannerNodes)
     {
         if (document.QuerySelector("h1.firstHeading") is IElement firstHeading)
         {
             document.Title = firstHeading.Text();
         }
 
-        document.Head!.InnerHtml += layoutScripts;
+        var head = document.Head!;
+        var body = document.Body!;
+
+        head.PrependNodes(headerNodes.ToArray());
+
+        if (bannerNodes is not null)
+        {
+            body.PrependNodes(bannerNodes.ToArray());
+        }
 
         var sourceDir = Path.GetDirectoryName(sourceFile)!;
 
@@ -106,8 +117,8 @@ internal abstract class Transformer
         mainContent.Id = "main-content";
         mainContent.AppendChild(placeholder);
 
-        placeholder.Replace(document.Body!.ChildNodes.ToArray());
-        document.Body.Replace(loading, mainContent);
+        placeholder.Replace(body.ChildNodes.ToArray());
+        body.AppendNodes(loading, mainContent);
     }
 
     protected virtual void TransformAnchor(IHtmlAnchorElement a, string sourceFile, string language, string sourceDir)
