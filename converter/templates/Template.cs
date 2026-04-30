@@ -20,15 +20,21 @@ public class Template
         return TemplateEngine.RenderPartialAsync("/Partials/ApplyLayout.cshtml", applyLayoutModel);
     }
 
+    public static async Task<string> Render404PageAsync(string? language = null)
+    {
+        if (String.IsNullOrEmpty(language))
+        {
+            return await TemplateEngine.RenderPartialAsync("/Partials/404.cshtml");
+        }
+
+        throw new NotImplementedException();
+    }
+
     static IRazorTemplateEngine GetTemplateEngine()
     {
         var services = new ServiceCollection();
-        var baseDirectory = AppContext.BaseDirectory;
 
-        services.TryAddSingleton<IWebHostEnvironment>(new TemplateHostEnvironment
-        {
-            ContentRootFileProvider = new PhysicalFileProvider(baseDirectory),
-        });
+        services.TryAddSingleton<IWebHostEnvironment, TemplateHostEnvironment>();
         services.AddRazorTemplating();
 
         return services.BuildServiceProvider().GetRequiredService<IRazorTemplateEngine>();

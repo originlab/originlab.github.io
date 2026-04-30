@@ -23,7 +23,7 @@ internal sealed class BookTransformer : Transformer
 
     protected override string GetBookUrlName() => Path.GetFileName(SourceFolder).ToLowerInvariant();
 
-    public override async Task TransformAsync()
+    public override async Task TransformFilesAsync()
     {
         foreach (var language in AvailableLanguages)
         {

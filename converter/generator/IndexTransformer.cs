@@ -9,13 +9,13 @@ internal class IndexTransformer : Transformer
 
     protected override string GetBookUrlName() => "";
 
-    public override async Task TransformAsync()
+    public override async Task TransformFilesAsync()
     {
-        var layoutHashes = new Dictionary<string, string>();
+        var layoutScripts = new Dictionary<string, string>();
 
         foreach (var language in AvailableLanguages)
         {
-            layoutHashes.Add(language, await GenerateLayoutAsync(language));
+            layoutScripts.Add(language, await GenerateLayoutAsync(language));
         }
 
         foreach (var sourceFile in Directory.EnumerateFiles(SourceFolder, "index.html", SearchOption.AllDirectories))
@@ -29,7 +29,7 @@ internal class IndexTransformer : Transformer
             var destinationDir = Path.GetDirectoryName(destinationFile)!;
             Directory.CreateDirectory(destinationDir);
 
-            Transform(sourceFile, destinationFile, language, layoutHashes[language]);
+            Transform(sourceFile, destinationFile, language, layoutScripts[language]);
         }
     }
 }

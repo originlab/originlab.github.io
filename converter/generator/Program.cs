@@ -31,10 +31,5 @@ class Program
         await transformer.TransformAsync();
 
         transformer.PrintProblems();
-
-        File.WriteAllText(Path.Combine(outputPath, "404.html"), """
-            <script src="/static/gen_utils.js"></script>
-            <script>tryRedirectToLower()</script>
-            """);
     }
 }

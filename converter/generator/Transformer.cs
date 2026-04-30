@@ -52,7 +52,14 @@ internal abstract class Transformer
 
     protected abstract string GetBookUrlName();
 
-    public abstract Task TransformAsync();
+    public async Task TransformAsync()
+    {
+        await TransformFilesAsync();
+
+        File.WriteAllText(Path.Combine(OutputFolder, "404.html"), await Template.Render404PageAsync());
+    }
+
+    public abstract Task TransformFilesAsync();
 
     protected void Transform(string sourceFile, string destinationFile, string language, string layoutScripts)
     {
