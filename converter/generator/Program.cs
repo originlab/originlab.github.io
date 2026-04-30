@@ -10,7 +10,8 @@ class Program
             throw new ArgumentException("Expect book folder exists!", nameof(args));
         }
 
-        var isBuildingIndex = Path.GetFileName(srcBookPath) == "index";
+        var bookUrlName = Path.GetFileName(srcBookPath);
+        var isBuildingIndex = bookUrlName == "index";
 
         var booksXmlPath = Path.GetFullPath(isBuildingIndex ? "../wwwroot/books" : "../originlab.github.io/wwwroot/books", srcBookPath);
         if (!Directory.Exists(booksXmlPath))
@@ -19,6 +20,17 @@ class Program
         }
 
         var outputPath = Path.GetFullPath(isBuildingIndex ? "../out" : "out", srcBookPath);
+
+        if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") is null)
+        {
+            CopyContents(Path.GetFullPath(isBuildingIndex ? "../wwwroot" : "../originlab.github.io/wwwroot", srcBookPath), outputPath);
+
+            if (!isBuildingIndex)
+            {
+                outputPath = Path.Combine(outputPath, bookUrlName);
+            }
+        }
+
         if (!Directory.Exists(outputPath))
         {
             Directory.CreateDirectory(outputPath);
@@ -31,5 +43,17 @@ class Program
         await transformer.TransformAsync();
 
         transformer.PrintProblems();
+    }
+
+    private static void CopyContents(string srcDir, string dstDir)
+    {
+        foreach (var srcFile in Directory.EnumerateFiles(srcDir, "*.*", SearchOption.AllDirectories))
+        {
+            var relativePath = Path.GetRelativePath(srcDir, srcFile);
+            var relativeDir = Path.GetDirectoryName(relativePath)!;
+
+            Directory.CreateDirectory(Path.Combine(dstDir, relativeDir));
+            File.Copy(srcFile, Path.Combine(dstDir, relativePath));
+        }
     }
 }
