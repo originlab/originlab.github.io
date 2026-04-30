@@ -53,7 +53,7 @@ internal sealed class BookTransformer : Transformer
             }
             else if (language != "en" && File.Exists(srcFile = Path.Combine(srcEnDir, file)))
             {
-                fallbackBanner ??= await Template.RenderEnFallbackBannerAsync(language);
+                fallbackBanner ??= await Template.RenderEnglishFallbackBannerAsync(language);
                 Transform(srcFile, dstFile, language, layoutScripts, fallbackBanner);
             }
             else

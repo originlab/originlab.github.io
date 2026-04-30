@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.FileProviders;
 using Razor.Templating.Core;
 
 namespace OriginLab.DocumentGeneration.Templates;
@@ -20,7 +19,7 @@ public class Template
         return Engine.RenderPartialAsync("/Partials/ApplyLayout.cshtml", applyLayoutModel);
     }
 
-    public static Task<string> RenderEnFallbackBannerAsync(string language)
+    public static Task<string> RenderEnglishFallbackBannerAsync(string language)
     {
         return Engine.RenderPartialAsync($"/Partials/{language}/EnFallbackBanner.cshtml");
     }
