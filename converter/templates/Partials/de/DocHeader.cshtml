@@ -10,11 +10,6 @@
 <div class="col-sm-9">
     <div class="form-inline pull-right hidden-xs">
         <div class="form-group">
-            <label for="docSearchInput">Find</label>
-            <input class="form-control" type="text" placeholder="keywords" id="docSearchInput" />
-        </div>
-        <div class="form-group">
-            <label for="docSearchBook">in</label>
             <select id="docSearchBook" class="form-control" title="Scope for the search">
                 <option selected="selected" value="">All Books</option>
                 <optgroup label="Non-Programming Books">
@@ -40,8 +35,11 @@
             </select>
         </div>
         <div class="form-group">
-            <button class="btn btn-default" type="button" title="Search" onclick="searchDoc('de', 'docSearchInput', 'docSearchBook')">
-                <span class="glyphicon glyphicon-search"></span>
+            <input class="form-control" type="text" placeholder="keywords" id="docSearchInput" />
+        </div>
+        <div class="form-group">
+            <button class="btn btn-default" type="button" title="Suche" onclick="searchDoc('de', 'docSearchInput', 'docSearchBook')">
+                Suche
             </button>
         </div>
     </div>
