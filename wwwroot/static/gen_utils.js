@@ -10,6 +10,10 @@ async function fetchApplyLayout(layoutUrl, containerId, mainContentId) {
     var container = layout.getElementById(containerId);
     var scripts = [...layout.scripts];
 
+    for (var s of scripts) {
+        s.remove();
+    }
+
     await domLoadEvent;
 
     var title = document.title;
@@ -22,18 +26,16 @@ async function fetchApplyLayout(layoutUrl, containerId, mainContentId) {
 
     document.title = title;
 
-    [...document.scripts].forEach(s => s.remove());
-    scripts.forEach(s => {
+    for (var s of scripts) {
         var script = document.createElement("script");
         script.async = s.async;
-        script.defer = s.defer;
         if (s.src != "") {
             script.src = s.src;
         } else {
             script.innerHTML = s.innerHTML;
         }
         document.body.append(script);
-    });
+    };
 }
 
 function tryRedirectToLowerOrEnglish() {
