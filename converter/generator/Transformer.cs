@@ -77,7 +77,7 @@ internal abstract class Transformer
 
     public abstract Task TransformFilesAsync();
 
-    protected void Transform(string sourceFile, string destinationFile, string language, string headerHtml, string? bannerHtml = null)
+    protected void Transform(string sourceFile, string destinationFile, string? parentFile, string[]? childrenFiles, string language, string headerHtml, string? bannerHtml = null)
     {
         using var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read);
         var parser = new HtmlParser(new HtmlParserOptions
@@ -89,13 +89,13 @@ internal abstract class Transformer
         var headerNodes = parser.ParseFragment(headerHtml, document.Head!);
         var bannerNodes = String.IsNullOrWhiteSpace(bannerHtml) ? null : parser.ParseFragment(bannerHtml, document.Body!);
 
-        Transform(document, sourceFile, language, headerNodes, bannerNodes);
+        Transform(document, sourceFile, parentFile, childrenFiles, language, headerNodes, bannerNodes);
 
         using var sw = new StreamWriter(destinationFile);
         document.ToHtml(sw, HtmlMarkupFormatter.Instance);
     }
 
-    void Transform(IHtmlDocument document, string sourceFile, string language, INodeList headerNodes, INodeList? bannerNodes)
+    void Transform(IHtmlDocument document, string sourceFile, string? parentFile, string[]? childrenFiles, string language, INodeList headerNodes, INodeList? bannerNodes)
     {
         if (document.QuerySelector("h1.firstHeading") is IElement firstHeading)
         {

@@ -6,7 +6,7 @@ namespace OriginLab.DocumentGeneration;
 internal sealed class BookTransformer : Transformer
 {
     private readonly string BookDirName;
-    private readonly (string url, string file)[] Pages;
+    private readonly (string url, string file, string? parent, string[]? children)[] Pages;
 
     public BookTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
         : base(booksXmlFolder, sourceFolder, outputFolder)
@@ -14,12 +14,22 @@ internal sealed class BookTransformer : Transformer
         BookDirName = Path.GetFileName(Directory.EnumerateDirectories(Path.Combine(SourceFolder, "en")).Single());
 
         var bookXml = XElement.Load(Path.Combine(sourceFolder, "en", BookDirName, "book.xml"));
+        var pages = new List<(string url, string file, string? parent, string[]? children)>();
 
-        Pages = (from p in bookXml.Descendants("page")
-                 let url = p.Attribute("url")!.Value
-                 let file = p.Attribute("file")!.Value
-                 select ((url.Length == BookUrlName.Length ? "" : url[(BookUrlName.Length + 1)..]).ToLowerInvariant(), file)).ToArray();
+        foreach (var p in bookXml.Descendants("page"))
+        {
+            var url = p.Attribute("url")!.Value;
+            url = url.Length == BookUrlName!.Length ? "" : url[(BookUrlName.Length + 1)..];
+            url = url.ToLowerInvariant();
 
+            var file = p.Attribute("file")!.Value;
+            var parent = p.Parent?.Attribute("file")?.Value;
+            var children = p.Elements("page").Take(10).Select(c => c.Attribute("file")!.Value).ToArray();
+
+            pages.Add((url, file, parent, children));
+        }
+
+        Pages = pages.ToArray();
     }
 
     protected override string GetBookUrlName() => Path.GetFileName(SourceFolder).ToLowerInvariant();
@@ -39,7 +49,7 @@ internal sealed class BookTransformer : Transformer
         var srcEnDir = Path.Combine(SourceFolderEn, BookDirName);
         string? fallbackBanner = null;
 
-        foreach (var (url, file) in Pages)
+        foreach (var (url, file, parent, children) in Pages)
         {
             var dstDir = Path.Combine(OutputFolder, url, language != "en" ? language : "");
             Directory.CreateDirectory(dstDir);
@@ -49,12 +59,12 @@ internal sealed class BookTransformer : Transformer
 
             if (File.Exists(srcFile))
             {
-                Transform(srcFile, dstFile, language, layoutScripts);
+                Transform(srcFile, dstFile, parent, children, language, layoutScripts);
             }
             else if (language != "en" && File.Exists(srcFile = Path.Combine(srcEnDir, file)))
             {
                 fallbackBanner ??= await Template.RenderEnglishFallbackBannerAsync(language);
-                Transform(srcFile, dstFile, language, layoutScripts, fallbackBanner);
+                Transform(srcFile, dstFile, parent, children, language, layoutScripts, fallbackBanner);
             }
             else
             {
