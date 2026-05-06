@@ -101,7 +101,12 @@ p
    right: 0;
    border-top: 2px solid #ccc;
 }
-
+.glyphicon {
+    line-height: 1.428;
+}
+.DocContent .dropdown-menu {
+    margin-left: 0;
+}
 .i18n {
     margin-top: 10px;
     margin-left: 15px;
