@@ -21,7 +21,7 @@ class Program
 
         var outputPath = Path.GetFullPath(isBuildingIndex ? "../out" : "out", srcBookPath);
 
-        if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") is null)
+        if (args.Length > 1 && args[1] == "merge")
         {
             CopyContents(Path.GetFullPath(isBuildingIndex ? "../wwwroot" : "../originlab.github.io/wwwroot", srcBookPath), outputPath);
 
