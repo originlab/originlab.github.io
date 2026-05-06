@@ -55,7 +55,7 @@ class Program
             var relativeDir = Path.GetDirectoryName(relativePath)!;
 
             Directory.CreateDirectory(Path.Combine(dstDir, relativeDir));
-            File.Copy(srcFile, Path.Combine(dstDir, relativePath));
+            File.Copy(srcFile, Path.Combine(dstDir, relativePath), overwrite: true);
         }
     }
 }
