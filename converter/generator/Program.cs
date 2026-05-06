@@ -12,8 +12,9 @@ class Program
 
         var bookUrlName = Path.GetFileName(srcBookPath);
         var isBuildingIndex = bookUrlName == "index";
+        var rootRepoPath = isBuildingIndex ? ".." : "../originlab.github.io";
 
-        var booksXmlPath = Path.GetFullPath(isBuildingIndex ? "../wwwroot/books" : "../originlab.github.io/wwwroot/books", srcBookPath);
+        var booksXmlPath = Path.GetFullPath(Path.Combine(rootRepoPath, "books"), srcBookPath);
         if (!Directory.Exists(booksXmlPath))
         {
             throw new ArgumentException("Expect the books folder exists!", nameof(args));
@@ -23,7 +24,8 @@ class Program
 
         if (args.Length > 1 && args[1] == "merge")
         {
-            CopyContents(Path.GetFullPath(isBuildingIndex ? "../wwwroot" : "../originlab.github.io/wwwroot", srcBookPath), outputPath);
+            CopyContents(Path.GetFullPath(Path.Combine(rootRepoPath, "converter/templates/wwwroot"), srcBookPath), outputPath);
+            CopyContents(booksXmlPath, Path.Combine(outputPath, "books"));
 
             if (!isBuildingIndex)
             {

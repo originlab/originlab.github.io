@@ -40,14 +40,6 @@ jobs:
         with:
           name: book
           path: _site
-      - name: Chekout
-        uses: actions/checkout@v6
-        with:
-          sparse-checkout: |
-            wwwroot/
-          path: index
-      - name: Copy wwwroot files
-        run: cp -r index/wwwroot/* _site
       #- run: ls -l _site
       - name: Setup Pages
         uses: actions/configure-pages@v6
