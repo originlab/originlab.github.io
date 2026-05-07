@@ -39,13 +39,6 @@ function searchDoc(lang, inputId, selectId) {
     document.location.replace(searchUrl);
 }
 
-function applyNavParent(parent) {
-    let parentBtn = document.getElementById('doc-nav-parent');
-    if (parentBtn) {
-        parentBtn.setAttribute('href', parent);
-    }
-}
-
 function applyNavSiblings(siblings) {
     let siblingsUl = document.getElementById('doc-nav-siblings');
     if (siblingsUl) {
@@ -65,5 +58,8 @@ function applyNavSiblings(siblings) {
 (function () {
     let familyData = document.getElementById('doc-family-data');
     let parentLink = familyData.getAttribute('data-parent-link');
-    applyNavParent(parentLink);
+    let parentBtn = document.getElementById('doc-nav-parent');
+    if (parentBtn) {
+        parentBtn.setAttribute('href', parent);
+    }
 })();
