@@ -2,12 +2,12 @@
     return new Promise(resolve => window.addEventListener("DOMContentLoaded", event => resolve(event), { once: true }));
 }
 
-async function fetchApplyLayout(layoutUrl, containerId, mainContentId, parent, children) {
+async function fetchApplyLayout(layoutUrl, placeholderId, mainContentId, parent, children) {
     var domLoadEvent = DOMContentLoadedEvent();
     var response = await fetch(layoutUrl);
     var parser = new DOMParser();
     var layout = parser.parseFromString(await response.text(), 'text/html');
-    var container = layout.getElementById(containerId);
+    var placeholder = layout.getElementById(placeholderId);
     var scripts = [...layout.scripts];
 
     for (var s of scripts) {
@@ -18,7 +18,7 @@ async function fetchApplyLayout(layoutUrl, containerId, mainContentId, parent, c
 
     var title = document.title;
 
-    container.replaceChildren(...document.getElementById(mainContentId).childNodes);
+    placeholder.replaceWith(...document.getElementById(mainContentId).childNodes);
     document.replaceChild(
         document.adoptNode(layout.documentElement),
         document.documentElement

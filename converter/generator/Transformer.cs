@@ -265,7 +265,7 @@ internal abstract class Transformer
         var layoutScripts = await Template.RenderApplyLayoutScriptsAsync(new ApplyLayoutModel
         {
             LayoutPageUrl = $"{rootUrlPrefix}/{(String.IsNullOrEmpty(BookUrlName) ? "" : $"{BookUrlName}/")}{language}/layout.html?v={FileHash.FromString(layoutHtml)}",
-            ContainerId = "doc-static-content-container",
+            PlaceHolderId = "doc-content-placeholder",
             MainContentId = "main-content",
         });
 

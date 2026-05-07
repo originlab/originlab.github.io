@@ -8,54 +8,30 @@
     <link href="https://d2mvzyuse3lwjc.cloudfront.net/global/OriginHTML.css?v=@ViewBag.AssetVersion" type="text/css" rel="stylesheet" />
 }
 
-<div class="DocContent" style="font-family: Arial">
-    <table style="border: 1px solid black;" width="100%">
-        <tr>
-            <td width="88%">
-                <div id="menu_render">&nbsp;</div>
-            </td>
-            <td style="vertical-align: bottom">
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" class="row">
-                @Html.Partial($"/Partials/{Model.Language}/DocHeader.cshtml")
-            </td>
-        </tr>
-        <tr style="border-bottom: solid 1px black">
-            <td colspan="2" id="doc-static-content-container">
-                
-            </td>
-        </tr>
-    </table>
-    <div id="menu_src">
-    </div>
-    <script>
-        (function () {
-            var src = document.getElementById('menu_src');
-            document.getElementById('menu_render').innerHTML = src.innerHTML;
-            src.innerHTML = '';
-        })()
-    </script>
-    <div class="i18n">
-        @if (Model.Language != "en")
-        {
-            <a href="..">English</a>
-        }
-        @if (Model.Language != "de" && Model.AvailableLanguages.Contains("de"))
-        {
-            @(Model.Language == "en" ? "" : " | ")
-            <a href="@(Model.Language != "en" ? "../" : "")de">Deutsch</a>
-        }
-        @if (Model.Language != "ja" && Model.AvailableLanguages.Contains("ja"))
-        {
-            @(Model.Language == "en" && !Model.AvailableLanguages.Contains("de") ? "" : " | ")
-            <a href="@(Model.Language != "en" ? "../" : "")ja">日本語</a>
-        }
-        @if (Model.Language != "zh" && Model.AvailableLanguages.Contains("zh"))
-        {
-            @(Model.Language == "en" && !Model.AvailableLanguages.Contains("de") && !Model.AvailableLanguages.Contains("ja") ? "" : " | ")
-            <a href="@(Model.Language != "en" ? "../" : "")zh">简体中文</a>
-        }
-    </div>
+<div class="row">
+    @Html.Partial($"/Partials/{Model.Language}/DocHeader.cshtml")
+</div>
+<div class="DocContent">
+    <div id="doc-content-placeholder"></div>
+</div>
+<div class="i18n">
+    @if (Model.Language != "en")
+    {
+        <a href="..">English</a>
+    }
+    @if (Model.Language != "de" && Model.AvailableLanguages.Contains("de"))
+    {
+        @(Model.Language == "en" ? "" : " | ")
+        <a href="@(Model.Language != "en" ? "../" : "")de">Deutsch</a>
+    }
+    @if (Model.Language != "ja" && Model.AvailableLanguages.Contains("ja"))
+    {
+        @(Model.Language == "en" && !Model.AvailableLanguages.Contains("de") ? "" : " | ")
+        <a href="@(Model.Language != "en" ? "../" : "")ja">日本語</a>
+    }
+    @if (Model.Language != "zh" && Model.AvailableLanguages.Contains("zh"))
+    {
+        @(Model.Language == "en" && !Model.AvailableLanguages.Contains("de") && !Model.AvailableLanguages.Contains("ja") ? "" : " | ")
+        <a href="@(Model.Language != "en" ? "../" : "")zh">简体中文</a>
+    }
 </div>
