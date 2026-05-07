@@ -20,7 +20,7 @@ internal abstract class Transformer
     protected readonly string[] AvailableLanguages;
 
     protected string BookUrlName => field ??= GetBookUrlName();
-    protected readonly Dictionary<string, (string book, string url)> PageLinks;
+    protected readonly Dictionary<string, (string book, string url, string titleEn)> PageLinks;
     protected readonly Dictionary<string, string> MovedPages;
 
     readonly Dictionary<string, List<(string message, TextPosition? position)>> Problems = [];
@@ -38,14 +38,24 @@ internal abstract class Transformer
 
         AvailableLanguages = languages;
 
-        PageLinks = (from xmlFile in Directory.EnumerateFiles(booksXmlFolder, "*.xml")
-                     let dirName = Path.GetFileNameWithoutExtension(xmlFile)
-                     from p in XElement.Load(xmlFile).Descendants("page")
-                     let url = p.Attribute("url")!.Value
-                     let sep = url.IndexOf('/')
-                     let file = $"{dirName}/{p.Attribute("file")!.Value}"
-                     select (file, book: sep < 0 ? url : url[..sep], url: sep < 0 ? "" : url[(sep + 1)..]))
-                     .ToDictionary(p => p.file, p => (p.book.ToLowerInvariant(), p.url.ToLowerInvariant()), StringComparer.OrdinalIgnoreCase);
+        var pages = new List<(string file, string book, string url, string title)>();
+
+        foreach (var xmlFile in Directory.EnumerateFiles(booksXmlFolder, "*.xml"))
+        {
+            var dirName = Path.GetFileNameWithoutExtension(xmlFile);
+
+            foreach (var p in XElement.Load(xmlFile).Descendants("page"))
+            {
+                var file = $"{dirName}/{p.Attribute("file")!.Value}";
+                var url = p.Attribute("url")!.Value;
+                var sep = url.IndexOf('/');
+                var title = p.Attribute("title")!.Value;
+
+                pages.Add((file, book: sep < 0 ? url : url[..sep], url: sep < 0 ? "" : url[(sep + 1)..], title));
+            }
+        }
+
+        PageLinks = pages.ToDictionary(p => p.file, p => (p.book.ToLowerInvariant(), p.url.ToLowerInvariant(), p.title), StringComparer.OrdinalIgnoreCase);
 
         using (var movedJson = File.OpenRead(Path.Combine(booksXmlFolder, "Moved.json")))
         {
@@ -124,21 +134,8 @@ internal abstract class Transformer
             TransformImage(img, sourceFile, language, sourceDir);
         }
 
-        var familyDiv = document.CreateElement<IHtmlDivElement>();
-        familyDiv.Id = "doc-family-data";
+        var familyDiv = CreateFamilyDiv(document, parentFile, siblingFiles, sourceDir, language);
         body.AppendChild(familyDiv);
-
-        if (!String.IsNullOrEmpty(parentFile))
-        {
-            if (TryResolveHref(sourceDir, language, "../" + parentFile, out var parentUrl))
-            {
-                familyDiv.SetAttribute("data-parent-link", parentUrl);
-            }
-        }
-        else
-        {
-            familyDiv.SetAttribute("data-parent-link", language == "en" ? "/" : $"/{language}");
-        }
 
         var loading = document.CreateElement<IHtmlDivElement>();
         loading.ClassName = "loading";
@@ -153,13 +150,61 @@ internal abstract class Transformer
         body.AppendNodes(loading, mainContent);
     }
 
+    private IHtmlDivElement CreateFamilyDiv(IHtmlDocument document, string? parentFile, string[] siblingFiles, string sourceDir, string language)
+    {
+        var familyDiv = document.CreateElement<IHtmlDivElement>();
+
+        familyDiv.Id = "doc-family-data";
+        familyDiv.IsHidden = true;
+
+        if (!String.IsNullOrEmpty(parentFile))
+        {
+            if (TryResolveHref(sourceDir, language, "../" + parentFile, out var url, out var _))
+            {
+                familyDiv.SetAttribute("data-parent-link", url);
+            }
+        }
+        else
+        {
+            familyDiv.SetAttribute("data-parent-link", language == "en" ? "/" : $"/{language}");
+        }
+
+        var siblingsUl = document.CreateElement<IHtmlUnorderedListElement>();
+
+        siblingsUl.Id = "doc-siblings-data";
+
+        familyDiv.AppendChild(siblingsUl);
+
+        foreach (var sibling in siblingFiles)
+        {
+            if (TryResolveHref(sourceDir, language, "../" + sibling, out var url, out var titleEn))
+            {
+                var a = document.CreateElement<IHtmlAnchorElement>();
+                var li = document.CreateElement<IHtmlListItemElement>();
+
+                li.AppendChild(a);
+                siblingsUl.AppendChild(li);
+
+                a.SetAttribute("href", url);
+                a.TextContent = titleEn ?? "";
+            }
+        }
+
+        return familyDiv;
+    }
+
     protected virtual void TransformAnchor(IHtmlAnchorElement a, string sourceFile, string language, string sourceDir)
     {
         if (a.GetAttribute("href") is string href && !String.IsNullOrWhiteSpace(href))
         {
-            if (TryResolveHref(sourceDir, language, href, out var result))
+            if (TryResolveHref(sourceDir, language, href, out var result, out var title))
             {
                 a.SetAttribute("href", result);
+
+                if (!String.IsNullOrEmpty(title))
+                {
+                    a.SetAttribute("title", title);
+                }
             }
             else
             {
@@ -168,8 +213,10 @@ internal abstract class Transformer
         }
     }
 
-    private bool TryResolveHref(string sourceDir, string language, string href, out string result)
+    private bool TryResolveHref(string sourceDir, string language, string href, out string result, out string? titleEn)
     {
+        titleEn = null;
+
         string? hash = null;
         var hashIndex = href.IndexOf('#');
         if (hashIndex == 0)
@@ -203,6 +250,7 @@ internal abstract class Transformer
                         result = $"/{link.book}/{link.url}/{language}{hash}";
                     }
 
+                    titleEn = link.titleEn;
                     return true;
                 }
             }

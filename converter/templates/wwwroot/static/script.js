@@ -39,27 +39,16 @@ function searchDoc(lang, inputId, selectId) {
     document.location.replace(searchUrl);
 }
 
-function applyNavSiblings(siblings) {
-    let siblingsUl = document.getElementById('doc-nav-siblings');
-    if (siblingsUl) {
-        for (var item of children) {
-            let li = document.createElement('li');
-            let a = document.createElement('a');
-
-            a.href = item.href;
-            a.text = item.text;
-
-            li.appendChild(a);
-            siblingsUl.appendChild(li);
-        }
-    }
-}
-
 (function () {
     let familyData = document.getElementById('doc-family-data');
     let parentLink = familyData.getAttribute('data-parent-link');
     let parentBtn = document.getElementById('doc-nav-parent');
     if (parentBtn) {
         parentBtn.setAttribute('href', parent);
+    }
+    let siblingsData = document.getElementById('doc-siblings-data');
+    let siblingsUl = document.getElementById('doc-nav-siblings');
+    if (siblingsUl) {
+        siblingsUl.replaceChildren(...siblingsData.childNodes);
     }
 })();
