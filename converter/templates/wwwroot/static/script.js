@@ -44,7 +44,7 @@ function searchDoc(lang, inputId, selectId) {
     let parentLink = familyData.getAttribute('data-parent-link');
     let parentBtn = document.getElementById('doc-nav-parent');
     if (parentBtn) {
-        parentBtn.setAttribute('href', parent);
+        parentBtn.setAttribute('href', parentLink);
     }
     let siblingsData = document.getElementById('doc-siblings-data');
     let siblingsUl = document.getElementById('doc-nav-siblings');
