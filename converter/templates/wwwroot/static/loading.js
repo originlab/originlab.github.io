@@ -2,7 +2,7 @@
     return new Promise(resolve => window.addEventListener("DOMContentLoaded", event => resolve(event), { once: true }));
 }
 
-async function fetchApplyLayout(layoutUrl, placeholderId, mainContentId, parent, children) {
+async function fetchApplyLayout(layoutUrl, placeholderId, mainContentId) {
     var domLoadEvent = DOMContentLoadedEvent();
     var response = await fetch(layoutUrl);
     var parser = new DOMParser();
@@ -36,33 +36,6 @@ async function fetchApplyLayout(layoutUrl, placeholderId, mainContentId, parent,
         }
         document.body.append(script);
     };
-}
-
-function applyParentChildren(parent, children) {
-    if (parent) {
-        let parentBtn = document.getElementById('doc-btn-parent');
-        if (parentBtn) {
-            parentBtn.setAttribute('href', parent);
-            parentBtn.classList.remove('hidden');
-        }
-    }
-
-    if (children && children.length > 0) {
-        let childrenGroup = document.getElementById('doc-btn-children');
-        if (childrenGroup) {
-            let ul = childrenGroup.querySelector('ul');
-            for (var item of children) {
-                let li = document.createElement('li');
-                let a = document.createElement('a');
-
-                a.href = item.href;
-                a.text = item.text;
-
-                li.appendChild(a);
-                ul.appendChild(li);
-            }
-        }
-    }
 }
 
 function tryRedirectToLowerOrEnglish() {

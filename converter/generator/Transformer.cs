@@ -77,7 +77,7 @@ internal abstract class Transformer
 
     public abstract Task TransformFilesAsync();
 
-    protected void Transform(string sourceFile, string destinationFile, string? parentFile, string[]? childrenFiles, string language, string headerHtml, string? bannerHtml = null)
+    protected void Transform(string sourceFile, string destinationFile, string? parentFile, string[]? siblingFiles, string language, string headerHtml, string? bannerHtml = null)
     {
         using var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read);
         var parser = new HtmlParser(new HtmlParserOptions
@@ -89,13 +89,13 @@ internal abstract class Transformer
         var headerNodes = parser.ParseFragment(headerHtml, document.Head!);
         var bannerNodes = String.IsNullOrWhiteSpace(bannerHtml) ? null : parser.ParseFragment(bannerHtml, document.Body!);
 
-        Transform(document, sourceFile, parentFile, childrenFiles, language, headerNodes, bannerNodes);
+        Transform(document, sourceFile, parentFile, siblingFiles ?? [sourceFile], language, headerNodes, bannerNodes);
 
         using var sw = new StreamWriter(destinationFile);
         document.ToHtml(sw, HtmlMarkupFormatter.Instance);
     }
 
-    void Transform(IHtmlDocument document, string sourceFile, string? parentFile, string[]? childrenFiles, string language, INodeList headerNodes, INodeList? bannerNodes)
+    void Transform(IHtmlDocument document, string sourceFile, string? parentFile, string[] siblingFiles, string language, INodeList headerNodes, INodeList? bannerNodes)
     {
         if (document.QuerySelector("h1.firstHeading") is IElement firstHeading)
         {
@@ -124,6 +124,22 @@ internal abstract class Transformer
             TransformImage(img, sourceFile, language, sourceDir);
         }
 
+        var familyDiv = document.CreateElement<IHtmlDivElement>();
+        familyDiv.Id = "doc-family-data";
+        body.AppendChild(familyDiv);
+
+        if (!String.IsNullOrEmpty(parentFile))
+        {
+            if (TryResolveHref(sourceDir, language, "../" + parentFile, out var parentUrl))
+            {
+                familyDiv.SetAttribute("data-parent-link", parentUrl);
+            }
+        }
+        else
+        {
+            familyDiv.SetAttribute("data-parent-link", language == "en" ? "/" : $"/{language}");
+        }
+
         var loading = document.CreateElement<IHtmlDivElement>();
         loading.ClassName = "loading";
 
@@ -141,56 +157,67 @@ internal abstract class Transformer
     {
         if (a.GetAttribute("href") is string href && !String.IsNullOrWhiteSpace(href))
         {
-            string? hash = null;
-            var hashIndex = href.IndexOf('#');
-            if (hashIndex > -1)
+            if (TryResolveHref(sourceDir, language, href, out var result))
             {
-                hash = href[hashIndex..];
-                href = href[..hashIndex];
+                a.SetAttribute("href", result);
             }
-
-            if (!String.IsNullOrWhiteSpace(href))
+            else
             {
-                if (Uri.IsWellFormedUriString(href, UriKind.Relative) && !href.StartsWith('/'))
-                {
-                    var fullPath = Path.GetFullPath(href, sourceDir);
-                    if (fullPath.StartsWith(SourceFolder)
-                        && Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(fullPath.AsSpan()))) is { IsEmpty: false } targetBookDirContainer)
-                    {
-                        var targetFile = fullPath[(targetBookDirContainer.Length + 1)..].Replace('\\', '/');
-
-                        if (PageLinks.TryGetValue(targetFile, out var link)
-                            || (MovedPages.TryGetValue(targetFile, out var movedToFile) && PageLinks.TryGetValue(movedToFile, out link)))
-                        {
-                            if (language == "en")
-                            {
-                                a.SetAttribute("href", $"/{link.book}/{link.url}{hash}");
-                            }
-                            else
-                            {
-                                a.SetAttribute("href", $"/{link.book}/{link.url}/{language}{hash}");
-                            }
-
-                            //if (String.IsNullOrWhiteSpace(a.Title) || a.Title.Contains(':'))
-                            //{
-                            //    a.Title = link.title;
-                            //}
-
-                            return;
-                        }
-                    }
-
-                    ReportProblem(sourceFile, $"Mapping unknown for href: {href}", a.SourceReference?.Position);
-                }
-                else if (!href.StartsWith('#')
-                    && !href.StartsWith("mailto:")
-                    && !href.StartsWith("javascript:")
-                    && !Uri.IsWellFormedUriString(href, UriKind.Absolute))
-                {
-                    ReportProblem(sourceFile, $"Unrecognized href: {href}", a.SourceReference?.Position);
-                }
+                ReportProblem(sourceFile, $"{result} for href: {href}", a.SourceReference?.Position);
             }
         }
+    }
+
+    private bool TryResolveHref(string sourceDir, string language, string href, out string result)
+    {
+        string? hash = null;
+        var hashIndex = href.IndexOf('#');
+        if (hashIndex == 0)
+        {
+            result = href;
+            return true;
+        }
+        else if (hashIndex > 0)
+        {
+            hash = href[hashIndex..];
+            href = href[..hashIndex];
+        }
+
+        if (!href.StartsWith('/') && Uri.IsWellFormedUriString(href, UriKind.Relative))
+        {
+            var fullPath = Path.GetFullPath(href, sourceDir);
+            if (fullPath.StartsWith(SourceFolder)
+                && Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(fullPath.AsSpan()))) is { IsEmpty: false } targetBookDirContainer)
+            {
+                var targetFile = fullPath[(targetBookDirContainer.Length + 1)..].Replace('\\', '/');
+
+                if (PageLinks.TryGetValue(targetFile, out var link)
+                    || (MovedPages.TryGetValue(targetFile, out var movedToFile) && PageLinks.TryGetValue(movedToFile, out link)))
+                {
+                    if (language == "en")
+                    {
+                        result = $"/{link.book}/{link.url}{hash}";
+                    }
+                    else
+                    {
+                        result = $"/{link.book}/{link.url}/{language}{hash}";
+                    }
+
+                    return true;
+                }
+            }
+
+            result = "Unknown mapping";
+            return false;
+        }
+        else if (href.StartsWith("mailto:") || href.StartsWith("javascript:") || Uri.IsWellFormedUriString(href, UriKind.Absolute))
+        {
+            result = href;
+            return true;
+        }
+
+        result = "Unrecognized pattern";
+        return false;
     }
 
     protected virtual void TransformImage(IHtmlImageElement img, string sourceFile, string language, string sourceDir)

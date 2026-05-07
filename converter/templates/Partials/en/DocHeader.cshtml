@@ -5,24 +5,15 @@
     {
         <a class="btn btn-default" href="@(Model.RootUrlPrefix)/" title="Return home"><span class="glyphicon glyphicon-home"></span></a>
         <a class="btn btn-default" href="@(Model.RootUrlPrefix)/@(Model.BookUrlName)" title="Return to book"><span class="glyphicon glyphicon-book"></span></a>
-
-        <div id="doc-btn-ancestors" class="btn-group hidden">
-            <a id="doc-btn-parent" class="btn btn-default" title="Go up"><span class="glyphicon glyphicon-arrow-up"></span></a>
+        <div class="btn-group">
+            <a id="doc-nav-parent" class="btn btn-default"><span class="glyphicon glyphicon-folder-open"></span></a>
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="glyphicon glyphicon-arrow-down"></span>
+                &#8203;<span class="caret"></span>
             </button>
-            <ul class="dropdown-menu">
+            <ul id="doc-nav-siblings" class="dropdown-menu">
             </ul>
         </div>
     }
-    <div id="doc-btn-children" class="btn-group hidden">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="glyphicon glyphicon-arrow-down"></span>
-            <span class="sr-only">Toggle Dropdown</span>
-        </button>
-        <ul class="dropdown-menu">
-        </ul>
-    </div>
 </div>
 <div class="col-sm-9">
     <div class="form-inline pull-right hidden-xs">

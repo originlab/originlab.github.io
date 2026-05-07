@@ -45,8 +45,8 @@ p {
     line-height: 1.428;
 }
 
-.DocContent .dropdown-menu {
-    margin-left: 0;
+.DocContent {
+    margin-top: 24px;
 }
 
 .i18n {
