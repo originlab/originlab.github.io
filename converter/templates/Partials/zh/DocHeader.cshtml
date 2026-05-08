@@ -1,6 +1,6 @@
 @model DocumentPageModel
 
-<div class="col-sm-3">
+<div class="col-sm-6">
     @if (!String.IsNullOrEmpty(Model.BookUrlName))
     {
         <a class="btn btn-default" href="@(Model.RootUrlPrefix)/zh" title="返回文档首页"><span class="glyphicon glyphicon-home"></span></a>
@@ -15,7 +15,7 @@
         </div>
     }
 </div>
-<div class="col-sm-9">
+<div class="col-sm-6">
     <div class="form-inline pull-right hidden-xs">
         <div class="form-group">
             <select id="docSearchBook" class="form-control" title="搜索范围">
