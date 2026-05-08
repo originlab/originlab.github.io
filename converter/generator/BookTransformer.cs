@@ -52,11 +52,18 @@ internal sealed class BookTransformer : Transformer
 
             next = p.NextNode;
             count = 10;
+            var added = false;
 
             while (count-- > 0 && next is XElement element)
             {
                 list.Add(element.Attribute("file")!.Value);
                 next = element.NextNode;
+                added = true;
+            }
+
+            if (!added && list.Count > 0)
+            {
+                list.RemoveAt(list.Count - 1);
             }
 
             return list.ToArray();
