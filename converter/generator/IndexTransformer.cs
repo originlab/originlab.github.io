@@ -29,7 +29,7 @@ internal class IndexTransformer : Transformer
             var destinationDir = Path.GetDirectoryName(destinationFile)!;
             Directory.CreateDirectory(destinationDir);
 
-            Transform(sourceFile, destinationFile, null, null, language, layoutScripts[language]);
+            Transform(sourceFile, destinationFile, default, language, layoutScripts[language]);
         }
     }
 }
