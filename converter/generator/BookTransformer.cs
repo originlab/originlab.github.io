@@ -6,7 +6,7 @@ namespace OriginLab.DocumentGeneration;
 internal sealed class BookTransformer : Transformer
 {
     private readonly string BookDirName;
-    private readonly (string url, string file, Family family)[] Pages;
+    private readonly (string url, string file, Nav nav)[] Pages;
 
     public BookTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
         : base(booksXmlFolder, sourceFolder, outputFolder)
@@ -14,7 +14,7 @@ internal sealed class BookTransformer : Transformer
         BookDirName = Path.GetFileName(Directory.EnumerateDirectories(Path.Combine(SourceFolder, "en")).Single());
 
         var bookXml = XElement.Load(Path.Combine(sourceFolder, "en", BookDirName, "book.xml"));
-        var pages = new List<(string url, string file, Family family)>();
+        var pages = new List<(string url, string file, Nav nav)>();
 
         foreach (var p in bookXml.Descendants("page"))
         {
@@ -27,7 +27,7 @@ internal sealed class BookTransformer : Transformer
             var siblings = GetSiblings(p);
             var children = p.Elements("page").Select(p => p.Attribute("file")!.Value).ToArray();
 
-            pages.Add((url, file, new Family(parent, siblings, children)));
+            pages.Add((url, file, new Nav(parent, siblings, children)));
         }
 
         Pages = pages.ToArray();
@@ -55,7 +55,7 @@ internal sealed class BookTransformer : Transformer
         var srcEnDir = Path.Combine(SourceFolderEn, BookDirName);
         string? fallbackBanner = null;
 
-        foreach (var (url, file, family) in Pages)
+        foreach (var (url, file, nav) in Pages)
         {
             var dstDir = Path.Combine(OutputFolder, url, language != "en" ? language : "");
 
@@ -66,13 +66,13 @@ internal sealed class BookTransformer : Transformer
 
             if (File.Exists(srcFile))
             {
-                Transform(srcFile, dstFile, family, language, layoutScripts);
+                Transform(srcFile, dstFile, nav, language, layoutScripts);
             }
             else if (language != "en" && File.Exists(srcFile = Path.Combine(srcEnDir, file)))
             {
                 fallbackBanner ??= await Template.RenderEnglishFallbackBannerAsync(language);
 
-                Transform(srcFile, dstFile, family, language, layoutScripts, fallbackBanner);
+                Transform(srcFile, dstFile, nav, language, layoutScripts, fallbackBanner);
             }
             else
             {

@@ -87,7 +87,7 @@ internal abstract class Transformer
 
     public abstract Task TransformFilesAsync();
 
-    protected void Transform(string sourceFile, string destinationFile, Family family, string language, string headerHtml, string? bannerHtml = null)
+    protected void Transform(string sourceFile, string destinationFile, Nav nav, string language, string headerHtml, string? bannerHtml = null)
     {
         using var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read);
         var parser = new HtmlParser(new HtmlParserOptions
@@ -99,13 +99,13 @@ internal abstract class Transformer
         var headerNodes = parser.ParseFragment(headerHtml, document.Head!);
         var bannerNodes = String.IsNullOrWhiteSpace(bannerHtml) ? null : parser.ParseFragment(bannerHtml, document.Body!);
 
-        Transform(document, sourceFile, family, language, headerNodes, bannerNodes);
+        Transform(document, sourceFile, nav, language, headerNodes, bannerNodes);
 
         using var sw = new StreamWriter(destinationFile);
         document.ToHtml(sw, HtmlMarkupFormatter.Instance);
     }
 
-    void Transform(IHtmlDocument document, string sourceFile, Family family, string language, INodeList headerNodes, INodeList? bannerNodes)
+    void Transform(IHtmlDocument document, string sourceFile, Nav nav, string language, INodeList headerNodes, INodeList? bannerNodes)
     {
         if (document.QuerySelector("h1.firstHeading") is IElement firstHeading)
         {
@@ -134,7 +134,7 @@ internal abstract class Transformer
             TransformImage(img, sourceFile, language, sourceDir);
         }
 
-        var familyDiv = CreateFamilyDiv(document, family, sourceDir, language);
+        var familyDiv = CreateFamilyDiv(document, nav, sourceDir, language);
         body.AppendChild(familyDiv);
 
         var loading = document.CreateElement<IHtmlDivElement>();
@@ -150,16 +150,16 @@ internal abstract class Transformer
         body.AppendNodes(loading, mainContent);
     }
 
-    private IHtmlDivElement CreateFamilyDiv(IHtmlDocument document, Family family, string sourceDir, string language)
+    private IHtmlDivElement CreateFamilyDiv(IHtmlDocument document, Nav nav, string sourceDir, string language)
     {
         var familyDiv = document.CreateElement<IHtmlDivElement>();
 
         familyDiv.Id = "doc-family-data";
         familyDiv.IsHidden = true;
 
-        if (!String.IsNullOrEmpty(family.Parent))
+        if (!String.IsNullOrEmpty(nav.Parent))
         {
-            if (TryResolveHref(sourceDir, language, "../" + family.Parent, out var url, out var _))
+            if (TryResolveHref(sourceDir, language, "../" + nav.Parent, out var url, out var _))
             {
                 familyDiv.SetAttribute("data-parent-link", url);
             }
@@ -169,7 +169,7 @@ internal abstract class Transformer
             familyDiv.SetAttribute("data-parent-link", language == "en" ? "/" : $"/{language}");
         }
 
-        if (family.Siblings is not null)
+        if (nav.Siblings is not null)
         {
             var siblingsUl = document.CreateElement<IHtmlUnorderedListElement>();
 
@@ -177,7 +177,7 @@ internal abstract class Transformer
 
             familyDiv.AppendChild(siblingsUl);
 
-            foreach (var sibling in family.Siblings)
+            foreach (var sibling in nav.Siblings)
             {
                 if (TryResolveHref(sourceDir, language, "../" + sibling, out var url, out var titleEn))
                 {

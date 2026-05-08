@@ -1,8 +1,8 @@
 ﻿namespace OriginLab.DocumentGeneration;
 
-readonly struct Family
+readonly struct Nav
 {
-    public Family(string? parent, string[]? siblings, string[]? children)
+    public Nav(string? parent, string[]? siblings, string[]? children)
     {
         Parent = parent;
         Siblings = siblings;
