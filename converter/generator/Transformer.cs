@@ -204,6 +204,7 @@ internal abstract class Transformer
         IHtmlUnorderedListElement CreateDataUL(string id, string[] files)
         {
             var ul = document.CreateElement<IHtmlUnorderedListElement>();
+            var titles = Titles[language];
 
             ul.Id = id;
 
@@ -211,12 +212,20 @@ internal abstract class Transformer
             {
                 var li = document.CreateElement<IHtmlListItemElement>();
 
-                if (TryResolveHref(sourceDir, language, "../" + path, out var url, out var _))
+                if (TryResolveHref(sourceDir, language, "../" + path, out var url, out var titleEn))
                 {
                     var a = document.CreateElement<IHtmlAnchorElement>();
 
                     a.SetAttribute("href", url);
-                    a.TextContent = Titles[language][path];
+
+                    if (titles.TryGetValue(path, out var title))
+                    {
+                        a.TextContent = title;
+                    }
+                    else
+                    {
+                        a.TextContent = titleEn ?? "";
+                    }
 
                     li.AppendChild(a);
                 }
