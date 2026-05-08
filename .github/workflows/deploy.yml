@@ -75,13 +75,22 @@ jobs:
           - orglab
           - license
     steps:
-      - name: Dispatch deploy.yml and grab
+      - name: Dispatch deploy.yml and capture the run url
         id: dispatch
         run: |
           {
+            echo 'deploy_run_url<<EOF'
+            gh workflow run deploy.yml --repo originlab/${{ matrix.site }}# | grep -oE "[0-9]+$"
+            echo EOF
+          } >> "$GITHUB_ENV"
+      - run: echo "$deploy_run_url"
+      - name: Grab the run id
+        id: grab
+        run: |
+          {
             echo 'run_id<<EOF'
-            gh workflow run deploy.yml --repo originlab/${{ matrix.site }} | grep -oE "[0-9]+$"
+            "$deploy_run_url" | grep -oE "[0-9]+$"
             echo EOF
           } >> "$GITHUB_OUTPUT"
       - name: Watch the deployment
-        run: gh run watch ${{ steps.dispatch.outputs.run_id }} --repo originlab/${{ matrix.site }} --exit-status  
+        run: gh run watch ${{ steps.grab.outputs.run_id }} -R originlab/${{ matrix.site }} -i 15 --exit-status --compact
