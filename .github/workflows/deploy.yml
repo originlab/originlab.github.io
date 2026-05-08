@@ -80,7 +80,7 @@ jobs:
         run: |
           {
             echo 'deploy_run_url<<EOF'
-            gh workflow run deploy.yml --repo originlab/${{ matrix.site }}# | grep -oE "[0-9]+$"
+            gh workflow run deploy.yml --repo originlab/${{ matrix.site }}
             echo EOF
           } >> "$GITHUB_ENV"
       - run: echo "$deploy_run_url"
