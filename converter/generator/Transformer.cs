@@ -245,11 +245,23 @@ internal abstract class Transformer
 
     protected virtual void TransformAnchor(IHtmlAnchorElement a, string sourceFile, string language, string sourceDir)
     {
-        if (a.GetAttribute("href") is string href && !String.IsNullOrWhiteSpace(href))
+        if (a.GetAttribute("href") is string strHref && !String.IsNullOrWhiteSpace(strHref))
         {
-            if (TryResolveHref(sourceDir, language, href, out var result, out var title))
+            ReadOnlySpan<char> href = strHref, hash = "";
+            var hashIndex = strHref.IndexOf('#');
+            if (hashIndex == 0)
             {
-                a.SetAttribute("href", result);
+                return;
+            }
+            else if (hashIndex > 0)
+            {
+                hash = strHref.AsSpan(hashIndex);
+                href = strHref.AsSpan(..hashIndex);
+            }
+
+            if (TryResolveHref(sourceDir, language, hashIndex > 0 ? href.ToString() : strHref, out var result, out var title))
+            {
+                a.SetAttribute("href", $"{result}{hash}");
 
                 if (!String.IsNullOrEmpty(title))
                 {
@@ -267,19 +279,6 @@ internal abstract class Transformer
     {
         titleEn = null;
 
-        string? hash = null;
-        var hashIndex = href.IndexOf('#');
-        if (hashIndex == 0)
-        {
-            result = href;
-            return true;
-        }
-        else if (hashIndex > 0)
-        {
-            hash = href[hashIndex..];
-            href = href[..hashIndex];
-        }
-
         if (!href.StartsWith('/') && Uri.IsWellFormedUriString(href, UriKind.Relative))
         {
             var fullPath = Path.GetFullPath(href, sourceDir);
@@ -293,11 +292,11 @@ internal abstract class Transformer
                 {
                     if (language == "en")
                     {
-                        result = $"/{link.book}/{link.url}{hash}";
+                        result = $"/{link.book}/{link.url}";
                     }
                     else
                     {
-                        result = $"/{link.book}/{link.url}/{language}{hash}";
+                        result = $"/{link.book}/{link.url}/{language}";
                     }
 
                     titleEn = link.titleEn;
