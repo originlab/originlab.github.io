@@ -49,10 +49,12 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v5
 
-  dispatch_books_deployment:
+  deploy_books:
     needs: deploy_index
-    environment: deploy
     runs-on: ubuntu-slim
+    environment: deploy
+    env:
+      GH_TOKEN: ${{ secrets.PAT_DOC_WORKFLOW }}
     strategy:
       matrix:
         site:
@@ -73,9 +75,13 @@ jobs:
           - orglab
           - license
     steps:
-      - name: Dispatch deploy.yml for originlab/${{ matrix.site }}
-        run: gh workflow run deploy.yml --repo originlab/${{ matrix.site }}
-        env:
-          GH_TOKEN: ${{ secrets.PAT_DOC_WORKFLOW }}
-
-    
+      - name: Dispatch deploy.yml and grab
+        id: dispatch
+        run: |
+          {
+            echo 'run_id<<EOF'
+            gh workflow run deploy.yml --repo originlab/${{ matrix.site }} | grep -oE "[0-9]+$"
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+      - name: Watch the deployment
+        run: gh run watch ${{ steps.dispatch.outputs.run_id }} --repo originlab/${{ matrix.site }} --exit-status  
