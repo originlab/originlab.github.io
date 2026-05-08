@@ -39,6 +39,15 @@ function searchDoc(lang, inputId, selectId) {
     document.location.replace(searchUrl);
 }
 
+function applyNavMenuData(dataId, groupId, minItems) {
+    let dataElement = document.getElementById(dataId);
+    if (!dataElement || dataElement.children.length < minItems) {
+        document.getElementById(groupId)?.querySelector('button')?.classList.add('disabled');
+    } else {
+        document.getElementById(groupId)?.querySelector('ul')?.replaceChildren(...dataElement.childNodes);
+    }
+}
+
 (function () {
     let familyData = document.getElementById('doc-family-data');
     let parentLink = familyData.getAttribute('data-parent-link');
@@ -46,9 +55,7 @@ function searchDoc(lang, inputId, selectId) {
     if (parentBtn) {
         parentBtn.setAttribute('href', parentLink);
     }
-    let siblingsData = document.getElementById('doc-siblings-data');
-    let siblingsUl = document.getElementById('doc-nav-siblings');
-    if (siblingsUl) {
-        siblingsUl.replaceChildren(...siblingsData.childNodes);
-    }
+
+    applyNavMenuData('doc-siblings-data', 'doc-nav-siblings', 2);
+    applyNavMenuData('doc-children-data', 'doc-nav-children', 1);
 })();
