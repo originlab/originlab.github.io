@@ -134,7 +134,7 @@ internal abstract class Transformer
             TransformImage(img, sourceFile, language, sourceDir);
         }
 
-        var familyDiv = CreateFamilyDiv(document, nav, sourceDir, language);
+        var familyDiv = CreateNavDiv(document, nav, sourceDir, language);
         body.AppendChild(familyDiv);
 
         var loading = document.CreateElement<IHtmlDivElement>();
@@ -150,11 +150,11 @@ internal abstract class Transformer
         body.AppendNodes(loading, mainContent);
     }
 
-    private IHtmlDivElement CreateFamilyDiv(IHtmlDocument document, Nav nav, string sourceDir, string language)
+    private IHtmlDivElement CreateNavDiv(IHtmlDocument document, Nav nav, string sourceDir, string language)
     {
         var familyDiv = document.CreateElement<IHtmlDivElement>();
 
-        familyDiv.Id = "doc-family-data";
+        familyDiv.Id = "doc-nav-data";
         familyDiv.IsHidden = true;
 
         if (!String.IsNullOrEmpty(nav.Parent))

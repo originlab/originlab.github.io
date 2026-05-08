@@ -49,7 +49,7 @@ function applyNavMenuData(dataId, groupId, minItems) {
 }
 
 (function () {
-    let familyData = document.getElementById('doc-family-data');
+    let familyData = document.getElementById('doc-nav-data');
     let parentLink = familyData.getAttribute('data-parent-link');
     let parentBtn = document.getElementById('doc-nav-parent');
     if (parentBtn) {
