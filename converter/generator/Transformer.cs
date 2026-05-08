@@ -171,29 +171,41 @@ internal abstract class Transformer
 
         if (nav.Siblings is not null)
         {
-            var siblingsUl = document.CreateElement<IHtmlUnorderedListElement>();
+            var ul = CreateDataUL("doc-siblings-data", nav.Siblings);
+            familyDiv.AppendChild(ul);
+        }
 
-            siblingsUl.Id = "doc-siblings-data";
+        if (nav.Children is not null)
+        {
+            var ul = CreateDataUL("doc-children-data", nav.Children);
+            familyDiv.AppendChild(ul);
+        }
 
-            familyDiv.AppendChild(siblingsUl);
+        return familyDiv;
 
-            foreach (var sibling in nav.Siblings)
+        IHtmlUnorderedListElement CreateDataUL(string id, string[] files)
+        {
+            var ul = document.CreateElement<IHtmlUnorderedListElement>();
+
+            ul.Id = id;
+
+            foreach (var path in files)
             {
-                if (TryResolveHref(sourceDir, language, "../" + sibling, out var url, out var titleEn))
+                if (TryResolveHref(sourceDir, language, "../" + path, out var url, out var titleEn))
                 {
                     var a = document.CreateElement<IHtmlAnchorElement>();
                     var li = document.CreateElement<IHtmlListItemElement>();
 
                     li.AppendChild(a);
-                    siblingsUl.AppendChild(li);
+                    ul.AppendChild(li);
 
                     a.SetAttribute("href", url);
                     a.TextContent = titleEn ?? "";
                 }
             }
-        }
 
-        return familyDiv;
+            return ul;
+        }
     }
 
     protected virtual void TransformAnchor(IHtmlAnchorElement a, string sourceFile, string language, string sourceDir)
