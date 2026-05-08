@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Net;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Xml.Linq;
 using AngleSharp.Common;
@@ -285,7 +286,7 @@ internal abstract class Transformer
             if (fullPath.StartsWith(SourceFolder)
                 && Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(fullPath.AsSpan()))) is { IsEmpty: false } targetBookDirContainer)
             {
-                var targetFile = fullPath[(targetBookDirContainer.Length + 1)..].Replace('\\', '/');
+                var targetFile = WebUtility.UrlDecode(fullPath[(targetBookDirContainer.Length + 1)..].Replace('\\', '/'));
 
                 if (PageLinks.TryGetValue(targetFile, out var link)
                     || (MovedPages.TryGetValue(targetFile, out var movedToFile) && PageLinks.TryGetValue(movedToFile, out link)))
