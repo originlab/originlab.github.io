@@ -23,6 +23,8 @@ internal abstract class Transformer
     protected readonly Dictionary<string, (string book, string url, string titleEn)> PageLinks;
     protected readonly Dictionary<string, string> MovedPages;
 
+    protected readonly Dictionary<string, Dictionary<string, string>> Titles = [];
+
     readonly Dictionary<string, List<(string message, TextPosition? position)>> Problems = [];
     readonly Dictionary<string, int> ProblemCounts = [];
 
@@ -105,12 +107,28 @@ internal abstract class Transformer
         document.ToHtml(sw, HtmlMarkupFormatter.Instance);
     }
 
+    protected static string GetPageTitle(string sourceFile)
+    {
+        using var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read);
+        var parser = new HtmlParser();
+        var document = parser.ParseDocument(fs);
+
+        return GetPageTitle(document);
+    }
+
+    private static string GetPageTitle(IHtmlDocument document)
+    {
+        if (document.QuerySelector("h1") is IElement firstHeading)
+        {
+            return firstHeading.Text();
+        }
+
+        return "";
+    }
+
     void Transform(IHtmlDocument document, string sourceFile, Nav nav, string language, INodeList headerNodes, INodeList? bannerNodes)
     {
-        if (document.QuerySelector("h1.firstHeading") is IElement firstHeading)
-        {
-            document.Title = firstHeading.Text();
-        }
+        document.Title = GetPageTitle(document);
 
         var head = document.Head!;
         var body = document.Body!;
@@ -134,8 +152,8 @@ internal abstract class Transformer
             TransformImage(img, sourceFile, language, sourceDir);
         }
 
-        var familyDiv = CreateNavDiv(document, nav, sourceDir, language);
-        body.AppendChild(familyDiv);
+        var navDataDiv = CreateNavDataDiv(document, nav, sourceDir, language);
+        body.AppendChild(navDataDiv);
 
         var loading = document.CreateElement<IHtmlDivElement>();
         loading.ClassName = "loading";
@@ -150,38 +168,38 @@ internal abstract class Transformer
         body.AppendNodes(loading, mainContent);
     }
 
-    private IHtmlDivElement CreateNavDiv(IHtmlDocument document, Nav nav, string sourceDir, string language)
+    private IHtmlDivElement CreateNavDataDiv(IHtmlDocument document, Nav nav, string sourceDir, string language)
     {
-        var familyDiv = document.CreateElement<IHtmlDivElement>();
+        var navDataDiv = document.CreateElement<IHtmlDivElement>();
 
-        familyDiv.Id = "doc-nav-data";
-        familyDiv.IsHidden = true;
+        navDataDiv.Id = "doc-nav-data";
+        navDataDiv.IsHidden = true;
 
         if (!String.IsNullOrEmpty(nav.Parent))
         {
             if (TryResolveHref(sourceDir, language, "../" + nav.Parent, out var url, out var _))
             {
-                familyDiv.SetAttribute("data-parent-link", url);
+                navDataDiv.SetAttribute("data-parent-link", url);
             }
         }
         else
         {
-            familyDiv.SetAttribute("data-parent-link", language == "en" ? "/" : $"/{language}");
+            navDataDiv.SetAttribute("data-parent-link", language == "en" ? "/" : $"/{language}");
         }
 
         if (nav.Siblings is not null)
         {
             var ul = CreateDataUL("doc-siblings-data", nav.Siblings);
-            familyDiv.AppendChild(ul);
+            navDataDiv.AppendChild(ul);
         }
 
         if (nav.Children is not null)
         {
             var ul = CreateDataUL("doc-children-data", nav.Children);
-            familyDiv.AppendChild(ul);
+            navDataDiv.AppendChild(ul);
         }
 
-        return familyDiv;
+        return navDataDiv;
 
         IHtmlUnorderedListElement CreateDataUL(string id, string[] files)
         {
@@ -193,12 +211,12 @@ internal abstract class Transformer
             {
                 var li = document.CreateElement<IHtmlListItemElement>();
 
-                if (TryResolveHref(sourceDir, language, "../" + path, out var url, out var titleEn))
+                if (TryResolveHref(sourceDir, language, "../" + path, out var url, out var _))
                 {
                     var a = document.CreateElement<IHtmlAnchorElement>();
 
                     a.SetAttribute("href", url);
-                    a.TextContent = titleEn ?? "";
+                    a.TextContent = Titles[language][path];
 
                     li.AppendChild(a);
                 }

@@ -87,6 +87,22 @@ internal sealed class BookTransformer : Transformer
         var srcEnDir = Path.Combine(SourceFolderEn, BookDirName);
         string? fallbackBanner = null;
 
+        var titles = Titles[language] = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var (_, file, _) in Pages)
+        {
+            var srcFile = Path.Combine(srcDir, file);
+
+            if (File.Exists(srcFile) || (language != "en" && File.Exists(srcFile = Path.Combine(srcEnDir, file))))
+            {
+                titles.Add(file, GetPageTitle(srcFile));
+            }
+            else
+            {
+                ReportProblem("en/book.xml", $"Source file not found: {srcFile}");
+            }
+        }
+
         foreach (var (url, file, nav) in Pages)
         {
             var dstDir = Path.Combine(OutputFolder, url, language != "en" ? language : "");
