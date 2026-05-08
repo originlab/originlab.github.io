@@ -34,7 +34,32 @@ internal sealed class BookTransformer : Transformer
 
         static string[]? GetSiblings(XElement p)
         {
-            return p.Parent?.Elements("page").Take(10).Select(c => c.Attribute("file")!.Value).ToArray();
+            var list = new List<string>();
+            var next = p.PreviousNode;
+            var count = 10;
+
+            while (count-- > 0 && next is XElement element)
+            {
+                list.Add(element.Attribute("file")!.Value);
+                next = element.PreviousNode;
+            }
+
+            if (list.Count > 0)
+            {
+                list.Reverse();
+                list.Add("");
+            }
+
+            next = p.NextNode;
+            count = 10;
+
+            while (count-- > 0 && next is XElement element)
+            {
+                list.Add(element.Attribute("file")!.Value);
+                next = element.NextNode;
+            }
+
+            return list.ToArray();
         }
     }
 

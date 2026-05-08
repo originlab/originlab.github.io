@@ -44,7 +44,13 @@ function applyNavMenuData(dataId, groupId, minItems) {
     if (!dataElement || dataElement.children.length < minItems) {
         document.getElementById(groupId)?.querySelector('button')?.classList.add('disabled');
     } else {
-        document.getElementById(groupId)?.querySelector('ul')?.replaceChildren(...dataElement.childNodes);
+        let ul = document.getElementById(groupId)?.querySelector('ul');
+        if (ul) {
+            ul.replaceChildren(...dataElement.childNodes);
+            if (ul.childNodes.length > 20) {
+                ul.classList.add('pre-scrollable');
+            }
+        }
     }
 }
 

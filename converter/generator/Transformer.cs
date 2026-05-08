@@ -191,17 +191,24 @@ internal abstract class Transformer
 
             foreach (var path in files)
             {
+                var li = document.CreateElement<IHtmlListItemElement>();
+
                 if (TryResolveHref(sourceDir, language, "../" + path, out var url, out var titleEn))
                 {
                     var a = document.CreateElement<IHtmlAnchorElement>();
-                    var li = document.CreateElement<IHtmlListItemElement>();
-
-                    li.AppendChild(a);
-                    ul.AppendChild(li);
 
                     a.SetAttribute("href", url);
                     a.TextContent = titleEn ?? "";
+
+                    li.AppendChild(a);
                 }
+                else
+                {
+                    li.SetAttribute("role", "separator");
+                    li.ClassName = "divider";
+                }
+
+                ul.AppendChild(li);
             }
 
             return ul;
