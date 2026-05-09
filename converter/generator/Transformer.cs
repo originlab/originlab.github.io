@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Xml.Linq;
 using AngleSharp.Common;
