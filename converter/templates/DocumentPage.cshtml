@@ -14,24 +14,3 @@
 <div class="DocContent">
     <div id="doc-content-placeholder"></div>
 </div>
-<div class="i18n">
-    @if (Model.Language != "en")
-    {
-        <a href="..">English</a>
-    }
-    @if (Model.Language != "de" && Model.AvailableLanguages.Contains("de"))
-    {
-        @(Model.Language == "en" ? "" : " | ")
-        <a href="@(Model.Language != "en" ? "../" : "")de">Deutsch</a>
-    }
-    @if (Model.Language != "ja" && Model.AvailableLanguages.Contains("ja"))
-    {
-        @(Model.Language == "en" && !Model.AvailableLanguages.Contains("de") ? "" : " | ")
-        <a href="@(Model.Language != "en" ? "../" : "")ja">日本語</a>
-    }
-    @if (Model.Language != "zh" && Model.AvailableLanguages.Contains("zh"))
-    {
-        @(Model.Language == "en" && !Model.AvailableLanguages.Contains("de") && !Model.AvailableLanguages.Contains("ja") ? "" : " | ")
-        <a href="@(Model.Language != "en" ? "../" : "")zh">简体中文</a>
-    }
-</div>

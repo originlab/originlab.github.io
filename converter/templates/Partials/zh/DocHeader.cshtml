@@ -1,6 +1,25 @@
 @model DocumentPageModel
 
 <div class="col-sm-6">
+    <div id="doc-nav-language" class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            简体中文 <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            @if (Model.AvailableLanguages.Contains("en"))
+            {
+                <li><a href="../">English</a></li>
+            }
+            @if (Model.AvailableLanguages.Contains("de"))
+            {
+                <li><a href="../de">Deutsch</a></li>
+            }
+            @if (Model.AvailableLanguages.Contains("ja"))
+            {
+                <li><a href="../ja">日本語</a></li>
+            }
+        </ul>
+    </div>
     @if (!String.IsNullOrEmpty(Model.BookUrlName))
     {
         <a class="btn btn-default" href="@(Model.RootUrlPrefix)/zh" title="返回文档首页"><span class="glyphicon glyphicon-home"></span></a>
