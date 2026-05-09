@@ -293,9 +293,13 @@ internal abstract class Transformer
                     {
                         result = $"/{link.book}/{link.url}";
                     }
-                    else
+                    else if (!String.IsNullOrEmpty(link.url))
                     {
                         result = $"/{link.book}/{link.url}/{language}";
+                    }
+                    else
+                    {
+                        result = $"/{link.book}/{language}";
                     }
 
                     titleEn = link.titleEn;
