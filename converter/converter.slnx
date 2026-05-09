@@ -5,4 +5,5 @@
   </Folder>
   <Project Path="generator/generator.csproj" />
   <Project Path="templates/templates.csproj" />
+  <Project Path="utils/utils.csproj" Id="a84489a3-d5e2-4908-b1a4-6947fab586d4" />
 </Solution>

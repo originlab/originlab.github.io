@@ -99,7 +99,7 @@ internal abstract class Transformer
         var document = parser.ParseDocument(fs);
 
         var headerNodes = parser.ParseFragment(headerHtml, document.Head!);
-        var bannerNodes = String.IsNullOrWhiteSpace(bannerHtml) ? null : parser.ParseFragment(bannerHtml, document.Body!);
+        var bannerNodes = bannerHtml.IsBlank ? null : parser.ParseFragment(bannerHtml, document.Body!);
 
         Transform(document, sourceFile, nav, language, headerNodes, bannerNodes);
 
@@ -175,7 +175,7 @@ internal abstract class Transformer
         navDataDiv.Id = "doc-nav-data";
         navDataDiv.IsHidden = true;
 
-        if (!String.IsNullOrEmpty(nav.Parent))
+        if (!nav.Parent.IsEmpty)
         {
             if (TryResolveHref(sourceDir, language, "../" + nav.Parent, out var url, out var _))
             {
@@ -244,7 +244,7 @@ internal abstract class Transformer
 
     protected virtual void TransformAnchor(IHtmlAnchorElement a, string sourceFile, string language, string sourceDir)
     {
-        if (a.GetAttribute("href") is string strHref && !String.IsNullOrWhiteSpace(strHref))
+        if (a.GetAttribute("href") is string strHref && !strHref.IsBlank)
         {
             ReadOnlySpan<char> href = strHref, hash = "";
             var hashIndex = strHref.IndexOf('#');
@@ -262,7 +262,7 @@ internal abstract class Transformer
             {
                 a.SetAttribute("href", $"{result}{hash}");
 
-                if (!String.IsNullOrEmpty(title))
+                if (!title.IsEmpty)
                 {
                     a.SetAttribute("title", title);
                 }
@@ -291,15 +291,11 @@ internal abstract class Transformer
                 {
                     if (language == "en")
                     {
-                        result = $"/{link.book}/{link.url}";
-                    }
-                    else if (!String.IsNullOrEmpty(link.url))
-                    {
-                        result = $"/{link.book}/{link.url}/{language}";
+                        result = '/'.TryPrefixEach(link.book, link.url);
                     }
                     else
                     {
-                        result = $"/{link.book}/{language}";
+                        result = '/'.TryPrefixEach(link.book, link.url, language);
                     }
 
                     titleEn = link.titleEn;
@@ -391,7 +387,7 @@ internal abstract class Transformer
 
         var layoutScripts = await Template.RenderApplyLayoutScriptsAsync(new ApplyLayoutModel
         {
-            LayoutPageUrl = $"{rootUrlPrefix}/{(String.IsNullOrEmpty(BookUrlName) ? "" : $"{BookUrlName}/")}{language}/layout.html?v={FileHash.FromString(layoutHtml)}",
+            LayoutPageUrl = rootUrlPrefix + '/'.TryPrefixEach(BookUrlName, language, $"layout.html?v={FileHash.FromString(layoutHtml)}"),
             PlaceHolderId = "doc-content-placeholder",
             MainContentId = "main-content",
         });
