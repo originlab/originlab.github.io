@@ -26,8 +26,7 @@ internal abstract class Transformer
 
     protected readonly Dictionary<string, Dictionary<string, string>> Titles = [];
 
-    readonly Dictionary<string, List<(string message, TextPosition? position)>> Problems = [];
-    readonly Dictionary<string, int> ProblemCounts = [];
+    readonly Dictionary<string, List<(string file, TextPosition? position)>> Problems = [];
 
     protected Transformer(string booksXmlFolder, string sourceFolder, string outputFolder)
     {
@@ -400,47 +399,53 @@ internal abstract class Transformer
     {
         var file = Path.GetRelativePath(SourceFolder, sourcePath);
 
-        if (!Problems.TryGetValue(file, out var detailsList))
+        if (!Problems.TryGetValue(message, out var list))
         {
-            Problems[file] = detailsList = [];
+            Problems[message] = list = [];
         }
 
-        detailsList.Add((message, position));
-
-        ref int count = ref CollectionsMarshal.GetValueRefOrAddDefault(ProblemCounts, message, out _);
-        count++;
+        list.Add((file, position));
     }
 
     public void PrintProblems()
     {
-        foreach (var (file, detailsList) in Problems)
+        if (Problems.Count > 0)
         {
-            Console.Error.WriteLine($"::group::{file}");
+            var error = Console.Error;
 
-            foreach (var (message, position) in detailsList)
+            error.WriteLine();
+            error.WriteLine("Problems:");
+
+            foreach (var (message, list) in Problems.OrderByDescending(kvp => kvp.Value.Count))
             {
-                Console.Error.Write($"::warning file={file}");
+                error.WriteLine();
+                error.WriteLine($"::warning::{list.Count}x {message}");
 
-                if (position is not null)
+                foreach (var details in list.ToLookup(i => i.file, i => i.position))
                 {
-                    Console.Error.Write($",line={position.Value.Line},col={position.Value.Column}");
+                    if (details.Count() > 1)
+                    {
+                        error.WriteLine($"::group::{details.Key}");
+
+                        foreach (var p in details)
+                        {
+                            if (p is TextPosition position)
+                            {
+                                error.WriteLine($"\tLine: {position.Line}, Column: {position.Column}");
+                            }
+                        }
+
+                        error.WriteLine("::endgroup::");
+                    }
+                    else if (details.First() is TextPosition position)
+                    {
+                        error.WriteLine($"File: {details.Key}, Line: {position.Line}, Column {position.Column}");
+                    }
+                    else
+                    {
+                        error.WriteLine($"File: {details.Key}");
+                    }
                 }
-
-                Console.Error.Write("::");
-                Console.Error.WriteLine(message);
-            }
-
-            Console.Error.WriteLine("::endgroup::");
-        }
-
-        if (ProblemCounts.Count > 0)
-        {
-            Console.Error.WriteLine();
-            Console.Error.WriteLine("Summary:");
-
-            foreach (var (message, count) in ProblemCounts.OrderByDescending(kvp => kvp.Value))
-            {
-                Console.Error.WriteLine($"{count}x {message}");
             }
         }
     }
