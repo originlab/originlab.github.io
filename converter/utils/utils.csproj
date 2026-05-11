@@ -4,4 +4,8 @@
     <RootNamespace>OriginLab</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.IO.Hashing" Version="10.0.7" />
+  </ItemGroup>
+  
 </Project>

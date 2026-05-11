@@ -24,6 +24,7 @@ internal abstract class Transformer
     protected readonly Dictionary<string, string> MovedPages;
 
     protected readonly Dictionary<string, Dictionary<string, string>> Titles = [];
+    protected readonly Dictionary<string, (long size, ulong hash, string url)> ImagesEn = new(StringComparer.OrdinalIgnoreCase);
 
     readonly Dictionary<string, List<(string file, TextPosition? position)>> Problems = [];
 
@@ -34,8 +35,16 @@ internal abstract class Transformer
                          where name.Length == 2
                          select name).ToArray();
 
-        if (!languages.Contains("en"))
+        var enIndex = languages.IndexOf("en");
+        if (enIndex < 0)
+        {
             throw new FileNotFoundException("Expect en folder exists within source book", Path.Combine(sourceFolder, "en"));
+        }
+        else if (enIndex > 0)
+        {
+            languages[enIndex] = languages[0];
+            languages[0] = "en";
+        }
 
         AvailableLanguages = languages;
 
@@ -336,7 +345,24 @@ internal abstract class Transformer
 
             if (File.Exists(srcImg))
             {
-                img.SetAttribute("src", $"/{BookUrlName}/{language}/{src.AsSpan("../".Length)}");
+                var url = $"/{BookUrlName}/{language}/{src.AsSpan("../".Length)}";
+
+                if (language == "en")
+                {
+                    if (!ImagesEn.ContainsKey(src))
+                    {
+                        var size = new FileInfo(srcImg).Length;
+                        var hash = FileHash.FromFile(srcImg);
+
+                        ImagesEn.Add(src, (size, hash, url));
+                    }
+                }
+                else if (ImagesEn.TryGetValue(src, out var enImg) && new FileInfo(srcImg).Length == enImg.size && FileHash.FromFile(srcImg) == enImg.hash)
+                {
+                    url = enImg.url;
+                }
+
+                img.SetAttribute("src", url);
             }
             else
             {
