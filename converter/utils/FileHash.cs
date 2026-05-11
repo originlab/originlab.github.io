@@ -1,4 +1,4 @@
-﻿using System.IO.Hashing;
+using System.IO.Hashing;
 using System.Runtime.InteropServices;
 
 namespace OriginLab;
@@ -21,6 +21,6 @@ public class FileHash
         Span<byte> hash = stackalloc byte[8];
         xx.GetHashAndReset(hash);
 
-        return BitConverter.ToUInt32(hash);
+        return BitConverter.ToUInt64(hash);
     }
 }
