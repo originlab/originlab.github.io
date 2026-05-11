@@ -87,6 +87,6 @@ jobs:
         id: grabJobId
         run: echo "id=$(gh run view ${{ steps.grabRunId.outputs.id }} -R originlab/${{ matrix.site }} | grep 'build_book / build' | grep -oP '\(ID \K\d+')" >> "$GITHUB_OUTPUT"
       - name: Print converter output
-        run: gh run view ${{ steps.grabRunId.outputs.id }} -j ${{ steps.grabJobId.outputs.id }} -R originlab/${{ matrix.site }} --log | awk '/generator\.csproj:/{f=1} /upload-artifact/{f=0} f{sub(/^build_book.*\t\d\S*?Z/, ""); print}'
+        run: gh run view ${{ steps.grabRunId.outputs.id }} -j ${{ steps.grabJobId.outputs.id }} -R originlab/${{ matrix.site }} --log | awk '/generator\.csproj/{f=1} /upload-artifact/{f=0} f{sub(/^build_book.*\t\d\S*?Z/, ""); print}'
 
         
