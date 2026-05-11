@@ -336,6 +336,7 @@ internal abstract class Transformer
             img.SetAttribute("loading", "lazy");
 
             var srcImg = Path.GetFullPath(src, sourceDir);
+            var copy = true;
 
             var sep = srcImg.AsSpan().IndexOfAny("?#");
             if (sep > -1)
@@ -347,19 +348,27 @@ internal abstract class Transformer
             {
                 var url = $"/{BookUrlName}/{language}/{src.AsSpan("../".Length)}";
 
-                if (language == "en")
+                if (AvailableLanguages.Length > 1)
                 {
-                    if (!ImagesEn.ContainsKey(src))
+                    if (language == "en")
                     {
-                        var size = new FileInfo(srcImg).Length;
-                        var hash = FileHash.FromFile(srcImg);
+                        if (!ImagesEn.ContainsKey(src))
+                        {
+                            var size = new FileInfo(srcImg).Length;
+                            var hash = FileHash.FromFile(srcImg);
 
-                        ImagesEn.Add(src, (size, hash, url));
+                            ImagesEn.Add(src, (size, hash, url));
+                        }
+                        else
+                        {
+                            copy = false;
+                        }
                     }
-                }
-                else if (ImagesEn.TryGetValue(src, out var enImg) && new FileInfo(srcImg).Length == enImg.size && FileHash.FromFile(srcImg) == enImg.hash)
-                {
-                    url = enImg.url;
+                    else if (ImagesEn.TryGetValue(src, out var enImg) && new FileInfo(srcImg).Length == enImg.size && FileHash.FromFile(srcImg) == enImg.hash)
+                    {
+                        url = enImg.url;
+                        copy = false;
+                    }
                 }
 
                 img.SetAttribute("src", url);
@@ -367,6 +376,7 @@ internal abstract class Transformer
             else
             {
                 var srcImgEn = $"{SourceFolderEn}{srcImg.AsSpan(SourceFolderEn.Length)}";
+                copy = false;
 
                 if (!File.Exists(srcImgEn))
                 {
@@ -374,22 +384,23 @@ internal abstract class Transformer
                 }
 
                 img.SetAttribute("src", $"/{BookUrlName}/en/{src.AsSpan("../".Length)}");
-
-                return;
             }
 
-            var dstImg = Path.Combine(OutputFolder, language, src["../".Length..]);
-
-            sep = dstImg.AsSpan().IndexOfAny("?#");
-            if (sep > -1)
+            if (copy)
             {
-                dstImg = dstImg[..sep];
+                var dstImg = Path.Combine(OutputFolder, language, src["../".Length..]);
+
+                sep = dstImg.AsSpan().IndexOfAny("?#");
+                if (sep > -1)
+                {
+                    dstImg = dstImg[..sep];
+                }
+
+                var dstImgDir = Path.GetDirectoryName(dstImg)!;
+                Directory.CreateDirectory(dstImgDir);
+
+                File.Copy(srcImg, dstImg, overwrite: true);
             }
-
-            var dstImgDir = Path.GetDirectoryName(dstImg)!;
-            Directory.CreateDirectory(dstImgDir);
-
-            File.Copy(srcImg, dstImg, overwrite: true);
         }
         else if (!Uri.IsWellFormedUriString(src, UriKind.Absolute))
         {
