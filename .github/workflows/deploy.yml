@@ -79,11 +79,14 @@ jobs:
         id: dispatch
         run: echo "deploy_run_url=$(gh workflow run deploy.yml --repo originlab/${{ matrix.site }})" >> "$GITHUB_ENV"
       - name: Grab the run id
-        id: grab
-        run: echo "run_id=$(echo "$deploy_run_url" | grep -oE "[0-9]+$")" >> "$GITHUB_OUTPUT"
+        id: grabRunId
+        run: echo "id=$(echo "$deploy_run_url" | grep -oE "[0-9]+$")" >> "$GITHUB_OUTPUT"
       - name: Watch the deployment
-        run: gh run watch ${{ steps.grab.outputs.run_id }} -R originlab/${{ matrix.site }} -i 30 --exit-status
-      - name: View summary
-        run: gh run view ${{ steps.grab.outputs.run_id }} -R originlab/${{ matrix.site }}
+        run: gh run watch ${{ steps.grabRunId.outputs.id }} -R originlab/${{ matrix.site }} -i 30 --exit-status
+      - name: Grab the job id
+        id: grabJobId
+        run: echo "id=$(echo "$(gh run view ${{ steps.grabRunId.outputs.id }} -R originlab/${{ matrix.site }})" | grep 'build_book / build' | grep -oP '\(ID \K\d+')" >> "$GITHUB_OUTPUT"
+      - name: Print build output
+        run: gh run view ${{ steps.grabRunId.outputs.id }} -j ${{ steps.grabJobId.outputs.id }} -R originlab/${{ matrix.site }}
 
         
