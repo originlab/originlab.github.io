@@ -82,6 +82,6 @@ jobs:
         id: grab
         run: echo "run_id=$(echo "$deploy_run_url" | grep -oE "[0-9]+$")" >> "$GITHUB_OUTPUT"
       - name: Watch the deployment
-        run: gh run watch ${{ steps.grab.outputs.run_id }} -R originlab/${{ matrix.site }} -i 15 --exit-status --compact
+        run: gh run watch ${{ steps.grab.outputs.run_id }} -R originlab/${{ matrix.site }} -i 30 --exit-status
 
         
