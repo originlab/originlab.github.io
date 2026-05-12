@@ -93,6 +93,6 @@ jobs:
       - name: Print the book artifact summary
         run: >
           gh run view ${{ steps.grabRunId.outputs.id }} -j ${{ steps.grabJobId.outputs.id }} -R originlab/${{ matrix.site }} --log
-          | awk '/upload-artifact|Finished uploading/{f=1} /Beginning upload|Artifact download/{f=0} f{sub(/^[[:space:]]*build_book.*\t[0-9][^[:space:]]+Z/, ""); print}'
+          | awk '/Run actions\/upload-artifact|Finished uploading/{f=1} /Beginning upload|Artifact download/{f=0} f{sub(/^[[:space:]]*build_book.*\t[0-9][^[:space:]]+Z/, ""); print}'
 
         
