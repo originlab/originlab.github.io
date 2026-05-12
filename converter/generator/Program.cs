@@ -1,4 +1,6 @@
-﻿namespace OriginLab.DocumentGeneration;
+﻿using OriginLab.DocumentGeneration.Templates;
+
+namespace OriginLab.DocumentGeneration;
 
 class Program
 {
@@ -24,7 +26,7 @@ class Program
 
         if (args.Length > 1 && args[1] == "merge")
         {
-            CopyContents(Path.GetFullPath(Path.Combine(rootRepoPath, "converter/templates/wwwroot"), srcBookPath), outputPath);
+            CopyContents(Template.WebRootPath, outputPath);
             CopyContents(booksXmlPath, Path.Combine(outputPath, "books"));
 
             if (!isBuildingIndex)

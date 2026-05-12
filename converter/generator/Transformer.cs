@@ -25,6 +25,7 @@ internal abstract class Transformer
 
     protected readonly Dictionary<string, Dictionary<string, string>> Titles = [];
     protected readonly Dictionary<string, (long size, ulong hash, string url)> ImagesEn = new(StringComparer.OrdinalIgnoreCase);
+    protected readonly Dictionary<string, string> SharedImages = new(StringComparer.OrdinalIgnoreCase);
 
     readonly Dictionary<string, List<(string file, TextPosition? position)>> Problems = [];
 
@@ -79,6 +80,12 @@ internal abstract class Transformer
             })
             ?.ToDictionary(StringComparer.OrdinalIgnoreCase) ?? [];
 #pragma warning restore CA1869 // Cache and reuse 'JsonSerializerOptions' instances
+        }
+
+        foreach (var imgFile in Directory.EnumerateFiles(Path.Combine(Template.WebRootPath, "images/books")))
+        {
+            var fileName = Path.GetFileName(imgFile);
+            SharedImages.Add(fileName, $"/images/books/{fileName}?v={FileHash.StringFromFile(imgFile)}");
         }
 
         SourceFolder = Path.GetFullPath(sourceFolder);
@@ -326,9 +333,16 @@ internal abstract class Transformer
 
     protected virtual void TransformImage(IHtmlImageElement img, string sourceFile, string language, string sourceDir)
     {
-        if (img.GetAttribute("src") is not string src)
+        if (img.GetAttribute("src") is not string srcFull)
         {
             return;
+        }
+
+        var src = srcFull;
+        var sep = srcFull.AsSpan().IndexOfAny("?#");
+        if (sep > -1)
+        {
+            src = srcFull[..sep];
         }
 
         if (src.StartsWith("../images/"))
@@ -338,15 +352,14 @@ internal abstract class Transformer
             var srcImg = Path.GetFullPath(src, sourceDir);
             var copy = true;
 
-            var sep = srcImg.AsSpan().IndexOfAny("?#");
-            if (sep > -1)
+            var fileName = Path.GetFileName(src.AsSpan());
+            if (SharedImages.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(fileName, out var url))
             {
-                srcImg = srcImg[..sep];
+                copy = false;
             }
-
-            if (File.Exists(srcImg))
+            else if (File.Exists(srcImg))
             {
-                var url = $"/{BookUrlName}/{language}/{src.AsSpan("../".Length)}";
+                url = $"/{BookUrlName}/{language}/{srcFull.AsSpan("../".Length)}";
 
                 if (AvailableLanguages.Length > 1)
                 {
@@ -355,7 +368,7 @@ internal abstract class Transformer
                         if (!ImagesEn.ContainsKey(src))
                         {
                             var size = new FileInfo(srcImg).Length;
-                            var hash = FileHash.FromFile(srcImg);
+                            var hash = FileHash.UInt64FromFile(srcImg);
 
                             ImagesEn.Add(src, (size, hash, url));
                         }
@@ -364,45 +377,38 @@ internal abstract class Transformer
                             copy = false;
                         }
                     }
-                    else if (ImagesEn.TryGetValue(src, out var enImg) && new FileInfo(srcImg).Length == enImg.size && FileHash.FromFile(srcImg) == enImg.hash)
+                    else if (ImagesEn.TryGetValue(src, out var enImg) && new FileInfo(srcImg).Length == enImg.size && FileHash.UInt64FromFile(srcImg) == enImg.hash)
                     {
                         url = enImg.url;
                         copy = false;
                     }
                 }
-
-                img.SetAttribute("src", url);
             }
             else
             {
                 var srcImgEn = $"{SourceFolderEn}{srcImg.AsSpan(SourceFolderEn.Length)}";
-                copy = false;
 
                 if (!File.Exists(srcImgEn))
                 {
                     ReportProblem(sourceFile, $"Image src not found: {src}", img.SourceReference?.Position);
                 }
 
-                img.SetAttribute("src", $"/{BookUrlName}/en/{src.AsSpan("../".Length)}");
+                url = $"/{BookUrlName}/en/{srcFull.AsSpan("../".Length)}";
+                copy = false;
             }
+
+            img.SetAttribute("src", url);
 
             if (copy)
             {
                 var dstImg = Path.Combine(OutputFolder, language, src["../".Length..]);
 
-                sep = dstImg.AsSpan().IndexOfAny("?#");
-                if (sep > -1)
-                {
-                    dstImg = dstImg[..sep];
-                }
-
-                var dstImgDir = Path.GetDirectoryName(dstImg)!;
-                Directory.CreateDirectory(dstImgDir);
+                Directory.CreateDirectory(Path.GetDirectoryName(dstImg)!);
 
                 File.Copy(srcImg, dstImg, overwrite: true);
             }
         }
-        else if (!Uri.IsWellFormedUriString(src, UriKind.Absolute))
+        else if (!Uri.IsWellFormedUriString(srcFull, UriKind.Absolute))
         {
             ReportProblem(sourceFile, $"Unrecognized src: {src}", img.SourceReference?.Position);
         }

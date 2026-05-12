@@ -7,7 +7,11 @@ namespace OriginLab.DocumentGeneration.Templates;
 
 public class Template
 {
-    private static IRazorTemplateEngine Engine => field ??= GetTemplateEngine();
+    private static IServiceProvider ServiceProvider => field ??= BuildServiceProvider();
+
+    private static IRazorTemplateEngine Engine => field ??= ServiceProvider.GetRequiredService<IRazorTemplateEngine>();
+
+    public static string WebRootPath => field ??= ServiceProvider.GetRequiredService<IWebHostEnvironment>().WebRootPath;
 
     public static Task<string> RenderDocumentPageAsync(DocumentPageModel documentPageModel)
     {
@@ -34,13 +38,13 @@ public class Template
         throw new NotImplementedException();
     }
 
-    static IRazorTemplateEngine GetTemplateEngine()
+    private static ServiceProvider BuildServiceProvider()
     {
         var services = new ServiceCollection();
 
         services.TryAddSingleton<IWebHostEnvironment, TemplateHostEnvironment>();
         services.AddRazorTemplating();
 
-        return services.BuildServiceProvider().GetRequiredService<IRazorTemplateEngine>();
+        return services.BuildServiceProvider();
     }
 }
