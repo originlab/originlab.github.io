@@ -7,8 +7,10 @@ public class FileHash
 {
     public static string FromString(string contents)
     {
-        var hash = XxHash3.HashToUInt64(MemoryMarshal.AsBytes(contents.AsSpan()));
-        return String.Create(16, hash, static (span, hash) => hash.TryFormat(span, out _, "x"));
+        Span<byte> hash = stackalloc byte[8];
+        XxHash3.Hash(MemoryMarshal.AsBytes(contents.AsSpan()), hash);
+
+        return Convert.ToHexStringLower(hash);
     }
 
     public static ulong UInt64FromFile(string path)
