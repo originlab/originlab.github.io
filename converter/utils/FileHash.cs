@@ -18,9 +18,6 @@ public class FileHash
 
         xx.Append(fs);
 
-        Span<byte> hash = stackalloc byte[8];
-        xx.GetHashAndReset(hash);
-
-        return BitConverter.ToUInt64(hash);
+        return xx.GetCurrentHashAsUInt64();
     }
 }
