@@ -9,7 +9,7 @@ internal sealed class DocBookTransformer : DocTransformer
     private readonly (string url, string file, Nav nav)[] Pages;
 
     public DocBookTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
-        : base(booksXmlFolder, sourceFolder, outputFolder)
+        : base(sourceFolder, outputFolder, booksXmlFolder, Path.GetFileName(sourceFolder).ToLowerInvariant())
     {
         BookDirName = Path.GetFileName(Directory.EnumerateDirectories(Path.Combine(SourceFolder, "en")).Single());
 
@@ -69,8 +69,6 @@ internal sealed class DocBookTransformer : DocTransformer
             return list.ToArray();
         }
     }
-
-    protected override string GetBookUrlName() => Path.GetFileName(SourceFolder).ToLowerInvariant();
 
     public override async Task TransformFilesAsync()
     {

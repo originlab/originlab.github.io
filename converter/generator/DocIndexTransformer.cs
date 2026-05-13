@@ -3,11 +3,9 @@
 internal class DocIndexTransformer : DocTransformer
 {
     public DocIndexTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
-        : base(booksXmlFolder, sourceFolder, outputFolder)
+        : base(sourceFolder, outputFolder, booksXmlFolder, "")
     {
     }
-
-    protected override string GetBookUrlName() => "";
 
     public override async Task TransformFilesAsync()
     {

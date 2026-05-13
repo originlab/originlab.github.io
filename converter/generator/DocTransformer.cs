@@ -13,16 +13,14 @@ namespace OriginLab.DocumentGeneration;
 
 internal abstract class DocTransformer
 {
-    protected readonly string BooksXmlFolder;
-    protected readonly string SourceFolder;
-    protected readonly string SourceFolderEn;
-    protected readonly string OutputFolder;
+    protected string SourceFolder { get; }
+    protected string SourceFolderEn { get; }
+    protected string OutputFolder { get; }
+    protected string BooksXmlFolder { get; }
+    protected string BookUrlName { get; }
 
-    protected readonly string[] AvailableLanguages;
-
+    protected string[] AvailableLanguages { get; }
     protected Dictionary<string, Dictionary<string, string>> Titles { get; } = [];
-
-    protected string BookUrlName => field ??= GetBookUrlName();
 
     private readonly Dictionary<string, (string book, string url, string titleEn)> PageLinks;
 
@@ -35,7 +33,7 @@ internal abstract class DocTransformer
     private readonly Dictionary<string, INode[]> LayoutNodes = [];
     private readonly Dictionary<string, List<(string file, TextPosition? position)>> Problems = [];
 
-    protected DocTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
+    protected DocTransformer(string sourceFolder, string outputFolder, string booksXmlFolder, string bookUrlName)
     {
         var languages = (from subPath in Directory.EnumerateDirectories(sourceFolder)
                          let name = Path.GetFileName(subPath)
@@ -74,13 +72,12 @@ internal abstract class DocTransformer
 
         PageLinks = pages.ToDictionary(p => p.file, p => (p.book.ToLowerInvariant(), p.url.ToLowerInvariant(), p.title), StringComparer.OrdinalIgnoreCase);
 
-        BooksXmlFolder = booksXmlFolder;
         SourceFolder = Path.GetFullPath(sourceFolder);
         SourceFolderEn = Path.Combine(SourceFolder, "en");
         OutputFolder = Path.GetFullPath(outputFolder);
+        BooksXmlFolder = booksXmlFolder;
+        BookUrlName = bookUrlName;
     }
-
-    protected abstract string GetBookUrlName();
 
     private Dictionary<string, string> GetMovedPages()
     {
