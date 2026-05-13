@@ -13,21 +13,27 @@ namespace OriginLab.DocumentGeneration;
 
 internal abstract class Transformer
 {
+    protected readonly string BooksXmlFolder;
     protected readonly string SourceFolder;
     protected readonly string SourceFolderEn;
     protected readonly string OutputFolder;
 
     protected readonly string[] AvailableLanguages;
 
+    protected Dictionary<string, Dictionary<string, string>> Titles { get; } = [];
+
     protected string BookUrlName => field ??= GetBookUrlName();
-    protected readonly Dictionary<string, (string book, string url, string titleEn)> PageLinks;
-    protected readonly Dictionary<string, string> MovedPages;
 
-    protected readonly Dictionary<string, Dictionary<string, string>> Titles = [];
-    protected readonly Dictionary<string, (long size, ulong hash, string url)> ImagesEn = new(StringComparer.OrdinalIgnoreCase);
-    protected readonly Dictionary<string, string> SharedImages = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, (string book, string url, string titleEn)> PageLinks;
 
-    readonly Dictionary<string, List<(string file, TextPosition? position)>> Problems = [];
+    private Dictionary<string, string> MovedPages => field ??= GetMovedPages();
+
+    private static Dictionary<string, string> SharedImages => field ??= GetSharedImages();
+
+    private readonly Dictionary<string, (long size, ulong hash, string url)> ImagesEn = new(StringComparer.OrdinalIgnoreCase);
+
+    private readonly Dictionary<string, INode[]> LayoutNodes = [];
+    private readonly Dictionary<string, List<(string file, TextPosition? position)>> Problems = [];
 
     protected Transformer(string booksXmlFolder, string sourceFolder, string outputFolder)
     {
@@ -39,7 +45,7 @@ internal abstract class Transformer
         var enIndex = languages.IndexOf("en");
         if (enIndex < 0)
         {
-            throw new FileNotFoundException("Expect en folder exists within source book", Path.Combine(sourceFolder, "en"));
+            throw new ArgumentException("Expect en folder exists within sourceFolder", nameof(sourceFolder));
         }
         else if (enIndex > 0)
         {
@@ -68,26 +74,7 @@ internal abstract class Transformer
 
         PageLinks = pages.ToDictionary(p => p.file, p => (p.book.ToLowerInvariant(), p.url.ToLowerInvariant(), p.title), StringComparer.OrdinalIgnoreCase);
 
-        using (var movedJson = File.OpenRead(Path.Combine(booksXmlFolder, "Moved.json")))
-        {
-#pragma warning disable CA1869 // Cache and reuse 'JsonSerializerOptions' instances
-            MovedPages = JsonSerializer.Deserialize<Dictionary<string, string>>(movedJson, new JsonSerializerOptions
-            {
-                AllowTrailingCommas = true,
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                PropertyNameCaseInsensitive = true,
-                AllowDuplicateProperties = true,
-            })
-            ?.ToDictionary(StringComparer.OrdinalIgnoreCase) ?? [];
-#pragma warning restore CA1869 // Cache and reuse 'JsonSerializerOptions' instances
-        }
-
-        foreach (var imgFile in Directory.EnumerateFiles(Path.Combine(Template.WebRootPath, "images/books")))
-        {
-            var fileName = Path.GetFileName(imgFile);
-            SharedImages.Add(fileName, $"/images/books/{fileName}?v={FileHash.StringFromFile(imgFile)}");
-        }
-
+        BooksXmlFolder = booksXmlFolder;
         SourceFolder = Path.GetFullPath(sourceFolder);
         SourceFolderEn = Path.Combine(SourceFolder, "en");
         OutputFolder = Path.GetFullPath(outputFolder);
@@ -95,8 +82,46 @@ internal abstract class Transformer
 
     protected abstract string GetBookUrlName();
 
+    private Dictionary<string, string> GetMovedPages()
+    {
+        using var movedJson = File.OpenRead(Path.Combine(BooksXmlFolder, "Moved.json"));
+#pragma warning disable CA1869 // Cache and reuse 'JsonSerializerOptions' instances
+        return JsonSerializer.Deserialize<Dictionary<string, string>>(movedJson, new JsonSerializerOptions
+#pragma warning restore CA1869 // Cache and reuse 'JsonSerializerOptions' instances
+        {
+            AllowTrailingCommas = true,
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            PropertyNameCaseInsensitive = true,
+            AllowDuplicateProperties = true,
+        })
+        ?.ToDictionary(StringComparer.OrdinalIgnoreCase) ?? [];
+    }
+
+    private static Dictionary<string, string> GetSharedImages()
+    {
+        var images = new Dictionary<string, string>();
+
+        foreach (var imgFile in Directory.EnumerateFiles(Path.Combine(Template.WebRootPath, "images/books")))
+        {
+            var fileName = Path.GetFileName(imgFile);
+            images.Add(fileName, $"/images/books/{fileName}?v={FileHash.StringFromFile(imgFile)}");
+        }
+
+        return images;
+    }
+
     public async Task TransformAsync()
     {
+        var parser = new HtmlParser(new HtmlParserOptions { IsKeepingSourceReferences = true });
+        var layout = parser.ParseDocument("<html></html>");
+
+        foreach (var language in AvailableLanguages)
+        {
+            var scripts = await GenerateLayoutAsync(language);
+
+            LayoutNodes.Add(language, parser.ParseFragment(scripts, layout.Head!).ToArray());
+        }
+
         await TransformFilesAsync();
 
         File.WriteAllText(Path.Combine(OutputFolder, "404.html"), await Template.Render404PageAsync());
@@ -104,19 +129,19 @@ internal abstract class Transformer
 
     public abstract Task TransformFilesAsync();
 
-    protected void Transform(string sourceFile, string destinationFile, Nav nav, string language, string headerHtml, string? bannerHtml = null)
+    protected void Transform(string sourceFile, string destinationFile, Nav nav, string language, string? headerHtml = null, string? bannerHtml = null, string? footerHtml = null)
     {
-        using var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read);
-        var parser = new HtmlParser(new HtmlParserOptions
-        {
-            IsKeepingSourceReferences = true
-        });
+        using var fs = File.OpenRead(sourceFile);
+        var parser = new HtmlParser(new HtmlParserOptions { IsKeepingSourceReferences = true });
         var document = parser.ParseDocument(fs);
+        var head = document.Head!;
+        var body = document.Body!;
 
-        var headerNodes = parser.ParseFragment(headerHtml, document.Head!);
-        var bannerNodes = bannerHtml.IsBlank ? null : parser.ParseFragment(bannerHtml, document.Body!);
+        var headerNodes = headerHtml.IsBlank ? null : parser.ParseFragment(headerHtml, head);
+        var bannerNodes = bannerHtml.IsBlank ? null : parser.ParseFragment(bannerHtml, body);
+        var footerNodes = footerHtml.IsBlank ? null : parser.ParseFragment(footerHtml, body);
 
-        Transform(document, sourceFile, nav, language, headerNodes, bannerNodes);
+        Transform(document, sourceFile, nav, language, headerNodes, bannerNodes, footerNodes);
 
         using var sw = new StreamWriter(destinationFile);
         document.ToHtml(sw, HtmlMarkupFormatter.Instance);
@@ -141,14 +166,19 @@ internal abstract class Transformer
         return "";
     }
 
-    void Transform(IHtmlDocument document, string sourceFile, Nav nav, string language, INodeList headerNodes, INodeList? bannerNodes)
+    void Transform(IHtmlDocument document, string sourceFile, Nav nav, string language, INodeList? headerNodes, INodeList? bannerNodes, INodeList? footerNodes)
     {
         document.Title = GetPageTitle(document);
 
         var head = document.Head!;
         var body = document.Body!;
 
-        head.PrependNodes(headerNodes.ToArray());
+        head.PrependNodes(LayoutNodes[language]);
+
+        if (headerNodes is not null)
+        {
+            head.PrependNodes(headerNodes.ToArray());
+        }
 
         if (bannerNodes is not null)
         {
@@ -169,6 +199,11 @@ internal abstract class Transformer
 
         var navDataDiv = CreateNavDataDiv(document, nav, sourceDir, language);
         body.AppendChild(navDataDiv);
+
+        if (footerNodes is not null)
+        {
+            body.AppendNodes(footerNodes.ToArray());
+        }
 
         var loading = document.CreateElement<IHtmlDivElement>();
         loading.ClassName = "loading";
@@ -414,12 +449,12 @@ internal abstract class Transformer
         }
     }
 
-    protected async Task<string> GenerateLayoutAsync(string language, string? rootUrlPrefix = null)
+    private async Task<string> GenerateLayoutAsync(string language)
     {
         var langDir = Directory.CreateDirectory(Path.Combine(OutputFolder, language));
         var layoutHtml = await Template.RenderDocumentPageAsync(new DocumentPageModel
         {
-            RootUrlPrefix = rootUrlPrefix,
+            RootUrlPrefix = null,
             Language = language,
             AvailableLanguages = AvailableLanguages,
             BookUrlName = BookUrlName,
@@ -429,7 +464,7 @@ internal abstract class Transformer
 
         var layoutScripts = await Template.RenderApplyLayoutScriptsAsync(new ApplyLayoutModel
         {
-            LayoutPageUrl = rootUrlPrefix + '/'.TryPrefixEach(BookUrlName, language, $"layout.html?v={FileHash.FromString(layoutHtml)}"),
+            LayoutPageUrl = '/'.TryPrefixEach(BookUrlName, language, $"layout.html?v={FileHash.FromString(layoutHtml)}"),
             PlaceHolderId = "doc-content-placeholder",
             MainContentId = "main-content",
         });

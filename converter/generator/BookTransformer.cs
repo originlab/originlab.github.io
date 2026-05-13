@@ -76,12 +76,11 @@ internal sealed class BookTransformer : Transformer
     {
         foreach (var language in AvailableLanguages)
         {
-            var scripts = await GenerateLayoutAsync(language);
-            await TransformAsync(language, scripts);
+            await TransformAsync(language);
         }
     }
 
-    async Task TransformAsync(string language, string layoutScripts)
+    async Task TransformAsync(string language)
     {
         var srcDir = Path.Combine(SourceFolder, language, BookDirName);
         var srcEnDir = Path.Combine(SourceFolderEn, BookDirName);
@@ -114,13 +113,13 @@ internal sealed class BookTransformer : Transformer
 
             if (File.Exists(srcFile))
             {
-                Transform(srcFile, dstFile, nav, language, layoutScripts);
+                Transform(srcFile, dstFile, nav, language);
             }
             else if (language != "en" && File.Exists(srcFile = Path.Combine(srcEnDir, file)))
             {
                 fallbackBanner ??= await Template.RenderEnglishFallbackBannerAsync(language);
 
-                Transform(srcFile, dstFile, nav, language, layoutScripts, fallbackBanner);
+                Transform(srcFile, dstFile, nav, language, bannerHtml: fallbackBanner);
             }
             else
             {
