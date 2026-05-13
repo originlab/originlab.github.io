@@ -11,7 +11,7 @@ using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration;
 
-internal abstract class Transformer
+internal abstract class DocTransformer
 {
     protected readonly string BooksXmlFolder;
     protected readonly string SourceFolder;
@@ -35,7 +35,7 @@ internal abstract class Transformer
     private readonly Dictionary<string, INode[]> LayoutNodes = [];
     private readonly Dictionary<string, List<(string file, TextPosition? position)>> Problems = [];
 
-    protected Transformer(string booksXmlFolder, string sourceFolder, string outputFolder)
+    protected DocTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
     {
         var languages = (from subPath in Directory.EnumerateDirectories(sourceFolder)
                          let name = Path.GetFileName(subPath)

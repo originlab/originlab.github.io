@@ -3,12 +3,12 @@ using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration;
 
-internal sealed class BookTransformer : Transformer
+internal sealed class DocBookTransformer : DocTransformer
 {
     private readonly string BookDirName;
     private readonly (string url, string file, Nav nav)[] Pages;
 
-    public BookTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
+    public DocBookTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
         : base(booksXmlFolder, sourceFolder, outputFolder)
     {
         BookDirName = Path.GetFileName(Directory.EnumerateDirectories(Path.Combine(SourceFolder, "en")).Single());

@@ -1,8 +1,8 @@
 ﻿namespace OriginLab.DocumentGeneration;
 
-internal class IndexTransformer : Transformer
+internal class DocIndexTransformer : DocTransformer
 {
-    public IndexTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
+    public DocIndexTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
         : base(booksXmlFolder, sourceFolder, outputFolder)
     {
     }

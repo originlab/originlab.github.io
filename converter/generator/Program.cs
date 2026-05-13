@@ -40,9 +40,9 @@ class Program
             Directory.CreateDirectory(outputPath);
         }
 
-        Transformer transformer = isBuildingIndex
-            ? new IndexTransformer(booksXmlPath, srcBookPath, outputPath)
-            : new BookTransformer(booksXmlPath, srcBookPath, outputPath)
+        DocTransformer transformer = isBuildingIndex
+            ? new DocIndexTransformer(booksXmlPath, srcBookPath, outputPath)
+            : new DocBookTransformer(booksXmlPath, srcBookPath, outputPath)
             ;
         await transformer.TransformAsync();
 
