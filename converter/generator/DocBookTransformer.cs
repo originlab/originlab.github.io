@@ -6,7 +6,7 @@ namespace OriginLab.DocumentGeneration;
 internal sealed class DocBookTransformer : DocTransformer
 {
     private readonly string BookDirName;
-    private readonly (string url, string file, Nav nav)[] Pages;
+    private readonly (string url, string file, NavFiles nav)[] Pages;
 
     public DocBookTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
         : base(sourceFolder, outputFolder, booksXmlFolder, Path.GetFileName(sourceFolder).ToLowerInvariant())
@@ -14,7 +14,7 @@ internal sealed class DocBookTransformer : DocTransformer
         BookDirName = Path.GetFileName(Directory.EnumerateDirectories(Path.Combine(SourceFolder, "en")).Single());
 
         var bookXml = XElement.Load(Path.Combine(sourceFolder, "en", BookDirName, "book.xml"));
-        var pages = new List<(string url, string file, Nav nav)>();
+        var pages = new List<(string url, string file, NavFiles nav)>();
 
         foreach (var p in bookXml.Descendants("page"))
         {
@@ -27,7 +27,7 @@ internal sealed class DocBookTransformer : DocTransformer
             var siblings = GetSiblings(p);
             var children = p.Elements("page").Select(p => p.Attribute("file")!.Value).ToArray();
 
-            pages.Add((url, file, new Nav(parent, siblings, children)));
+            pages.Add((url, file, new NavFiles(parent, siblings, children)));
         }
 
         Pages = pages.ToArray();
@@ -84,7 +84,7 @@ internal sealed class DocBookTransformer : DocTransformer
         var srcEnDir = Path.Combine(SourceFolderEn, BookDirName);
         string? fallbackBanner = null;
 
-        var titles = Titles[language] = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var titles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var (_, file, _) in Pages)
         {
@@ -100,9 +100,10 @@ internal sealed class DocBookTransformer : DocTransformer
             }
         }
 
-        foreach (var (url, file, nav) in Pages)
+        foreach (var (url, file, navFiles) in Pages)
         {
             var dstDir = Path.Combine(OutputFolder, url, language != "en" ? language : "");
+            var nav = new Nav(navFiles, titles);
 
             Directory.CreateDirectory(dstDir);
 
@@ -111,13 +112,13 @@ internal sealed class DocBookTransformer : DocTransformer
 
             if (File.Exists(srcFile))
             {
-                Transform(srcFile, dstFile, nav, language);
+                Transform(srcFile, dstFile, language, nav);
             }
             else if (language != "en" && File.Exists(srcFile = Path.Combine(srcEnDir, file)))
             {
                 fallbackBanner ??= await Template.RenderEnglishFallbackBannerAsync(language);
 
-                Transform(srcFile, dstFile, nav, language, bannerHtml: fallbackBanner);
+                Transform(srcFile, dstFile, language, nav, bannerHtml: fallbackBanner);
             }
             else
             {

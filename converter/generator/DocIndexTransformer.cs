@@ -20,7 +20,7 @@ internal class DocIndexTransformer : DocTransformer
             var destinationDir = Path.GetDirectoryName(destinationFile)!;
             Directory.CreateDirectory(destinationDir);
 
-            Transform(sourceFile, destinationFile, default, language);
+            Transform(sourceFile, destinationFile, language);
         }
     }
 }

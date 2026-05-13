@@ -20,7 +20,6 @@ internal abstract class DocTransformer
     protected string BookUrlName { get; }
 
     protected string[] AvailableLanguages { get; }
-    protected Dictionary<string, Dictionary<string, string>> Titles { get; } = [];
 
     private readonly Dictionary<string, (string book, string url, string titleEn)> PageLinks;
 
@@ -126,7 +125,7 @@ internal abstract class DocTransformer
 
     public abstract Task TransformFilesAsync();
 
-    protected void Transform(string sourceFile, string destinationFile, Nav nav, string language, string? headerHtml = null, string? bannerHtml = null, string? footerHtml = null)
+    protected void Transform(string sourceFile, string destinationFile, string language, in Nav nav = default, string? headerHtml = null, string? bannerHtml = null, string? footerHtml = null)
     {
         using var fs = File.OpenRead(sourceFile);
         var parser = new HtmlParser(new HtmlParserOptions { IsKeepingSourceReferences = true });
@@ -138,7 +137,7 @@ internal abstract class DocTransformer
         var bannerNodes = bannerHtml.IsBlank ? null : parser.ParseFragment(bannerHtml, body);
         var footerNodes = footerHtml.IsBlank ? null : parser.ParseFragment(footerHtml, body);
 
-        Transform(document, sourceFile, nav, language, headerNodes, bannerNodes, footerNodes);
+        Transform(document, sourceFile, language, nav, headerNodes, bannerNodes, footerNodes);
 
         using var sw = new StreamWriter(destinationFile);
         document.ToHtml(sw, HtmlMarkupFormatter.Instance);
@@ -163,7 +162,7 @@ internal abstract class DocTransformer
         return "";
     }
 
-    void Transform(IHtmlDocument document, string sourceFile, Nav nav, string language, INodeList? headerNodes, INodeList? bannerNodes, INodeList? footerNodes)
+    void Transform(IHtmlDocument document, string sourceFile, string language, in Nav nav, INodeList? headerNodes, INodeList? bannerNodes, INodeList? footerNodes)
     {
         document.Title = GetPageTitle(document);
 
@@ -215,16 +214,18 @@ internal abstract class DocTransformer
         body.AppendNodes(loading, mainContent);
     }
 
-    private IHtmlDivElement CreateNavDataDiv(IHtmlDocument document, Nav nav, string sourceDir, string language)
+    private IHtmlDivElement CreateNavDataDiv(IHtmlDocument document, in Nav nav, string sourceDir, string language)
     {
         var navDataDiv = document.CreateElement<IHtmlDivElement>();
 
         navDataDiv.Id = "doc-nav-data";
         navDataDiv.IsHidden = true;
 
-        if (!nav.Parent.IsEmpty)
+        var files = nav.Files;
+
+        if (!files.Parent.IsEmpty)
         {
-            if (TryResolveHref(sourceDir, language, "../" + nav.Parent, out var url, out var _))
+            if (TryResolveHref(sourceDir, language, "../" + files.Parent, out var url, out var _))
             {
                 navDataDiv.SetAttribute("data-parent-link", url);
             }
@@ -234,24 +235,23 @@ internal abstract class DocTransformer
             navDataDiv.SetAttribute("data-parent-link", language == "en" ? "/" : $"/{language}");
         }
 
-        if (nav.Siblings is not null)
+        if (files.Siblings is not null)
         {
-            var ul = CreateDataUL("doc-siblings-data", nav.Siblings);
+            var ul = CreateDataUL("doc-siblings-data", files.Siblings, nav.Titles);
             navDataDiv.AppendChild(ul);
         }
 
-        if (nav.Children is not null)
+        if (files.Children is not null)
         {
-            var ul = CreateDataUL("doc-children-data", nav.Children);
+            var ul = CreateDataUL("doc-children-data", files.Children, nav.Titles);
             navDataDiv.AppendChild(ul);
         }
 
         return navDataDiv;
 
-        IHtmlUnorderedListElement CreateDataUL(string id, string[] files)
+        IHtmlUnorderedListElement CreateDataUL(string id, string[] files, Dictionary<string, string> titles)
         {
             var ul = document.CreateElement<IHtmlUnorderedListElement>();
-            var titles = Titles[language];
 
             ul.Id = id;
 
