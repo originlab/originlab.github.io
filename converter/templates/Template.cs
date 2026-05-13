@@ -28,14 +28,9 @@ public class Template
         return Engine.RenderPartialAsync($"/Partials/{language}/EnFallbackBanner.cshtml");
     }
 
-    public static async Task<string> Render404PageAsync(string? language = null)
+    public static Task<string> Render404PageAsync(string? language = null)
     {
-        if (String.IsNullOrEmpty(language))
-        {
-            return await Engine.RenderPartialAsync("/Partials/404.cshtml");
-        }
-
-        throw new NotImplementedException();
+        return Engine.RenderPartialAsync('/'.TryPrefixEach("Partials", language, "404.cshtml"));
     }
 
     private static ServiceProvider BuildServiceProvider()
