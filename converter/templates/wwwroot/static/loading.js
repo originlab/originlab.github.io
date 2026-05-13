@@ -28,7 +28,6 @@ async function fetchApplyLayout(layoutUrl, placeholderId, mainContentId) {
 
     for (var s of scripts) {
         var script = document.createElement("script");
-        script.async = s.async;
         if (s.src != "") {
             script.src = s.src;
         } else {
