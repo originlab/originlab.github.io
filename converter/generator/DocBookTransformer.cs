@@ -6,7 +6,7 @@ namespace OriginLab.DocumentGeneration;
 internal sealed class DocBookTransformer : DocTransformer
 {
     private readonly string BookDirName;
-    private readonly (string url, string file, NavFiles nav)[] Pages;
+    private readonly (string url, string file, NavFiles navFiles)[] Pages;
 
     public DocBookTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
         : base(sourceFolder, outputFolder, booksXmlFolder, Path.GetFileName(sourceFolder).ToLowerInvariant())
@@ -100,10 +100,11 @@ internal sealed class DocBookTransformer : DocTransformer
             }
         }
 
-        foreach (var (url, file, navFiles) in Pages)
+        for (int i = 0; i < Pages.Length; i++)
         {
+            var (url, file, navFiles) = Pages[i];
             var dstDir = Path.Combine(OutputFolder, url, language != "en" ? language : "");
-            var nav = new Nav(navFiles, titles);
+            var nav = new Nav(navFiles, titles, i == 0);
 
             Directory.CreateDirectory(dstDir);
 

@@ -235,6 +235,11 @@ internal abstract class DocTransformer
             navDataDiv.SetAttribute("data-parent-link", language == "en" ? "/" : $"/{language}");
         }
 
+        if (nav.IsBookIndex)
+        {
+            navDataDiv.SetAttribute("data-book-index", BookUrlName);
+        }
+
         if (files.Siblings is not null)
         {
             var ul = CreateDataUL("doc-siblings-data", files.Siblings, nav.Titles);

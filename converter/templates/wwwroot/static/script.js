@@ -56,10 +56,37 @@ function applyNavMenuData(dataId, groupId, minItems) {
 
 (function () {
     let familyData = document.getElementById('doc-nav-data');
+
     let parentLink = familyData.getAttribute('data-parent-link');
     let parentBtn = document.getElementById('doc-nav-parent');
     if (parentBtn) {
         parentBtn.setAttribute('href', parentLink);
+    }
+
+    let bookIndexUrl = familyData.getAttribute('data-book-index');
+    if (bookIndexUrl) {
+        let data = document.getElementById('doc-siblings-data');
+        let otherBooks = [...document.getElementById('docSearchBook').querySelectorAll('option')];
+        let lang = document.getElementById('doc-nav-language').getAttribute('data');
+        if (lang == 'en') {
+            lang = '';
+        }
+        for (let i = 1; i < otherBooks.length; i++) {
+            let book = otherBooks[i];
+            let li = document.createElement('li');
+            if (book.value.toLocaleLowerCase() != bookIndexUrl) {
+                let a = document.createElement('a');
+                a.href = `/${book.value.toLowerCase()}/${lang}`;
+                a.text = book.text;
+                li.appendChild(a);
+                data.appendChild(li);
+            } else if (i != 1 && i != otherBooks.length - 1) {
+                li.className = 'divider';
+                li.setAttribute('role', 'separator');
+                data.appendChild(li);
+            }
+        }
+        familyData.appendChild(data);
     }
 
     applyNavMenuData('doc-siblings-data', 'doc-nav-siblings', 2);
