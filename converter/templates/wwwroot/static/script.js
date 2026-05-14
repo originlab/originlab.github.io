@@ -67,7 +67,7 @@ function applyNavMenuData(dataId, groupId, minItems) {
     if (bookIndexUrl) {
         let data = document.getElementById('doc-siblings-data');
         let otherBooks = [...document.getElementById('docSearchBook').querySelectorAll('option')];
-        let lang = document.getElementById('doc-nav-language').getAttribute('data');
+        let lang = familyData.getAttribute('data-lang');
         if (lang == 'en') {
             lang = '';
         }

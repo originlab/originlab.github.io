@@ -21,6 +21,8 @@ internal abstract class DocTransformer
 
     protected string[] AvailableLanguages { get; }
 
+    private readonly string AvailableLanguagesExpression;
+
     private readonly Dictionary<string, (string book, string url, string titleEn)> PageLinks;
 
     private Dictionary<string, string> MovedPages => field ??= GetMovedPages();
@@ -51,6 +53,7 @@ internal abstract class DocTransformer
         }
 
         AvailableLanguages = languages;
+        AvailableLanguagesExpression = String.Join(',', languages);
 
         var pages = new List<(string file, string book, string url, string title)>();
 
@@ -152,15 +155,7 @@ internal abstract class DocTransformer
         return GetPageTitle(document);
     }
 
-    private static string GetPageTitle(IHtmlDocument document)
-    {
-        if (document.QuerySelector("h1") is IElement firstHeading)
-        {
-            return firstHeading.Text();
-        }
-
-        return "";
-    }
+    private static string GetPageTitle(IHtmlDocument document) => document.QuerySelector("h1")?.Text() ?? "";
 
     void Transform(IHtmlDocument document, string sourceFile, string language, in Nav nav, INodeList? headerNodes, INodeList? bannerNodes, INodeList? footerNodes)
     {
@@ -220,6 +215,9 @@ internal abstract class DocTransformer
 
         navDataDiv.Id = "doc-nav-data";
         navDataDiv.IsHidden = true;
+
+        navDataDiv.SetAttribute("data-lang", language);
+        navDataDiv.SetAttribute("data-lang-list", AvailableLanguagesExpression);
 
         var files = nav.Files;
 
