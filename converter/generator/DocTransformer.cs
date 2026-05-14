@@ -32,7 +32,7 @@ internal abstract class DocTransformer
     private readonly Dictionary<string, (long size, ulong hash, string url)> ImagesEn = new(StringComparer.OrdinalIgnoreCase);
 
     private readonly Dictionary<string, INode[]> LayoutNodes = [];
-    private readonly Dictionary<string, List<(string file, TextPosition? position)>> Problems = [];
+    private readonly Dictionary<string, List<(string file, string? details, TextPosition? position)>> Problems = [];
 
     protected DocTransformer(string sourceFolder, string outputFolder, string booksXmlFolder, string bookUrlName)
     {
@@ -319,7 +319,7 @@ internal abstract class DocTransformer
             }
             else
             {
-                ReportProblem(sourceFile, $"{result} for href: {href}", a.SourceReference?.Position);
+                ReportProblem(sourceFile, result, href.ToString(), a.SourceReference?.Position);
             }
         }
     }
@@ -353,7 +353,7 @@ internal abstract class DocTransformer
                 }
             }
 
-            result = "Unknown mapping";
+            result = "Unknown href mapping";
             return false;
         }
         else if (href.StartsWith("mailto:") || href.StartsWith("javascript:") || Uri.IsWellFormedUriString(href, UriKind.Absolute))
@@ -362,7 +362,7 @@ internal abstract class DocTransformer
             return true;
         }
 
-        result = "Unrecognized pattern";
+        result = "Unrecognized href pattern";
         return false;
     }
 
@@ -425,7 +425,7 @@ internal abstract class DocTransformer
 
                 if (!File.Exists(srcImgEn))
                 {
-                    ReportProblem(sourceFile, $"Image src not found: {src}", img.SourceReference?.Position);
+                    ReportProblem(sourceFile, "Image src not found", src, img.SourceReference?.Position);
                 }
 
                 url = $"/{BookUrlName}/en/{srcFull.AsSpan("../".Length)}";
@@ -445,7 +445,7 @@ internal abstract class DocTransformer
         }
         else if (!Uri.IsWellFormedUriString(srcFull, UriKind.Absolute))
         {
-            ReportProblem(sourceFile, $"Unrecognized src: {src}", img.SourceReference?.Position);
+            ReportProblem(sourceFile, "Unrecognized src", src, img.SourceReference?.Position);
         }
     }
 
@@ -472,16 +472,16 @@ internal abstract class DocTransformer
         return layoutScripts;
     }
 
-    protected void ReportProblem(string sourcePath, string message, TextPosition? position = null)
+    protected void ReportProblem(string sourcePath, string category, string? details = null, TextPosition? position = null)
     {
         var file = Path.GetRelativePath(SourceFolder, sourcePath);
 
-        if (!Problems.TryGetValue(message, out var list))
+        if (!Problems.TryGetValue(category, out var list))
         {
-            Problems[message] = list = [];
+            Problems[category] = list = [];
         }
 
-        list.Add((file, position));
+        list.Add((file, details, position));
     }
 
     public void PrintProblems()
@@ -493,35 +493,29 @@ internal abstract class DocTransformer
             error.WriteLine();
             error.WriteLine("Problems:");
 
-            foreach (var (message, list) in Problems.OrderByDescending(kvp => kvp.Value.Count))
+            foreach (var (category, list) in Problems.OrderByDescending(kvp => kvp.Value.Count))
             {
                 error.WriteLine();
-                error.WriteLine($"::warning::{list.Count}x {message}");
+                error.WriteLine($"::warning::{list.Count}x {category}");
 
-                foreach (var details in list.ToLookup(i => i.file, i => i.position))
+                foreach (var details in list.ToLookup(i => i.details, i => (i.file, i.position)))
                 {
-                    if (details.Count() > 1)
-                    {
-                        error.WriteLine($"::group::{details.Key}");
+                    error.WriteLine($"::group::{details.Key}");
 
-                        foreach (var p in details)
+                    foreach (var ps in details.ToLookup(i => i.file, i => i.position))
+                    {
+                        error.WriteLine($"File: {ps.Key}");
+
+                        foreach (var p in ps)
                         {
-                            if (p is TextPosition position)
+                            if (p.HasValue)
                             {
-                                error.WriteLine($"\tLine: {position.Line}, Column: {position.Column}");
+                                error.WriteLine($"\t{p}");
                             }
                         }
+                    }
 
-                        error.WriteLine("::endgroup::");
-                    }
-                    else if (details.First() is TextPosition position)
-                    {
-                        error.WriteLine($"File: {details.Key}, Line: {position.Line}, Column {position.Column}");
-                    }
-                    else
-                    {
-                        error.WriteLine($"File: {details.Key}");
-                    }
+                    error.WriteLine("::endgroup::");
                 }
             }
         }

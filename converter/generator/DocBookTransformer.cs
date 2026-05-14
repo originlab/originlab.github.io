@@ -96,7 +96,7 @@ internal sealed class DocBookTransformer : DocTransformer
             }
             else
             {
-                ReportProblem("en/book.xml", $"Source file not found: {srcFile}");
+                ReportProblem("en/book.xml", "Source file not found", srcFile);
             }
         }
 
@@ -123,7 +123,7 @@ internal sealed class DocBookTransformer : DocTransformer
             }
             else
             {
-                ReportProblem("en/book.xml", $"Source file not found: {srcFile}");
+                ReportProblem("en/book.xml", "Source file not found", srcFile);
             }
         }
     }
