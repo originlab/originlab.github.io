@@ -68,15 +68,16 @@ function applyNavMenuData(dataId, groupId, minItems) {
         let data = document.getElementById('doc-siblings-data');
         let otherBooks = [...document.getElementById('docSearchBook').querySelectorAll('option')];
         let lang = nav.getAttribute('data-lang');
-        if (lang == 'en') {
-            lang = '';
-        }
         for (let i = 1; i < otherBooks.length; i++) {
             let book = otherBooks[i];
             let li = document.createElement('li');
             if (book.value.toLocaleLowerCase() != bookIndex) {
                 let a = document.createElement('a');
-                a.href = `/${book.value.toLowerCase()}/${lang}`;
+                if (lang == 'en') {
+                    a.href = `/${book.value.toLowerCase()}/`;
+                } else {
+                    a.href = `/${book.value.toLowerCase()}/${lang}/`;
+                }
                 a.text = book.text;
                 li.appendChild(a);
                 data.appendChild(li);
