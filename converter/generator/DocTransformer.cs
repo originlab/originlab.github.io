@@ -341,11 +341,11 @@ internal abstract class DocTransformer
                 {
                     if (language == "en")
                     {
-                        result = '/'.TryPrefixEach(link.book, link.url);
+                        result = '/'.TrySurroundEach(link.book, link.url);
                     }
                     else
                     {
-                        result = '/'.TryPrefixEach(link.book, link.url, language);
+                        result = '/'.TrySurroundEach(link.book, link.url, language);
                     }
 
                     titleEn = link.titleEn;
