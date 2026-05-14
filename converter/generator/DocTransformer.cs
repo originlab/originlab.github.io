@@ -152,14 +152,14 @@ internal abstract class DocTransformer
         var parser = new HtmlParser();
         var document = parser.ParseDocument(fs);
 
-        return GetPageTitle(document);
+        return GetFirstHeading(document);
     }
 
-    private static string GetPageTitle(IHtmlDocument document) => document.QuerySelector("h1")?.Text() ?? "";
+    private static string GetFirstHeading(IHtmlDocument document) => document.QuerySelector("h1")?.Text() ?? "";
 
     void Transform(IHtmlDocument document, string sourceFile, string language, in Nav nav, INodeList? headerNodes, INodeList? bannerNodes, INodeList? footerNodes)
     {
-        document.Title = GetPageTitle(document);
+        CleanUp(document);
 
         var head = document.Head!;
         var body = document.Body!;
@@ -207,6 +207,13 @@ internal abstract class DocTransformer
 
         placeholder.Replace(body.ChildNodes.ToArray());
         body.AppendNodes(loading, mainContent);
+    }
+
+    private static void CleanUp(IHtmlDocument document)
+    {
+        document.Title = GetFirstHeading(document);
+
+        document.QuerySelectorAll<IHtmlSpanElement>("span.mw-editsection").Remove();
     }
 
     private IHtmlDivElement CreateNavDataDiv(IHtmlDocument document, in Nav nav, string sourceDir, string language)
