@@ -498,11 +498,11 @@ internal abstract class DocTransformer
                 error.WriteLine();
                 error.WriteLine($"::warning::{list.Count}x {category}");
 
-                foreach (var details in list.ToLookup(i => i.details, i => (i.file, i.position)))
+                foreach (var details in list.ToLookup(i => i.details, i => (i.file, i.position)).OrderByDescending(p => p.Count()))
                 {
-                    error.WriteLine($"::group::{details.Key}");
+                    error.WriteLine($"::group::{details.Count()}x {details.Key}");
 
-                    foreach (var ps in details.ToLookup(i => i.file, i => i.position))
+                    foreach (var ps in details.ToLookup(i => i.file, i => i.position).OrderByDescending(p => p.Count()))
                     {
                         error.WriteLine($"File: {ps.Key}");
 
