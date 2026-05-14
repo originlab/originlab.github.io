@@ -43,7 +43,7 @@ function tryRedirectToLowerOrEnglish() {
     var lowerCaseURL = currentURL.toLowerCase();
     if (currentURL != lowerCaseURL) {
         location.replace(lowerCaseURL);
-    } else if (currentURL.lastIndexOf('/') == currentURL.length - 3) {
-        location.replace(currentURL.substring(0, currentURL.lastIndexOf('/')));
+    } else if (/\/\w{2}\/?$/.test(currentURL)) {
+        location.replace(currentURL.substring(0, currentURL.lastIndexOf('/', currentURL.length - 2)));
     }
 }

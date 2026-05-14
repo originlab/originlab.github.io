@@ -9,18 +9,18 @@
             <li><a href="../">English</a></li>
             @if (Model.AvailableLanguages.Contains("de"))
             {
-                <li><a href="../de">Deutsch</a></li>
+                <li><a href="../de/">Deutsch</a></li>
             }
             @if (Model.AvailableLanguages.Contains("ja"))
             {
-                <li><a href="../ja">日本語</a></li>
+                <li><a href="../ja/">日本語</a></li>
             }
         </ul>
     </div>
     @if (!String.IsNullOrEmpty(Model.BookUrlName))
     {
-        <a class="btn btn-default" href="@(Model.RootUrlPrefix)/zh" title="返回文档首页"><span class="glyphicon glyphicon-home"></span></a>
-        <a class="btn btn-default" href="@(Model.RootUrlPrefix)/@(Model.BookUrlName)/zh" title="返回手册首页"><span class="glyphicon glyphicon-book"></span></a>
+        <a class="btn btn-default" href="@(Model.RootUrlPrefix)/zh/" title="返回文档首页"><span class="glyphicon glyphicon-home"></span></a>
+        <a class="btn btn-default" href="@(Model.RootUrlPrefix)/@(Model.BookUrlName)/zh/" title="返回手册首页"><span class="glyphicon glyphicon-book"></span></a>
         <a id="doc-nav-parent" class="btn btn-default"><span class="glyphicon glyphicon-arrow-up"></span></a>
         <div id="doc-nav-siblings" class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
