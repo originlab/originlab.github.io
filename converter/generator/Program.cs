@@ -22,7 +22,7 @@ class Program
             throw new ArgumentException("Expect the books folder exists!", nameof(args));
         }
 
-        var outputPath = Path.GetFullPath(isBuildingIndex ? "../out" : "out", srcBookPath);
+        var outputPath = Path.GetFullPath(isBuildingIndex ? "../../public_html" : "../public_html", srcBookPath);
 
         if (args.Length > 1 && args[1] == "merge")
         {
