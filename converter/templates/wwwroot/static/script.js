@@ -55,26 +55,26 @@ function applyNavMenuData(dataId, groupId, minItems) {
 }
 
 (function () {
-    let familyData = document.getElementById('doc-nav-data');
+    let nav = document.getElementById('doc-nav-data');
 
-    let parentLink = familyData.getAttribute('data-parent-link');
+    let parentLink = nav.getAttribute('data-parent-link');
     let parentBtn = document.getElementById('doc-nav-parent');
     if (parentBtn) {
         parentBtn.setAttribute('href', parentLink);
     }
 
-    let bookIndexUrl = familyData.getAttribute('data-book-index');
-    if (bookIndexUrl) {
+    let bookIndex = nav.getAttribute('data-book-index');
+    if (bookIndex) {
         let data = document.getElementById('doc-siblings-data');
         let otherBooks = [...document.getElementById('docSearchBook').querySelectorAll('option')];
-        let lang = familyData.getAttribute('data-lang');
+        let lang = nav.getAttribute('data-lang');
         if (lang == 'en') {
             lang = '';
         }
         for (let i = 1; i < otherBooks.length; i++) {
             let book = otherBooks[i];
             let li = document.createElement('li');
-            if (book.value.toLocaleLowerCase() != bookIndexUrl) {
+            if (book.value.toLocaleLowerCase() != bookIndex) {
                 let a = document.createElement('a');
                 a.href = `/${book.value.toLowerCase()}/${lang}`;
                 a.text = book.text;
@@ -86,7 +86,7 @@ function applyNavMenuData(dataId, groupId, minItems) {
                 data.appendChild(li);
             }
         }
-        familyData.appendChild(data);
+        nav.appendChild(data);
     }
 
     applyNavMenuData('doc-siblings-data', 'doc-nav-siblings', 2);
