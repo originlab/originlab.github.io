@@ -314,9 +314,9 @@ internal abstract class DocTransformer
             {
                 a.SetAttribute("href", $"{result}{hash}");
 
-                if (!title.IsEmpty)
+                if (a.Title.IsBlank && !title.IsEmpty)
                 {
-                    a.SetAttribute("title", title);
+                    a.Title = title;
                 }
             }
             else
