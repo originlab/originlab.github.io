@@ -53,7 +53,7 @@ jobs:
     needs: deploy_index
     runs-on: ubuntu-slim
     outputs:
-      sites: ${{ steps.set_sites.output.sites }}
+      sites: ${{ steps.set_sites.outputs.sites }}
     steps:
       - name: Writing the book url names into a sharable matrix input
         id: set_sites
