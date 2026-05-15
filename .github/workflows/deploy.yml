@@ -21,27 +21,6 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
-env:
-  sites: |
-    [
-      "user-guide",
-      "tutorials",
-      "quick-help",
-      "origin-help",
-      "x-function",
-      "originc",
-      "labtalk",
-      "python",
-      "externalpython",
-      "com",
-      "labview",
-      "app",
-      "appdev",
-      "codebuild",
-      "orglab",
-      "license"
-    ]
-
 jobs:
   
   build_index:
@@ -70,15 +49,49 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v5
 
-  start_book_deploy:
+  setup_matrix:
     needs: deploy_index
+    runs-on: ubuntu-slim
+    outputs:
+      sites: ${{ steps.set_sites.output.sites }}
+    steps:
+      - name: Writing the book url names into a sharable matrix input
+        id: set_sites
+        run: |
+        {
+          echo 'sites<<EOF'
+          cat << 'JSON'
+          [
+            "user-guide",
+            "tutorials",
+            "quick-help",
+            "origin-help",
+            "x-function",
+            "originc",
+            "labtalk",
+            "python",
+            "externalpython",
+            "com",
+            "labview",
+            "app",
+            "appdev",
+            "codebuild",
+            "orglab",
+            "license"
+          ]
+        JSON
+          echo 'EOF'
+        } >> "$GITHUB_OUTPUT"
+
+  start_book_deploy:
+    needs: setup_matrix
     runs-on: ubuntu-slim
     environment: deploy
     env:
       GH_TOKEN: ${{ secrets.PAT_DOC_WORKFLOW }}
     strategy:
       matrix:
-        site: ${{ fromJson(env.sites) }}
+        site: ${{ fromJson(needs.setup_matrix.outputs.sites) }}
     outputs:
       run_id-${{ matrix.site }}: ${{ steps.grabRunId.outputs.id }}
     steps:
@@ -90,14 +103,14 @@ jobs:
         run: echo "id=$(echo "$deploy_run_url" | grep -oE "[0-9]+$")" >> "$GITHUB_OUTPUT"
 
   watch_book_deploy:
-    needs: start_book_deploy
+    needs: [setup_matrix, start_book_deploy]
     runs-on: ubuntu-slim
     environment: deploy_watch
     env:
       GH_TOKEN: ${{ secrets.PAT_DOC_WORKFLOW }}
     strategy:
       matrix:
-        site: ${{ fromJson(env.sites) }}
+        site: ${{ fromJson(needs.setup_matrix.outputs.sites) }}
     steps:
       - name: Set $deploy_run_id
         run: echo 'deploy_run_id=${{ needs.start_book_deploy.outputs[format('run_id-{0}', matrix.site)] }}' >> "$GITHUB_ENV"
