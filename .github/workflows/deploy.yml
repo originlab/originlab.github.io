@@ -21,6 +21,27 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  sites: |
+    [
+      "user-guide",
+      "tutorials",
+      "quick-help",
+      "origin-help",
+      "x-function",
+      "originc",
+      "labtalk",
+      "python",
+      "externalpython",
+      "com",
+      "labview",
+      "app",
+      "appdev",
+      "codebuild",
+      "orglab",
+      "license"
+    ]
+
 jobs:
   
   build_index:
@@ -49,7 +70,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v5
 
-  deploy_books:
+  start_book_deploy:
     needs: deploy_index
     runs-on: ubuntu-slim
     environment: deploy
@@ -57,23 +78,9 @@ jobs:
       GH_TOKEN: ${{ secrets.PAT_DOC_WORKFLOW }}
     strategy:
       matrix:
-        site:
-          - user-guide
-          - tutorials
-          - quick-help
-          - origin-help
-          - x-function
-          - originc
-          - labtalk
-          - python
-          - externalpython
-          - com
-          - labview
-          - app
-          - appdev
-          - codebuild
-          - orglab
-          - license
+        site: ${{ fromJson(env.sites) }}
+    outputs:
+      run_id-${{ matrix.site }}: ${{ steps.grabRunId.outputs.id }}
     steps:
       - name: Dispatch deploy.yml and capture the run url
         id: dispatch
@@ -81,20 +88,33 @@ jobs:
       - name: Grab the run id
         id: grabRunId
         run: echo "id=$(echo "$deploy_run_url" | grep -oE "[0-9]+$")" >> "$GITHUB_OUTPUT"
+
+  watch_book_deploy:
+    needs: start_book_deploy
+    runs-on: ubuntu-slim
+    environment: deploy_watch
+    env:
+      GH_TOKEN: ${{ secrets.PAT_DOC_WORKFLOW }}
+    strategy:
+      matrix:
+        site: ${{ fromJson(env.sites) }}
+    steps:
+      - name: Set $deploy_run_id
+        run: echo 'deploy_run_id=${{ needs.start_book_deploy.outputs[format('run_id-{0}', matrix.site)] }}' >> "$GITHUB_ENV"
       - name: Watch the deployment
-        run: gh run watch ${{ steps.grabRunId.outputs.id }} -R originlab/${{ matrix.site }} -i 30 --exit-status
-      - name: Grab the job id
-        id: grabJobId
-        run: echo "id=$(gh run view ${{ steps.grabRunId.outputs.id }} -R originlab/${{ matrix.site }} | grep 'build_book / build' | grep -oP '\(ID \K\d+')" >> "$GITHUB_OUTPUT"
+        run: gh run watch $deploy_run_id -R originlab/${{ matrix.site }} -i 30 --exit-status
+      - name: Set $deploy_job_id
+        run: echo "deploy_job_id=$(gh run view $deploy_run_id -R originlab/${{ matrix.site }} | grep 'build_book / build' | grep -oP '\(ID \K\d+')" >> "$GITHUB_ENV"
       - name: Print converter output
         run: >
-          gh run view ${{ steps.grabRunId.outputs.id }} -j ${{ steps.grabJobId.outputs.id }} -R originlab/${{ matrix.site }} --log
+          gh run view $deploy_run_id -j $deploy_job_id -R originlab/${{ matrix.site }} --log
           | awk '/generator\.csproj/ {f=1} /upload-artifact/ {f=0} f'
           | cut -f3- | cut -d' ' -f2-
       - name: Print the book artifact summary
         run: >
-          gh run view ${{ steps.grabRunId.outputs.id }} -j ${{ steps.grabJobId.outputs.id }} -R originlab/${{ matrix.site }} --log
+          gh run view $deploy_run_id -j $deploy_job_id -R originlab/${{ matrix.site }} --log
           | awk '/Run actions\/upload-artifact|Finished uploading/{f=1} /Beginning upload|Artifact download/{f=0} f'
           | cut -f3- | cut -d' ' -f2-
+      
 
         
