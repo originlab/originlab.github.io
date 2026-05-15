@@ -58,30 +58,30 @@ jobs:
       - name: Writing the book url names into a sharable matrix input
         id: set_sites
         run: |
-        {
-          echo 'sites<<EOF'
-          cat << 'JSON'
-          [
-            "user-guide",
-            "tutorials",
-            "quick-help",
-            "origin-help",
-            "x-function",
-            "originc",
-            "labtalk",
-            "python",
-            "externalpython",
-            "com",
-            "labview",
-            "app",
-            "appdev",
-            "codebuild",
-            "orglab",
-            "license"
-          ]
-        JSON
-          echo 'EOF'
-        } >> "$GITHUB_OUTPUT"
+          {
+            echo 'sites<<EOF'
+            cat << 'JSON'
+            [
+              "user-guide",
+              "tutorials",
+              "quick-help",
+              "origin-help",
+              "x-function",
+              "originc",
+              "labtalk",
+              "python",
+              "externalpython",
+              "com",
+              "labview",
+              "app",
+              "appdev",
+              "codebuild",
+              "orglab",
+              "license"
+            ]
+          JSON
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
 
   start_book_deploy:
     needs: setup_matrix
