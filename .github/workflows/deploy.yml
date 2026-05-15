@@ -50,7 +50,6 @@ jobs:
         uses: actions/deploy-pages@v5
 
   setup_matrix:
-    needs: deploy_index
     runs-on: ubuntu-slim
     outputs:
       sites: ${{ steps.set_sites.outputs.sites }}
@@ -84,7 +83,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
   start_book_deploy:
-    needs: setup_matrix
+    needs: [setup_matrix, build_index]
     runs-on: ubuntu-slim
     environment: deploy
     env:
