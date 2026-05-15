@@ -117,7 +117,7 @@ jobs:
         with:
           name: run_id-${{ matrix.site }}
       - name: Set $deploy_run_id
-        run: echo 'deploy_run_id=$(cat run_id.txt)' >> "$GITHUB_ENV"
+        run: echo "deploy_run_id=$(cat run_id.txt)" >> "$GITHUB_ENV"
       - name: Watch the deployment
         run: gh run watch $deploy_run_id -R originlab/${{ matrix.site }} -i 30 --exit-status
       - name: Set $deploy_job_id
