@@ -88,12 +88,12 @@ jobs:
         run: echo "id=$(gh run view ${{ steps.grabRunId.outputs.id }} -R originlab/${{ matrix.site }} | grep 'build_book / build' | grep -oP '\(ID \K\d+')" >> "$GITHUB_OUTPUT"
       - name: Print converter output
         run: >
-          NO_COLOR=1 gh run view ${{ steps.grabRunId.outputs.id }} -j ${{ steps.grabJobId.outputs.id }} -R originlab/${{ matrix.site }} --log
+          gh run view ${{ steps.grabRunId.outputs.id }} -j ${{ steps.grabJobId.outputs.id }} -R originlab/${{ matrix.site }} --log
           | awk '/generator\.csproj/ {f=1} /upload-artifact/ {f=0} f'
           | cut -f3- | cut -d' ' -f2-
       - name: Print the book artifact summary
         run: >
-          NO_COLOR=1 gh run view ${{ steps.grabRunId.outputs.id }} -j ${{ steps.grabJobId.outputs.id }} -R originlab/${{ matrix.site }} --log
+          gh run view ${{ steps.grabRunId.outputs.id }} -j ${{ steps.grabJobId.outputs.id }} -R originlab/${{ matrix.site }} --log
           | awk '/Run actions\/upload-artifact|Finished uploading/{f=1} /Beginning upload|Artifact download/{f=0} f'
           | cut -f3- | cut -d' ' -f2-
 
