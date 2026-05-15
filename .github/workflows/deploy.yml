@@ -92,15 +92,16 @@ jobs:
     strategy:
       matrix:
         site: ${{ fromJson(needs.setup_matrix.outputs.sites) }}
-    outputs:
-      run_id-${{ matrix.site }}: ${{ steps.grabRunId.outputs.id }}
     steps:
       - name: Dispatch deploy.yml and capture the run url
         id: dispatch
         run: echo "deploy_run_url=$(gh workflow run deploy.yml --repo originlab/${{ matrix.site }})" >> "$GITHUB_ENV"
-      - name: Grab the run id
-        id: grabRunId
-        run: echo "id=$(echo "$deploy_run_url" | grep -oE "[0-9]+$")" >> "$GITHUB_OUTPUT"
+      - name: Save the run id
+        run: echo "$deploy_run_url" | grep -oE "[0-9]+$" >> run_id.txt
+      - uses: actions/upload-artifact@v7
+        with:
+          name: run_id-${{ matrix.site }}
+          path: run_id.txt
 
   watch_book_deploy:
     needs: [setup_matrix, start_book_deploy]
@@ -112,8 +113,11 @@ jobs:
       matrix:
         site: ${{ fromJson(needs.setup_matrix.outputs.sites) }}
     steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: run_id-${{ matrix.site }}
       - name: Set $deploy_run_id
-        run: echo 'deploy_run_id=${{ needs.start_book_deploy.outputs[format('run_id-{0}', matrix.site)] }}' >> "$GITHUB_ENV"
+        run: echo 'deploy_run_id=$(cat run_id.txt)' >> "$GITHUB_ENV"
       - name: Watch the deployment
         run: gh run watch $deploy_run_id -R originlab/${{ matrix.site }} -i 30 --exit-status
       - name: Set $deploy_job_id
