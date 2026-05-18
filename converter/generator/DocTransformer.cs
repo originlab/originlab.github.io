@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using AngleSharp.Common;
 using AngleSharp.Dom;
@@ -11,7 +12,7 @@ using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration;
 
-internal abstract class DocTransformer
+internal abstract partial class DocTransformer
 {
     protected string SourceFolder { get; }
     protected string SourceFolderEn { get; }
@@ -148,14 +149,21 @@ internal abstract class DocTransformer
 
     protected static string GetPageTitle(string sourceFile)
     {
-        using var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read);
-        var parser = new HtmlParser();
-        var document = parser.ParseDocument(fs);
+        using var reader = new StreamReader(sourceFile);
 
-        return GetFirstHeading(document);
+        while (reader.ReadLine() is string line)
+        {
+            if (HeaderRegex.Match(line) is { Success: true } match)
+            {
+                var parser = new HtmlParser();
+                var doc = parser.ParseDocument(match.Value);
+
+                return doc.QuerySelector("h1")!.Text();
+            }
+        }
+
+        return "";
     }
-
-    private static string GetFirstHeading(IHtmlDocument document) => document.QuerySelector("h1")?.Text() ?? "";
 
     void Transform(IHtmlDocument document, string sourceFile, string language, in Nav nav, INodeList? headerNodes, INodeList? bannerNodes, INodeList? footerNodes)
     {
@@ -211,7 +219,7 @@ internal abstract class DocTransformer
 
     private static void CleanUp(IHtmlDocument document)
     {
-        document.Title = GetFirstHeading(document);
+        document.Title = document.QuerySelector("h1")?.Text() ?? "";
 
         document.QuerySelectorAll<IHtmlSpanElement>("span.mw-editsection").Remove();
     }
@@ -517,4 +525,7 @@ internal abstract class DocTransformer
             }
         }
     }
+
+    [GeneratedRegex(@"<h1[^>]*>.*?</h1>")]
+    private static partial Regex HeaderRegex { get; }
 }
