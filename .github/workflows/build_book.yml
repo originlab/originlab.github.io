@@ -1,4 +1,4 @@
-name: Build static book contents
+name: Build static book contents and deploy
 
 on:
   workflow_call:
@@ -6,7 +6,12 @@ on:
       is_index:
         type: boolean
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
+  
   build:
     env:
       book_folder: ${{ github.event.repository.name }}${{ case(inputs.is_index, '/index', '') }}
@@ -32,4 +37,19 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: public_html
+
+  deploy:
+    needs: build
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-slim
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
 

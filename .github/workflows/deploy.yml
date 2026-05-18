@@ -22,20 +22,6 @@ jobs:
     with:
       is_index: true
 
-  deploy_index:
-    needs: build_index
-    concurrency:
-      group: "pages"
-      cancel-in-progress: false
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-slim
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
-
   setup_matrix:
     runs-on: ubuntu-slim
     outputs:
@@ -69,7 +55,7 @@ jobs:
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
-  start_book_deploy:
+  start_matrix:
     needs: [setup_matrix, build_index]
     runs-on: ubuntu-slim
     environment: deploy
@@ -89,8 +75,8 @@ jobs:
           name: run_id-${{ matrix.site }}
           path: run_id.txt
 
-  watch_book_deploy:
-    needs: [setup_matrix, start_book_deploy]
+  watch_matrix:
+    needs: [setup_matrix, start_matrix]
     runs-on: ubuntu-slim
     environment: deploy_watch
     env:
