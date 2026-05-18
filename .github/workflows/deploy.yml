@@ -56,7 +56,7 @@ jobs:
       GH_TOKEN: ${{ secrets.PAT_DOC_WORKFLOW }}
     strategy:
       matrix:
-        site: ${{ fromJson(needs.setup_matrix.outputs.sites) }}
+        site: ${{ fromJson(needs.setup_array.outputs.sites) }}
     steps:
       - name: Dispatch deploy.yml and capture the run url
         id: dispatch
@@ -76,7 +76,7 @@ jobs:
       GH_TOKEN: ${{ secrets.PAT_DOC_WORKFLOW }}
     strategy:
       matrix:
-        site: ${{ fromJson(needs.setup_matrix.outputs.sites) }}
+        site: ${{ fromJson(needs.setup_array.outputs.sites) }}
     steps:
       - uses: actions/download-artifact@v8
         with:
