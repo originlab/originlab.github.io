@@ -30,7 +30,7 @@ internal abstract partial class DocTransformer
 
     private static Dictionary<string, string> SharedImages => field ??= GetSharedImages();
 
-    private readonly Dictionary<string, (long size, ulong hash, string url)> VisitedImages = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, (long size, ulong hash, string url)> EnglishImages = new(StringComparer.OrdinalIgnoreCase);
 
     private readonly Dictionary<string, INode[]> LayoutNodes = [];
     private readonly Dictionary<string, List<(string file, string? details, TextPosition? position)>> Problems = [];
@@ -191,9 +191,10 @@ internal abstract partial class DocTransformer
             TransformAnchor(a, sourceFile, language, sourceDir);
         }
 
+        var pageImages = new Dictionary<string, string>();
         foreach (var img in document.Descendants<IHtmlImageElement>())
         {
-            TransformImage(img, sourceFile, language, sourceDir);
+            TransformImage(img, sourceFile, language, sourceDir, pageImages);
         }
 
         var navDataDiv = CreateNavDataDiv(document, nav, sourceDir, language);
@@ -381,7 +382,7 @@ internal abstract partial class DocTransformer
         return false;
     }
 
-    protected virtual void TransformImage(IHtmlImageElement img, string sourceFile, string language, string sourceDir)
+    protected virtual void TransformImage(IHtmlImageElement img, string sourceFile, string language, string sourceDir, Dictionary<string, string> pageImages)
     {
         if (img.GetAttribute("src") is not string srcFull)
         {
@@ -411,17 +412,38 @@ internal abstract partial class DocTransformer
             {
                 url = $"/{BookUrlName}/{language}/{srcFull.AsSpan("../".Length)}";
 
-                if (!VisitedImages.TryGetValue(src, out var visited))
+                if (language == "en")
                 {
-                    var size = srcImg.Length;
-                    var hash = FileHash.UInt64FromFile(srcImg.FullName);
+                    if (!EnglishImages.TryGetValue(src, out var visited))
+                    {
+                        var size = srcImg.Length;
+                        var hash = FileHash.UInt64FromFile(srcImg.FullName);
 
-                    VisitedImages.Add(src, (size, hash, url));
+                        EnglishImages.Add(src, (size, hash, url));
+                    }
+                    else
+                    {
+                        url = visited.url;
+                        copy = false;
+                    }
                 }
-                else if (srcImg.Length == visited.size && FileHash.UInt64FromFile(srcImg.FullName) == visited.hash)
+                else
                 {
-                    url = visited.url;
-                    copy = false;
+                    if (pageImages.TryGetValue(src, out var prevUrl))
+                    {
+                        url = prevUrl;
+                        copy = false;
+                    }
+                    else
+                    {
+                        pageImages.Add(src, url);
+
+                        if (EnglishImages.TryGetValue(src, out var visited) && srcImg.Length == visited.size && FileHash.UInt64FromFile(srcImg.FullName) == visited.hash)
+                        {
+                            url = pageImages[src] = visited.url;
+                            copy = false;
+                        }
+                    }
                 }
             }
             else
