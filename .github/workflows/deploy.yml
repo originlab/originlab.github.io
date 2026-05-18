@@ -67,6 +67,7 @@ jobs:
         with:
           name: run_id-${{ matrix.site }}
           path: run_id.txt
+          retention-days: 1
 
   watch_array:
     needs: [setup_array, start_array]
