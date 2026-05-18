@@ -1,4 +1,4 @@
-name: Build static book contents and deploy
+name: Build a book and deploy it to Pages
 
 on:
   workflow_call:

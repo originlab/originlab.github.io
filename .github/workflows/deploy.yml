@@ -1,4 +1,4 @@
-name: Build static content and deploy to Pages
+name: Build all books and deploy them to Pages
 
 on:
   # Runs on pushes targeting the default branch
