@@ -32,7 +32,7 @@ jobs:
           dotnet-version: '10.x'
       #- run: ls -l -R
       - name: Run Converter
-        run: dotnet run --project originlab.github.io/converter/generator/generator.csproj -- ${{ env.book_folder }} ${{ case(inputs.is_index, 'merge', '') }}
+        run: dotnet run -c Release --project originlab.github.io/converter/generator/generator.csproj -- ${{ env.book_folder }} ${{ case(inputs.is_index, 'merge', '') }}
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
