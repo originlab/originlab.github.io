@@ -28,9 +28,8 @@ jobs:
       #- run: ls -l -R
       - name: Run Converter
         run: dotnet run --project originlab.github.io/converter/generator/generator.csproj -- ${{ env.book_folder }} ${{ case(inputs.is_index, 'merge', '') }}
-      - name: Upload book artifact
-        uses: actions/upload-artifact@v7
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v5
         with:
-          name: book
           path: public_html
 
