@@ -56,7 +56,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
   start_matrix:
-    needs: [setup_matrix, build_index]
+    needs: [setup_matrix, make_index]
     runs-on: ubuntu-slim
     environment: deploy
     env:
