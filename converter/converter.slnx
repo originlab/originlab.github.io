@@ -4,8 +4,8 @@
     <File Path=".editorconfig" />
   </Folder>
   <Folder Name="/Solution Items/Workflows/">
-    <File Path="../.github/workflows/build_book.yml" />
     <File Path="../.github/workflows/deploy.yml" />
+    <File Path="../.github/workflows/make_book.yml" />
   </Folder>
   <Project Path="generator/generator.csproj" />
   <Project Path="templates/templates.csproj" />

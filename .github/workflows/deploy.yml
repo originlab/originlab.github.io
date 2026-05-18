@@ -17,8 +17,8 @@ permissions:
 
 jobs:
   
-  build_index:
-    uses: ./.github/workflows/build_book.yml
+  make_index:
+    uses: ./.github/workflows/make_book.yml
     with:
       is_index: true
 
@@ -92,16 +92,16 @@ jobs:
         run: echo "deploy_run_id=$(cat run_id.txt)" >> "$GITHUB_ENV"
       - name: Watch the deployment
         run: gh run watch $deploy_run_id -R originlab/${{ matrix.site }} -i 30 --exit-status
-      - name: Set $deploy_job_id
-        run: echo "deploy_job_id=$(gh run view $deploy_run_id -R originlab/${{ matrix.site }} | grep 'build_book / build' | grep -oP '\(ID \K\d+')" >> "$GITHUB_ENV"
+      - name: Set $build_job_id
+        run: echo "build_job_id=$(gh run view $deploy_run_id -R originlab/${{ matrix.site }} | grep 'make_book / build' | grep -oP '\(ID \K\d+')" >> "$GITHUB_ENV"
       - name: Print converter output
         run: >
-          gh run view $deploy_run_id -j $deploy_job_id -R originlab/${{ matrix.site }} --log
-          | awk '/generator\.csproj/ {f=1} /upload-artifact/ {f=0} f'
+          gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log
+          | awk '/generator\.csproj/ {f=1} /upload-pages-artifact/ {f=0} f'
           | cut -f3- | cut -d' ' -f2-
       - name: Print the book artifact summary
         run: >
-          gh run view $deploy_run_id -j $deploy_job_id -R originlab/${{ matrix.site }} --log
+          gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log
           | awk '/Run actions\/upload-artifact|Finished uploading/{f=1} /Beginning upload|Artifact download/{f=0} f'
           | cut -f3- | cut -d' ' -f2-
       
