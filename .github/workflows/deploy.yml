@@ -1,4 +1,4 @@
-name: Build and deploy all books to Pages
+name: Publish all books to Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -10,8 +10,8 @@ on:
 
 jobs:
   
-  make_index:
-    uses: ./.github/workflows/make_book.yml
+  publish_index:
+    uses: ./.github/workflows/publish_book.yml
     with:
       is_index: true
 
@@ -49,7 +49,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
   start_array:
-    needs: [setup_array, make_index]
+    needs: [setup_array, publish_index]
     runs-on: ubuntu-slim
     environment: deploy
     env:

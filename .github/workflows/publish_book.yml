@@ -1,4 +1,4 @@
-name: Build and deploy a book to Pages
+name: Publish a book to Pages
 
 on:
   workflow_call:
