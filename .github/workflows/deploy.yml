@@ -15,7 +15,7 @@ jobs:
     with:
       is_index: true
 
-  setup_matrix:
+  setup_array:
     runs-on: ubuntu-slim
     outputs:
       sites: ${{ steps.set_sites.outputs.sites }}
@@ -48,8 +48,8 @@ jobs:
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
-  start_matrix:
-    needs: [setup_matrix, make_index]
+  start_array:
+    needs: [setup_array, make_index]
     runs-on: ubuntu-slim
     environment: deploy
     env:
@@ -68,8 +68,8 @@ jobs:
           name: run_id-${{ matrix.site }}
           path: run_id.txt
 
-  watch_matrix:
-    needs: [setup_matrix, start_matrix]
+  watch_array:
+    needs: [setup_array, start_array]
     runs-on: ubuntu-slim
     environment: deploy_watch
     env:
