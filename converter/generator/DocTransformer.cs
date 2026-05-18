@@ -29,7 +29,7 @@ internal abstract class DocTransformer
 
     private static Dictionary<string, string> SharedImages => field ??= GetSharedImages();
 
-    private readonly Dictionary<string, (long size, ulong hash, string url)> ImagesEn = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, (long size, ulong hash, string url)> VisitedImages = new(StringComparer.OrdinalIgnoreCase);
 
     private readonly Dictionary<string, INode[]> LayoutNodes = [];
     private readonly Dictionary<string, List<(string file, string? details, TextPosition? position)>> Problems = [];
@@ -391,7 +391,7 @@ internal abstract class DocTransformer
         {
             img.SetAttribute("loading", "lazy");
 
-            var srcImg = Path.GetFullPath(src, sourceDir);
+            var srcImg = new FileInfo(Path.GetFullPath(src, sourceDir));
             var copy = true;
 
             var fileName = Path.GetFileName(src.AsSpan());
@@ -399,36 +399,26 @@ internal abstract class DocTransformer
             {
                 copy = false;
             }
-            else if (File.Exists(srcImg))
+            else if (srcImg.Exists)
             {
                 url = $"/{BookUrlName}/{language}/{srcFull.AsSpan("../".Length)}";
 
-                if (AvailableLanguages.Length > 1)
+                if (!VisitedImages.TryGetValue(src, out var visited))
                 {
-                    if (language == "en")
-                    {
-                        if (!ImagesEn.ContainsKey(src))
-                        {
-                            var size = new FileInfo(srcImg).Length;
-                            var hash = FileHash.UInt64FromFile(srcImg);
+                    var size = srcImg.Length;
+                    var hash = FileHash.UInt64FromFile(srcImg.FullName);
 
-                            ImagesEn.Add(src, (size, hash, url));
-                        }
-                        else
-                        {
-                            copy = false;
-                        }
-                    }
-                    else if (ImagesEn.TryGetValue(src, out var enImg) && new FileInfo(srcImg).Length == enImg.size && FileHash.UInt64FromFile(srcImg) == enImg.hash)
-                    {
-                        url = enImg.url;
-                        copy = false;
-                    }
+                    VisitedImages.Add(src, (size, hash, url));
+                }
+                else if (srcImg.Length == visited.size && FileHash.UInt64FromFile(srcImg.FullName) == visited.hash)
+                {
+                    url = visited.url;
+                    copy = false;
                 }
             }
             else
             {
-                var srcImgEn = $"{SourceFolderEn}{srcImg.AsSpan(SourceFolderEn.Length)}";
+                var srcImgEn = $"{SourceFolderEn}{srcImg.FullName.AsSpan(SourceFolderEn.Length)}";
 
                 if (!File.Exists(srcImgEn))
                 {
@@ -447,7 +437,7 @@ internal abstract class DocTransformer
 
                 Directory.CreateDirectory(Path.GetDirectoryName(dstImg)!);
 
-                File.Copy(srcImg, dstImg, overwrite: true);
+                File.Copy(srcImg.FullName, dstImg, overwrite: true);
             }
         }
         else if (!Uri.IsWellFormedUriString(srcFull, UriKind.Absolute))
