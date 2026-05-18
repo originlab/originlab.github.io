@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Buffers;
+using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -147,22 +148,34 @@ internal abstract partial class DocTransformer
         document.ToHtml(sw, HtmlMarkupFormatter.Instance);
     }
 
-    protected static string GetPageTitle(string sourceFile)
+    protected string GetPageTitle(string sourceFile)
     {
-        using var reader = new StreamReader(sourceFile);
+        string title = null!;
 
-        while (reader.ReadLine() is string line)
+        using var reader = new StreamReader(sourceFile);
+        var buffer = ArrayPool<char>.Shared.Rent(1024);
+        var read = reader.ReadBlock(buffer);
+        if (read > 0)
         {
-            if (HeaderRegex.Match(line) is { Success: true } match)
+            foreach (var match in HeaderRegex.EnumerateMatches(buffer.AsSpan(0, read)))
             {
                 var parser = new HtmlParser();
-                var doc = parser.ParseDocument(match.Value);
+                var doc = parser.ParseDocument(buffer.AsMemory(match.Index, match.Length));
 
-                return doc.QuerySelector("h1")!.Text();
+                title = doc.QuerySelector("h1")!.Text();
+                break;
             }
         }
 
-        return "";
+        if (title is null)
+        {
+            title = "";
+            ReportProblem(sourceFile, "Missing h1");
+        }
+
+        ArrayPool<char>.Shared.Return(buffer);
+
+        return title;
     }
 
     void Transform(IHtmlDocument document, string sourceFile, string language, in Nav nav, INodeList? headerNodes, INodeList? bannerNodes, INodeList? footerNodes)
@@ -548,6 +561,6 @@ internal abstract partial class DocTransformer
         }
     }
 
-    [GeneratedRegex(@"<h1[^>]*>.*?</h1>")]
+    [GeneratedRegex(@"<h1[^>]*>.*?</h1>", RegexOptions.Singleline | RegexOptions.IgnoreCase)]
     private static partial Regex HeaderRegex { get; }
 }
