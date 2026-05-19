@@ -1,0 +1,50 @@
+name: Build the converter and optionally run it
+
+on:
+  workflow_call:
+    inputs:
+      test:
+        type: boolean
+      run:
+        type: boolean
+      is_index:
+        type: boolean
+
+jobs:
+  
+  build:
+    env:
+      build_config: Release
+      book_folder: ${{ github.event.repository.name }}${{ case(inputs.is_index, '/index', '') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set $build_config_lower
+        run: echo "build_config_lower=${build_config@L}" >> "$GITHUB_ENV"
+      - name: Checkout Book
+        if: ${{ run && !inputs.is_index }}
+        uses: actions/checkout@v6
+        with:
+          path: ${{ env.book_folder }}
+      - name: Checkout Index with Converter
+        uses: actions/checkout@v6
+        with:
+          repository: originlab/originlab.github.io
+          path: originlab.github.io
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+      #- run: ls -l -R
+      - name: Build converter
+        run: dotnet build -c $build_config originlab.github.io/converter/generator/generator.csproj
+      - name: Test converter
+        if: ${{ inputs.test }}
+        run: dotnet run -c $build_config --project originlab.github.io/converter/tests/tests.csproj
+      - name: Run Converter
+        if: ${{ inputs.run }}
+        run: dotnet "originlab.github.io/converter/artifacts/bin/generator/$build_config_lower/generator.dll" "$book_folder" ${{ case(inputs.is_index, 'merge', '') }}
+      - name: Upload pages artifact
+        if: ${{ inputs.run }}
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: public_html
+

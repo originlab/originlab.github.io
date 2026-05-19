@@ -4,10 +4,12 @@
     <File Path=".editorconfig" />
   </Folder>
   <Folder Name="/Solution Items/Workflows/">
+    <File Path="../.github/workflows/converter.yml" />
     <File Path="../.github/workflows/deploy.yml" />
     <File Path="../.github/workflows/publish_book.yml" />
   </Folder>
   <Project Path="generator/generator.csproj" />
   <Project Path="templates/templates.csproj" />
+  <Project Path="tests/tests.csproj" Id="0ced4798-e7da-48fa-8462-9c8c97036502" />
   <Project Path="utils/utils.csproj" Id="a84489a3-d5e2-4908-b1a4-6947fab586d4" />
 </Solution>

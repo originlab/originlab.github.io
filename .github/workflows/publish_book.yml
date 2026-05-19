@@ -13,30 +13,11 @@ concurrency:
 jobs:
   
   build:
-    env:
-      book_folder: ${{ github.event.repository.name }}${{ case(inputs.is_index, '/index', '') }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Book
-        if: ${{ !inputs.is_index }}
-        uses: actions/checkout@v6
-        with:
-          path: ${{ env.book_folder }}
-      - name: Checkout Index with Converter
-        uses: actions/checkout@v6
-        with:
-          repository: originlab/originlab.github.io
-          path: originlab.github.io
-      - uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: '10.x'
-      #- run: ls -l -R
-      - name: Run Converter
-        run: dotnet run -c Release --project originlab.github.io/converter/generator/generator.csproj -- ${{ env.book_folder }} ${{ case(inputs.is_index, 'merge', '') }}
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: public_html
+    uses: ./.github/workflows/converter.yml
+    with:
+      test: ${{ inputs.is_index }}
+      run: true
+      is_index: ${{ inputs.is_index }}
 
   deploy:
     needs: build
