@@ -9,7 +9,7 @@ internal class TemplateHostEnvironment : IWebHostEnvironment
     public TemplateHostEnvironment()
     {
         ApplicationName = Assembly.GetEntryAssembly()?.GetName().Name ?? "OriginLab.DocumentGeneration";
-        ContentRootPath = Path.GetFullPath("../../../../templates", AppContext.BaseDirectory);
+        ContentRootPath = Path.GetFullPath("../../../../converter/templates", AppContext.BaseDirectory);
         ContentRootFileProvider = new PhysicalFileProvider(ContentRootPath);
         WebRootPath = Path.Combine(ContentRootPath, "wwwroot");
         WebRootFileProvider = new PhysicalFileProvider(WebRootPath);

@@ -34,14 +34,27 @@ jobs:
         with:
           dotnet-version: '10.x'
       #- run: ls -l -R
+      - name: Cache NuGet packages
+        id: nuget_cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ inputs.test }}-${{ hashFiles('originlab.github.io/converter/**/*.csproj') }}
+          restore-keys: ${{ runner.os }}-nuget-
+      - name: Cache converter build
+        uses: actions/cache@v5
+        with:
+          path: originlab.github.io/artifacts
+          key: ${{ runner.os }}-converter-${{ inputs.test }}-${{ hashFiles('originlab.github.io/converter/**') }}
+          restore-keys: ${{ runner.os }}-converter-
       - name: Build converter
-        run: dotnet build -c $build_config originlab.github.io/converter/generator/generator.csproj
+        run: dotnet build ${{ case(steps.nuget_cache.outputs.cache-hit, '--no-restore', '') }} -c $build_config originlab.github.io/converter/generator/generator.csproj
       - name: Test converter
         if: ${{ inputs.test }}
-        run: dotnet run -c $build_config --project originlab.github.io/converter/tests/tests.csproj
+        run: dotnet run ${{ case(steps.nuget_cache.outputs.cache-hit, '--no-restore', '') }} -c $build_config --project originlab.github.io/converter/tests/tests.csproj
       - name: Run Converter
         if: ${{ inputs.run }}
-        run: dotnet "originlab.github.io/converter/artifacts/bin/generator/$build_config_lower/generator.dll" "$book_folder" ${{ case(inputs.is_index, 'merge', '') }}
+        run: dotnet "originlab.github.io/artifacts/bin/generator/$build_config_lower/generator.dll" "$book_folder" ${{ case(inputs.is_index, 'merge', '') }}
       - name: Upload pages artifact
         if: ${{ inputs.run }}
         uses: actions/upload-pages-artifact@v5
