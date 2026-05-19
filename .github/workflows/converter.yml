@@ -48,7 +48,7 @@ jobs:
           key: ${{ runner.os }}-converter-${{ inputs.test }}-${{ hashFiles('originlab.github.io/converter/**') }}
           restore-keys: ${{ runner.os }}-converter-
       - name: Build converter
-        run: dotnet build ${{ case(steps.nuget_cache.outputs.cache-hit == 'true', '--no-restore', '') }} -c $build_config originlab.github.io/converter/generator/generator.csproj
+        run: dotnet build -v:d ${{ case(steps.nuget_cache.outputs.cache-hit == 'true', '--no-restore', '') }} -c $build_config originlab.github.io/converter/generator/generator.csproj
       - name: Test converter
         if: ${{ inputs.test }}
         run: dotnet run ${{ case(steps.nuget_cache.outputs.cache-hit == 'true', '--no-restore', '') }} -c $build_config --project originlab.github.io/converter/tests/tests.csproj
