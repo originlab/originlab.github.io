@@ -21,7 +21,7 @@ jobs:
       - name: Set $build_config_lower
         run: echo "build_config_lower=${build_config@L}" >> "$GITHUB_ENV"
       - name: Checkout Book
-        if: ${{ run && !inputs.is_index }}
+        if: ${{ inputs.run && !inputs.is_index }}
         uses: actions/checkout@v6
         with:
           path: ${{ env.book_folder }}
