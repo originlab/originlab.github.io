@@ -41,6 +41,8 @@ internal abstract partial class DocTransformer
 
     private INode[] LayoutNodes = null!;
 
+    private readonly Dictionary<string, string> VisitedImages = new(StringComparer.OrdinalIgnoreCase);
+
     #endregion
 
     protected DocTransformer(string sourceFolder, string outputFolder, string booksXmlFolder, string bookUrlName)
@@ -127,6 +129,7 @@ internal abstract partial class DocTransformer
         {
             Language = language;
             LayoutNodes = parser.ParseFragment(await GenerateLayoutAsync(), layout.Head!).ToArray();
+            VisitedImages.Clear();
 
             await TransformFilesAsync(language);
         }
@@ -210,10 +213,9 @@ internal abstract partial class DocTransformer
             TransformAnchor(a, sourceFile, sourceDir);
         }
 
-        var pageImages = new Dictionary<string, string>();
         foreach (var img in document.Descendants<IHtmlImageElement>())
         {
-            TransformImage(img, sourceFile, sourceDir, pageImages);
+            TransformImage(img, sourceFile, sourceDir);
         }
 
         var navDataDiv = CreateNavDataDiv(document, nav, sourceDir);
@@ -401,7 +403,7 @@ internal abstract partial class DocTransformer
         return false;
     }
 
-    protected virtual void TransformImage(IHtmlImageElement img, string sourceFile, string sourceDir, Dictionary<string, string> pageImages)
+    protected virtual void TransformImage(IHtmlImageElement img, string sourceFile, string sourceDir)
     {
         if (img.GetAttribute("src") is not string srcFull)
         {
@@ -448,18 +450,18 @@ internal abstract partial class DocTransformer
                 }
                 else
                 {
-                    if (pageImages.TryGetValue(src, out var prevUrl))
+                    if (VisitedImages.TryGetValue(src, out var prevUrl))
                     {
                         url = prevUrl;
                         copy = false;
                     }
                     else
                     {
-                        pageImages.Add(src, url);
+                        VisitedImages.Add(src, url);
 
                         if (EnglishImages.TryGetValue(src, out var visited) && srcImg.Length == visited.size && FileHash.UInt64FromFile(srcImg.FullName) == visited.hash)
                         {
-                            url = pageImages[src] = visited.url;
+                            url = VisitedImages[src] = visited.url;
                             copy = false;
                         }
                     }
