@@ -70,15 +70,7 @@ internal sealed class DocBookTransformer : DocTransformer
         }
     }
 
-    public override async Task TransformFilesAsync()
-    {
-        foreach (var language in AvailableLanguages)
-        {
-            await TransformAsync(language);
-        }
-    }
-
-    async Task TransformAsync(string language)
+    public override async Task TransformFilesAsync(string language)
     {
         var srcDir = Path.Combine(SourceFolder, language, BookDirName);
         var srcEnDir = Path.Combine(SourceFolderEn, BookDirName);
@@ -113,13 +105,13 @@ internal sealed class DocBookTransformer : DocTransformer
 
             if (File.Exists(srcFile))
             {
-                Transform(srcFile, dstFile, language, nav);
+                Transform(srcFile, dstFile, nav);
             }
             else if (language != "en" && File.Exists(srcFile = Path.Combine(srcEnDir, file)))
             {
                 fallbackBanner ??= await Template.RenderEnglishFallbackBannerAsync(language);
 
-                Transform(srcFile, dstFile, language, nav, bannerHtml: fallbackBanner);
+                Transform(srcFile, dstFile, nav, bannerHtml: fallbackBanner);
             }
             else
             {

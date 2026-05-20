@@ -33,8 +33,15 @@ internal abstract partial class DocTransformer
 
     private readonly Dictionary<string, (long size, ulong hash, string url)> EnglishImages = new(StringComparer.OrdinalIgnoreCase);
 
-    private readonly Dictionary<string, INode[]> LayoutNodes = [];
     private readonly Dictionary<string, List<(string file, string? details, TextPosition? position)>> Problems = [];
+
+    #region Language specific members
+
+    protected string Language { get; private set; } = null!;
+
+    private INode[] LayoutNodes = null!;
+
+    #endregion
 
     protected DocTransformer(string sourceFolder, string outputFolder, string booksXmlFolder, string bookUrlName)
     {
@@ -118,19 +125,18 @@ internal abstract partial class DocTransformer
 
         foreach (var language in AvailableLanguages)
         {
-            var scripts = await GenerateLayoutAsync(language);
+            Language = language;
+            LayoutNodes = parser.ParseFragment(await GenerateLayoutAsync(), layout.Head!).ToArray();
 
-            LayoutNodes.Add(language, parser.ParseFragment(scripts, layout.Head!).ToArray());
+            await TransformFilesAsync(language);
         }
-
-        await TransformFilesAsync();
 
         File.WriteAllText(Path.Combine(OutputFolder, "404.html"), await Template.Render404PageAsync());
     }
 
-    public abstract Task TransformFilesAsync();
+    public abstract Task TransformFilesAsync(string language);
 
-    protected void Transform(string sourceFile, string destinationFile, string language, in Nav nav = default, string? headerHtml = null, string? bannerHtml = null, string? footerHtml = null)
+    protected void Transform(string sourceFile, string destinationFile, in Nav nav = default, string? headerHtml = null, string? bannerHtml = null, string? footerHtml = null)
     {
         using var fs = File.OpenRead(sourceFile);
         var parser = new HtmlParser(new HtmlParserOptions { IsKeepingSourceReferences = true });
@@ -142,7 +148,7 @@ internal abstract partial class DocTransformer
         var bannerNodes = bannerHtml.IsBlank ? null : parser.ParseFragment(bannerHtml, body);
         var footerNodes = footerHtml.IsBlank ? null : parser.ParseFragment(footerHtml, body);
 
-        Transform(document, sourceFile, language, nav, headerNodes, bannerNodes, footerNodes);
+        Transform(document, sourceFile, nav, headerNodes, bannerNodes, footerNodes);
 
         using var sw = new StreamWriter(destinationFile);
         document.ToHtml(sw, HtmlMarkupFormatter.Instance);
@@ -178,14 +184,14 @@ internal abstract partial class DocTransformer
         return title;
     }
 
-    void Transform(IHtmlDocument document, string sourceFile, string language, in Nav nav, INodeList? headerNodes, INodeList? bannerNodes, INodeList? footerNodes)
+    void Transform(IHtmlDocument document, string sourceFile, in Nav nav, INodeList? headerNodes, INodeList? bannerNodes, INodeList? footerNodes)
     {
         CleanUp(document);
 
         var head = document.Head!;
         var body = document.Body!;
 
-        head.PrependNodes(LayoutNodes[language]);
+        head.PrependNodes(LayoutNodes);
 
         if (headerNodes is not null)
         {
@@ -201,16 +207,16 @@ internal abstract partial class DocTransformer
 
         foreach (var a in document.Descendants<IHtmlAnchorElement>())
         {
-            TransformAnchor(a, sourceFile, language, sourceDir);
+            TransformAnchor(a, sourceFile, sourceDir);
         }
 
         var pageImages = new Dictionary<string, string>();
         foreach (var img in document.Descendants<IHtmlImageElement>())
         {
-            TransformImage(img, sourceFile, language, sourceDir, pageImages);
+            TransformImage(img, sourceFile, sourceDir, pageImages);
         }
 
-        var navDataDiv = CreateNavDataDiv(document, nav, sourceDir, language);
+        var navDataDiv = CreateNavDataDiv(document, nav, sourceDir);
         body.AppendChild(navDataDiv);
 
         if (footerNodes is not null)
@@ -238,28 +244,28 @@ internal abstract partial class DocTransformer
         document.QuerySelectorAll<IHtmlSpanElement>("span.mw-editsection").Remove();
     }
 
-    private IHtmlDivElement CreateNavDataDiv(IHtmlDocument document, in Nav nav, string sourceDir, string language)
+    private IHtmlDivElement CreateNavDataDiv(IHtmlDocument document, in Nav nav, string sourceDir)
     {
         var navDataDiv = document.CreateElement<IHtmlDivElement>();
 
         navDataDiv.Id = "doc-nav-data";
         navDataDiv.IsHidden = true;
 
-        navDataDiv.SetAttribute("data-lang", language);
+        navDataDiv.SetAttribute("data-lang", Language);
         navDataDiv.SetAttribute("data-lang-list", AvailableLanguagesExpression);
 
         var files = nav.Files;
 
         if (!files.Parent.IsEmpty)
         {
-            if (TryResolveHref(sourceDir, language, "../" + files.Parent, out var url, out var _))
+            if (TryResolveHref(sourceDir, "../" + files.Parent, out var url, out var _))
             {
                 navDataDiv.SetAttribute("data-parent-link", url);
             }
         }
         else
         {
-            navDataDiv.SetAttribute("data-parent-link", language == "en" ? "/" : $"/{language}");
+            navDataDiv.SetAttribute("data-parent-link", Language == "en" ? "/" : $"/{Language}");
         }
 
         if (nav.IsBookIndex)
@@ -291,7 +297,7 @@ internal abstract partial class DocTransformer
             {
                 var li = document.CreateElement<IHtmlListItemElement>();
 
-                if (TryResolveHref(sourceDir, language, "../" + path, out var url, out var titleEn))
+                if (TryResolveHref(sourceDir, "../" + path, out var url, out var titleEn))
                 {
                     var a = document.CreateElement<IHtmlAnchorElement>();
 
@@ -321,7 +327,7 @@ internal abstract partial class DocTransformer
         }
     }
 
-    protected virtual void TransformAnchor(IHtmlAnchorElement a, string sourceFile, string language, string sourceDir)
+    protected virtual void TransformAnchor(IHtmlAnchorElement a, string sourceFile, string sourceDir)
     {
         if (a.GetAttribute("href") is string strHref && !strHref.IsBlank)
         {
@@ -337,7 +343,7 @@ internal abstract partial class DocTransformer
                 href = strHref.AsSpan(..hashIndex);
             }
 
-            if (TryResolveHref(sourceDir, language, hashIndex > 0 ? href.ToString() : strHref, out var result, out var title))
+            if (TryResolveHref(sourceDir, hashIndex > 0 ? href.ToString() : strHref, out var result, out var title))
             {
                 a.SetAttribute("href", $"{result}{hash}");
 
@@ -353,7 +359,7 @@ internal abstract partial class DocTransformer
         }
     }
 
-    private bool TryResolveHref(string sourceDir, string language, string href, out string result, out string? titleEn)
+    private bool TryResolveHref(string sourceDir, string href, out string result, out string? titleEn)
     {
         titleEn = null;
 
@@ -368,13 +374,13 @@ internal abstract partial class DocTransformer
                 if (PageLinks.TryGetValue(targetFile, out var link)
                     || (MovedPages.TryGetValue(targetFile, out var movedToFile) && PageLinks.TryGetValue(movedToFile, out link)))
                 {
-                    if (language == "en")
+                    if (Language == "en")
                     {
                         result = '/'.TrySurroundEach(link.book, link.url);
                     }
                     else
                     {
-                        result = '/'.TrySurroundEach(link.book, link.url, language);
+                        result = '/'.TrySurroundEach(link.book, link.url, Language);
                     }
 
                     titleEn = link.titleEn;
@@ -395,7 +401,7 @@ internal abstract partial class DocTransformer
         return false;
     }
 
-    protected virtual void TransformImage(IHtmlImageElement img, string sourceFile, string language, string sourceDir, Dictionary<string, string> pageImages)
+    protected virtual void TransformImage(IHtmlImageElement img, string sourceFile, string sourceDir, Dictionary<string, string> pageImages)
     {
         if (img.GetAttribute("src") is not string srcFull)
         {
@@ -423,9 +429,9 @@ internal abstract partial class DocTransformer
             }
             else if (srcImg.Exists)
             {
-                url = $"/{BookUrlName}/{language}/{srcFull.AsSpan("../".Length)}";
+                url = $"/{BookUrlName}/{Language}/{srcFull.AsSpan("../".Length)}";
 
-                if (language == "en")
+                if (Language == "en")
                 {
                     if (!EnglishImages.TryGetValue(src, out var visited))
                     {
@@ -476,7 +482,7 @@ internal abstract partial class DocTransformer
 
             if (copy)
             {
-                var dstImg = Path.Combine(OutputFolder, language, src["../".Length..]);
+                var dstImg = Path.Combine(OutputFolder, Language, src["../".Length..]);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(dstImg)!);
 
@@ -489,13 +495,13 @@ internal abstract partial class DocTransformer
         }
     }
 
-    private async Task<string> GenerateLayoutAsync(string language)
+    private async Task<string> GenerateLayoutAsync()
     {
-        var langDir = Directory.CreateDirectory(Path.Combine(OutputFolder, language));
+        var langDir = Directory.CreateDirectory(Path.Combine(OutputFolder, Language));
         var layoutHtml = await Template.RenderDocumentPageAsync(new DocumentPageModel
         {
             RootUrlPrefix = null,
-            Language = language,
+            Language = Language,
             AvailableLanguages = AvailableLanguages,
             BookUrlName = BookUrlName,
         });
@@ -504,7 +510,7 @@ internal abstract partial class DocTransformer
 
         var layoutScripts = await Template.RenderApplyLayoutScriptsAsync(new ApplyLayoutModel
         {
-            LayoutPageUrl = '/'.TryPrefixEach(BookUrlName, language, $"layout.html?v={FileHash.FromString(layoutHtml)}"),
+            LayoutPageUrl = '/'.TryPrefixEach(BookUrlName, Language, $"layout.html?v={FileHash.FromString(layoutHtml)}"),
             PlaceHolderId = "doc-content-placeholder",
             MainContentId = "main-content",
         });
