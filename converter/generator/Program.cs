@@ -1,4 +1,5 @@
-﻿using OriginLab.DocumentGeneration.Templates;
+﻿using Microsoft.Extensions.DependencyInjection;
+using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration;
 
@@ -40,10 +41,22 @@ class Program
             Directory.CreateDirectory(outputPath);
         }
 
-        DocTransformer transformer = isBuildingIndex
-            ? new DocIndexTransformer(booksXmlPath, srcBookPath, outputPath)
-            : new DocBookTransformer(booksXmlPath, srcBookPath, outputPath)
-            ;
+        var services = new ServiceCollection();
+
+        if (isBuildingIndex)
+        {
+            services.AddTransient<DocTransformerArgs>(sp => new(srcBookPath, outputPath, booksXmlPath, ""));
+            services.AddTransient<IDocTransformer, DocIndexTransformer>();
+        }
+        else
+        {
+            services.AddTransient<DocTransformerArgs>(sp => new(srcBookPath, outputPath, booksXmlPath, Path.GetFileName(srcBookPath).ToLowerInvariant()));
+            services.AddTransient<IDocTransformer, DocBookTransformer>();
+        }
+
+        var serviceProvider = services.BuildServiceProvider();
+        var transformer = serviceProvider.GetRequiredService<IDocTransformer>();
+
         await transformer.TransformAsync();
 
         transformer.PrintProblems();

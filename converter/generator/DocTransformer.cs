@@ -13,13 +13,13 @@ using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration;
 
-internal abstract partial class DocTransformer
+internal abstract partial class DocTransformer : IDocTransformer
 {
     protected string SourceFolder { get; }
     protected string SourceFolderEn { get; }
     protected string OutputFolder { get; }
     protected string BooksXmlFolder { get; }
-    protected string BookUrlName { get; }
+    protected string SiteUrlPrefix { get; }
 
     protected string[] AvailableLanguages { get; }
 
@@ -45,8 +45,16 @@ internal abstract partial class DocTransformer
 
     #endregion
 
-    protected DocTransformer(string sourceFolder, string outputFolder, string booksXmlFolder, string bookUrlName)
+    protected DocTransformer(DocTransformerArgs args)
     {
+        var (sourceFolder, outputFolder, booksXmlFolder, siteUrlPrefix) = args;
+
+        SourceFolder = sourceFolder;
+        SourceFolderEn = Path.Combine(sourceFolder, "en");
+        OutputFolder = outputFolder;
+        BooksXmlFolder = booksXmlFolder;
+        SiteUrlPrefix = siteUrlPrefix;
+
         var languages = (from subPath in Directory.EnumerateDirectories(sourceFolder)
                          let name = Path.GetFileName(subPath)
                          where name.Length == 2
@@ -55,7 +63,7 @@ internal abstract partial class DocTransformer
         var enIndex = languages.IndexOf("en");
         if (enIndex < 0)
         {
-            throw new ArgumentException("Expect en folder exists within sourceFolder", nameof(sourceFolder));
+            throw new ArgumentException("Expect en folder exists within SourceFolder", nameof(args));
         }
         else if (enIndex > 0)
         {
@@ -84,12 +92,6 @@ internal abstract partial class DocTransformer
         }
 
         PageLinks = pages.ToDictionary(p => p.file, p => (p.book.ToLowerInvariant(), p.url.ToLowerInvariant(), p.title), StringComparer.OrdinalIgnoreCase);
-
-        SourceFolder = Path.GetFullPath(sourceFolder);
-        SourceFolderEn = Path.Combine(SourceFolder, "en");
-        OutputFolder = Path.GetFullPath(outputFolder);
-        BooksXmlFolder = booksXmlFolder;
-        BookUrlName = bookUrlName;
     }
 
     private Dictionary<string, string> GetMovedPages()
@@ -122,19 +124,44 @@ internal abstract partial class DocTransformer
 
     public async Task TransformAsync()
     {
-        var parser = new HtmlParser(new HtmlParserOptions { IsKeepingSourceReferences = true });
-        var layout = parser.ParseDocument("<html></html>");
-
         foreach (var language in AvailableLanguages)
         {
-            Language = language;
-            LayoutNodes = parser.ParseFragment(await GenerateLayoutAsync(), layout.Head!).ToArray();
-            VisitedImages.Clear();
+            var html = await LayoutAsync(language);
+
+            var langDir = Directory.CreateDirectory(Path.Combine(OutputFolder, language));
+            await File.WriteAllTextAsync(Path.Combine(langDir.FullName, "layout.html"), html);
 
             await TransformFilesAsync(language);
         }
 
         File.WriteAllText(Path.Combine(OutputFolder, "404.html"), await Template.Render404PageAsync());
+    }
+
+    internal async Task<string> LayoutAsync(string language)
+    {
+        var parser = new HtmlParser(new HtmlParserOptions { IsKeepingSourceReferences = true });
+        var layout = parser.ParseDocument("<html></html>");
+
+        var html = await Template.RenderDocumentPageAsync(new DocumentPageModel
+        {
+            RootUrlPrefix = null,
+            Language = language,
+            AvailableLanguages = AvailableLanguages,
+            BookUrlName = SiteUrlPrefix,
+        });
+
+        var scripts = await Template.RenderApplyLayoutScriptsAsync(new ApplyLayoutModel
+        {
+            LayoutPageUrl = '/'.TryPrefixEach(SiteUrlPrefix, language, $"layout.html?v={FileHash.FromString(html)}"),
+            PlaceHolderId = "doc-content-placeholder",
+            MainContentId = "main-content",
+        });
+
+        Language = language;
+        LayoutNodes = parser.ParseFragment(scripts, layout.Head!).ToArray();
+        VisitedImages.Clear();
+
+        return html;
     }
 
     public abstract Task TransformFilesAsync(string language);
@@ -187,7 +214,7 @@ internal abstract partial class DocTransformer
         return title;
     }
 
-    void Transform(IHtmlDocument document, string sourceFile, in Nav nav, INodeList? headerNodes, INodeList? bannerNodes, INodeList? footerNodes)
+    internal void Transform(IHtmlDocument document, string sourceFile, in Nav nav, INodeList? headerNodes, INodeList? bannerNodes, INodeList? footerNodes)
     {
         CleanUp(document);
 
@@ -272,7 +299,7 @@ internal abstract partial class DocTransformer
 
         if (nav.IsBookIndex)
         {
-            navDataDiv.SetAttribute("data-book-index", BookUrlName);
+            navDataDiv.SetAttribute("data-book-index", SiteUrlPrefix);
         }
 
         if (files.Siblings is not null)
@@ -431,7 +458,7 @@ internal abstract partial class DocTransformer
             }
             else if (srcImg.Exists)
             {
-                url = $"/{BookUrlName}/{Language}/{srcFull.AsSpan("../".Length)}";
+                url = '/'.TryPrefixEach(SiteUrlPrefix, Language, srcFull["../".Length..]);
 
                 if (Language == "en")
                 {
@@ -476,7 +503,7 @@ internal abstract partial class DocTransformer
                     ReportProblem(sourceFile, "Image src not found", src, img.SourceReference?.Position);
                 }
 
-                url = $"/{BookUrlName}/en/{srcFull.AsSpan("../".Length)}";
+                url = '/'.TryPrefixEach(SiteUrlPrefix, "en", srcFull["../".Length..]);
                 copy = false;
             }
 
@@ -495,29 +522,6 @@ internal abstract partial class DocTransformer
         {
             ReportProblem(sourceFile, "Unrecognized src", src, img.SourceReference?.Position);
         }
-    }
-
-    private async Task<string> GenerateLayoutAsync()
-    {
-        var langDir = Directory.CreateDirectory(Path.Combine(OutputFolder, Language));
-        var layoutHtml = await Template.RenderDocumentPageAsync(new DocumentPageModel
-        {
-            RootUrlPrefix = null,
-            Language = Language,
-            AvailableLanguages = AvailableLanguages,
-            BookUrlName = BookUrlName,
-        });
-
-        File.WriteAllText(Path.Combine(langDir.FullName, "layout.html"), layoutHtml);
-
-        var layoutScripts = await Template.RenderApplyLayoutScriptsAsync(new ApplyLayoutModel
-        {
-            LayoutPageUrl = '/'.TryPrefixEach(BookUrlName, Language, $"layout.html?v={FileHash.FromString(layoutHtml)}"),
-            PlaceHolderId = "doc-content-placeholder",
-            MainContentId = "main-content",
-        });
-
-        return layoutScripts;
     }
 
     protected void ReportProblem(string sourcePath, string category, string? details = null, TextPosition? position = null)

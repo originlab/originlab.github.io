@@ -8,18 +8,17 @@ internal sealed class DocBookTransformer : DocTransformer
     private readonly string BookDirName;
     private readonly (string url, string file, NavFiles navFiles)[] Pages;
 
-    public DocBookTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
-        : base(sourceFolder, outputFolder, booksXmlFolder, Path.GetFileName(sourceFolder).ToLowerInvariant())
+    public DocBookTransformer(DocTransformerArgs args) : base(args)
     {
         BookDirName = Path.GetFileName(Directory.EnumerateDirectories(Path.Combine(SourceFolder, "en")).Single());
 
-        var bookXml = XElement.Load(Path.Combine(sourceFolder, "en", BookDirName, "book.xml"));
+        var bookXml = XElement.Load(Path.Combine(SourceFolder, "en", BookDirName, "book.xml"));
         var pages = new List<(string url, string file, NavFiles nav)>();
 
         foreach (var p in bookXml.Descendants("page"))
         {
             var url = p.Attribute("url")!.Value;
-            url = url.Length == BookUrlName!.Length ? "" : url[(BookUrlName.Length + 1)..];
+            url = url.Length == SiteUrlPrefix!.Length ? "" : url[(SiteUrlPrefix.Length + 1)..];
             url = url.ToLowerInvariant();
 
             var file = p.Attribute("file")!.Value;

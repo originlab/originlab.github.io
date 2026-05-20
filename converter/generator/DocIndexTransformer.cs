@@ -2,8 +2,7 @@
 
 internal class DocIndexTransformer : DocTransformer
 {
-    public DocIndexTransformer(string booksXmlFolder, string sourceFolder, string outputFolder)
-        : base(sourceFolder, outputFolder, booksXmlFolder, "")
+    public DocIndexTransformer(DocTransformerArgs args) : base(args)
     {
     }
 

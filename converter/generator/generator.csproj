@@ -4,13 +4,18 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>OriginLab.DocumentGeneration</RootNamespace>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="1.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.8" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\templates\templates.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="tests"/>
   </ItemGroup>
 
 </Project>
