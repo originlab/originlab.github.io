@@ -18,7 +18,7 @@ internal sealed class DocBookTransformer : DocTransformer
         foreach (var p in bookXml.Descendants("page"))
         {
             var url = p.Attribute("url")!.Value;
-            url = url.Length == SiteUrlPrefix!.Length ? "" : url[(SiteUrlPrefix.Length + 1)..];
+            url = url.Length == BookUrlName!.Length ? "" : url[(BookUrlName.Length + 1)..];
             url = url.ToLowerInvariant();
 
             var file = p.Attribute("file")!.Value;

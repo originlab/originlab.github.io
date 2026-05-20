@@ -19,7 +19,7 @@ internal abstract partial class DocTransformer : IDocTransformer
     protected string SourceFolderEn { get; }
     protected string OutputFolder { get; }
     protected string BooksXmlFolder { get; }
-    protected string SiteUrlPrefix { get; }
+    protected string BookUrlName { get; }
 
     protected string[] AvailableLanguages { get; }
 
@@ -47,13 +47,13 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     protected DocTransformer(DocTransformerArgs args)
     {
-        var (sourceFolder, outputFolder, booksXmlFolder, siteUrlPrefix) = args;
+        var (sourceFolder, outputFolder, booksXmlFolder, bookUrlName) = args;
 
         SourceFolder = sourceFolder;
         SourceFolderEn = Path.Combine(sourceFolder, "en");
         OutputFolder = outputFolder;
         BooksXmlFolder = booksXmlFolder;
-        SiteUrlPrefix = siteUrlPrefix;
+        BookUrlName = bookUrlName;
 
         var languages = (from subPath in Directory.EnumerateDirectories(sourceFolder)
                          let name = Path.GetFileName(subPath)
@@ -144,15 +144,14 @@ internal abstract partial class DocTransformer : IDocTransformer
 
         var html = await Template.RenderDocumentPageAsync(new DocumentPageModel
         {
-            RootUrlPrefix = null,
             Language = language,
             AvailableLanguages = AvailableLanguages,
-            BookUrlName = SiteUrlPrefix,
+            BookUrlName = BookUrlName,
         });
 
         var scripts = await Template.RenderApplyLayoutScriptsAsync(new ApplyLayoutModel
         {
-            LayoutPageUrl = '/'.TryPrefixEach(SiteUrlPrefix, language, $"layout.html?v={FileHash.FromString(html)}"),
+            LayoutPageUrl = '/'.TryPrefixEach(BookUrlName, language, $"layout.html?v={FileHash.FromString(html)}"),
             PlaceHolderId = "doc-content-placeholder",
             MainContentId = "main-content",
         });
@@ -299,7 +298,7 @@ internal abstract partial class DocTransformer : IDocTransformer
 
         if (nav.IsBookIndex)
         {
-            navDataDiv.SetAttribute("data-book-index", SiteUrlPrefix);
+            navDataDiv.SetAttribute("data-book-index", BookUrlName);
         }
 
         if (files.Siblings is not null)
@@ -458,7 +457,7 @@ internal abstract partial class DocTransformer : IDocTransformer
             }
             else if (srcImg.Exists)
             {
-                url = '/'.TryPrefixEach(SiteUrlPrefix, Language, srcFull["../".Length..]);
+                url = '/'.TryPrefixEach(BookUrlName, Language, srcFull["../".Length..]);
 
                 if (Language == "en")
                 {
@@ -503,7 +502,7 @@ internal abstract partial class DocTransformer : IDocTransformer
                     ReportProblem(sourceFile, "Image src not found", src, img.SourceReference?.Position);
                 }
 
-                url = '/'.TryPrefixEach(SiteUrlPrefix, "en", srcFull["../".Length..]);
+                url = '/'.TryPrefixEach(BookUrlName, "en", srcFull["../".Length..]);
                 copy = false;
             }
 
