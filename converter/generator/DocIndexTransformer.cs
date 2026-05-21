@@ -2,7 +2,7 @@
 
 internal class DocIndexTransformer : DocTransformer
 {
-    public DocIndexTransformer(DocTransformerArgs args) : base(args)
+    public DocIndexTransformer(DocTransformerArgs args, ProblemRecorder problems) : base(args, problems)
     {
     }
 

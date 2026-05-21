@@ -8,7 +8,7 @@ internal sealed class DocBookTransformer : DocTransformer
     private readonly string BookDirName;
     private readonly (string url, string file, NavFiles navFiles)[] Pages;
 
-    public DocBookTransformer(DocTransformerArgs args) : base(args)
+    public DocBookTransformer(DocTransformerArgs args, ProblemRecorder problems) : base(args, problems)
     {
         BookDirName = Path.GetFileName(Directory.EnumerateDirectories(Path.Combine(SourceFolder, "en")).Single());
 

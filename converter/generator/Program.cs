@@ -45,21 +45,28 @@ class Program
 
         if (isBuildingIndex)
         {
-            services.AddTransient<DocTransformerArgs>(sp => new(srcBookPath, outputPath, booksXmlPath, ""));
+            services.AddSingleton<DocTransformerArgs>(sp => new(srcBookPath, outputPath, booksXmlPath, ""));
             services.AddTransient<IDocTransformer, DocIndexTransformer>();
         }
         else
         {
-            services.AddTransient<DocTransformerArgs>(sp => new(srcBookPath, outputPath, booksXmlPath, Path.GetFileName(srcBookPath).ToLowerInvariant()));
+            services.AddSingleton<DocTransformerArgs>(sp => new(srcBookPath, outputPath, booksXmlPath, Path.GetFileName(srcBookPath).ToLowerInvariant()));
             services.AddTransient<IDocTransformer, DocBookTransformer>();
         }
+
+        services.AddSingleton<ProblemRecorder>();
 
         var serviceProvider = services.BuildServiceProvider();
         var transformer = serviceProvider.GetRequiredService<IDocTransformer>();
 
         await transformer.TransformAsync();
 
-        transformer.WriteProblems(Console.Error);
+        var problems = serviceProvider.GetRequiredService<ProblemRecorder>();
+        ProblemSummarizer summarizer = Environment.GetEnvironmentVariable("GITHUB_ACTIONS") is not null
+                                     ? new ProblemSummarizer.GithubActions()
+                                     : new ProblemSummarizer.Local();
+
+        summarizer.WriteSummary(problems, Console.Error);
     }
 
     private static void CopyContents(string srcDir, string dstDir)

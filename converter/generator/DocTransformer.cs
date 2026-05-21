@@ -33,7 +33,7 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     private readonly Dictionary<string, (long size, ulong hash, string url)> EnglishImages = new(StringComparer.OrdinalIgnoreCase);
 
-    private readonly Dictionary<string, List<(string file, string? details, TextPosition? position)>> Problems = [];
+    private readonly ProblemRecorder Problems;
 
     #region Language specific members
 
@@ -45,7 +45,7 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     #endregion
 
-    protected DocTransformer(DocTransformerArgs args)
+    protected DocTransformer(DocTransformerArgs args, ProblemRecorder problems)
     {
         var (sourceFolder, outputFolder, booksXmlFolder, bookUrlName) = args;
 
@@ -54,6 +54,8 @@ internal abstract partial class DocTransformer : IDocTransformer
         OutputFolder = outputFolder;
         BooksXmlFolder = booksXmlFolder;
         BookUrlName = bookUrlName;
+
+        Problems = problems;
 
         var languages = (from subPath in Directory.EnumerateDirectories(sourceFolder)
                          let name = Path.GetFileName(subPath)
@@ -524,51 +526,7 @@ internal abstract partial class DocTransformer : IDocTransformer
     }
 
     protected void ReportProblem(string sourcePath, string category, string? details = null, TextPosition? position = null)
-    {
-        var file = Path.GetRelativePath(SourceFolder, sourcePath);
-
-        if (!Problems.TryGetValue(category, out var list))
-        {
-            Problems[category] = list = [];
-        }
-
-        list.Add((file, details, position));
-    }
-
-    public void WriteProblems(TextWriter textWriter)
-    {
-        if (Problems.Count > 0)
-        {
-            textWriter.WriteLine();
-            textWriter.WriteLine("Problems:");
-
-            foreach (var (category, list) in Problems.OrderByDescending(kvp => kvp.Value.Count))
-            {
-                textWriter.WriteLine();
-                textWriter.WriteLine($"::warning::{list.Count}x {category}");
-
-                foreach (var details in list.ToLookup(i => i.details, i => (i.file, i.position)).OrderByDescending(p => p.Count()))
-                {
-                    textWriter.WriteLine($"::group::{details.Count()}x {details.Key}");
-
-                    foreach (var ps in details.ToLookup(i => i.file, i => i.position).OrderByDescending(p => p.Count()))
-                    {
-                        textWriter.WriteLine($"File: {ps.Key}");
-
-                        foreach (var p in ps)
-                        {
-                            if (p.HasValue)
-                            {
-                                textWriter.WriteLine($"\t{p}");
-                            }
-                        }
-                    }
-
-                    textWriter.WriteLine("::endgroup::");
-                }
-            }
-        }
-    }
+        => Problems.Record(sourcePath, category, details, position);
 
     [GeneratedRegex(@"<h1[^>]*>.*?</h1>", RegexOptions.Singleline | RegexOptions.IgnoreCase)]
     private static partial Regex HeaderRegex { get; }
