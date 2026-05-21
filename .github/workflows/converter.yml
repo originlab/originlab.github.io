@@ -1,4 +1,4 @@
-name: Build the converter and optionally run it
+name: Build the converter and run it
 
 on:
   workflow_call:
