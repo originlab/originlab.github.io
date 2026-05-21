@@ -50,7 +50,7 @@ class Program
         }
         else
         {
-            services.AddSingleton<DocTransformerArgs>(sp => new(srcBookPath, outputPath, booksXmlPath, Path.GetFileName(srcBookPath).ToLowerInvariant()));
+            services.AddSingleton<DocTransformerArgs>(sp => new(srcBookPath, outputPath, booksXmlPath, Path.GetFileName(srcBookPath)));
             services.AddTransient<IDocTransformer, DocBookTransformer>();
         }
 
