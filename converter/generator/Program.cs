@@ -59,7 +59,7 @@ class Program
 
         await transformer.TransformAsync();
 
-        transformer.PrintProblems();
+        transformer.WriteProblems(Console.Error);
     }
 
     private static void CopyContents(string srcDir, string dstDir)

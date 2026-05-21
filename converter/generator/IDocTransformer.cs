@@ -4,5 +4,5 @@ public interface IDocTransformer
 {
     Task TransformAsync();
 
-    void PrintProblems();
+    void WriteProblems(TextWriter textWriter);
 }

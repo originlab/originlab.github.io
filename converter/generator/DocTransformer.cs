@@ -535,38 +535,36 @@ internal abstract partial class DocTransformer : IDocTransformer
         list.Add((file, details, position));
     }
 
-    public void PrintProblems()
+    public void WriteProblems(TextWriter textWriter)
     {
         if (Problems.Count > 0)
         {
-            var error = Console.Error;
-
-            error.WriteLine();
-            error.WriteLine("Problems:");
+            textWriter.WriteLine();
+            textWriter.WriteLine("Problems:");
 
             foreach (var (category, list) in Problems.OrderByDescending(kvp => kvp.Value.Count))
             {
-                error.WriteLine();
-                error.WriteLine($"::warning::{list.Count}x {category}");
+                textWriter.WriteLine();
+                textWriter.WriteLine($"::warning::{list.Count}x {category}");
 
                 foreach (var details in list.ToLookup(i => i.details, i => (i.file, i.position)).OrderByDescending(p => p.Count()))
                 {
-                    error.WriteLine($"::group::{details.Count()}x {details.Key}");
+                    textWriter.WriteLine($"::group::{details.Count()}x {details.Key}");
 
                     foreach (var ps in details.ToLookup(i => i.file, i => i.position).OrderByDescending(p => p.Count()))
                     {
-                        error.WriteLine($"File: {ps.Key}");
+                        textWriter.WriteLine($"File: {ps.Key}");
 
                         foreach (var p in ps)
                         {
                             if (p.HasValue)
                             {
-                                error.WriteLine($"\t{p}");
+                                textWriter.WriteLine($"\t{p}");
                             }
                         }
                     }
 
-                    error.WriteLine("::endgroup::");
+                    textWriter.WriteLine("::endgroup::");
                 }
             }
         }
