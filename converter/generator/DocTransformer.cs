@@ -128,7 +128,7 @@ internal abstract partial class DocTransformer : IDocTransformer
     {
         foreach (var language in AvailableLanguages)
         {
-            var html = await LayoutAsync(language);
+            var html = await InitializeLanguageLayoutAsync(language);
 
             var langDir = Directory.CreateDirectory(Path.Combine(OutputFolder, language));
             await File.WriteAllTextAsync(Path.Combine(langDir.FullName, "layout.html"), html);
@@ -139,9 +139,9 @@ internal abstract partial class DocTransformer : IDocTransformer
         File.WriteAllText(Path.Combine(OutputFolder, "404.html"), await Template.Render404PageAsync());
     }
 
-    internal async Task<string> LayoutAsync(string language)
+    internal async Task<string> InitializeLanguageLayoutAsync(string language)
     {
-        var parser = new HtmlParser(new HtmlParserOptions { IsKeepingSourceReferences = true });
+        var parser = new HtmlParser();
         var layout = parser.ParseDocument("<html></html>");
 
         var html = await Template.RenderDocumentPageAsync(new DocumentPageModel
