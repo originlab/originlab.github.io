@@ -12,12 +12,12 @@ concurrency:
 
 jobs:
   
-  build:
+  convert:
     uses: ./.github/workflows/converter.yml
     with:
-      test: ${{ inputs.is_index }}
-      run: true
+      run_tests: ${{ inputs.is_index }}
       is_index: ${{ inputs.is_index }}
+      upload_pages: true
 
   deploy:
     needs: build

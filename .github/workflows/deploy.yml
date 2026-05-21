@@ -87,7 +87,7 @@ jobs:
       - name: Watch the deployment
         run: gh run watch $deploy_run_id -R originlab/${{ matrix.site }} -i 10 --exit-status
       - name: Set $build_job_id
-        run: echo "build_job_id=$(gh run view $deploy_run_id -R originlab/${{ matrix.site }} | grep 'publish_book / build' | grep -oP '\(ID \K\d+')" >> "$GITHUB_ENV"
+        run: echo "build_job_id=$(gh run view $deploy_run_id -R originlab/${{ matrix.site }} | grep 'publish_book / convert' | grep -oP '\(ID \K\d+')" >> "$GITHUB_ENV"
       - name: Print converter output
         run: >
           gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log
