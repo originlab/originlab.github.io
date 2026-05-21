@@ -20,7 +20,7 @@ jobs:
       upload_pages: true
 
   deploy:
-    needs: build
+    needs: convert
     permissions:
       contents: read
       pages: write
