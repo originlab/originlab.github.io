@@ -15,15 +15,14 @@ class Program
 
         var bookUrlName = Path.GetFileName(srcBookPath);
         var isBuildingIndex = bookUrlName == "index";
-        var rootRepoPath = isBuildingIndex ? ".." : "../originlab.github.io";
 
-        var booksXmlPath = Path.GetFullPath(Path.Combine(rootRepoPath, "books"), srcBookPath);
+        var booksXmlPath = Path.GetFullPath("../../../books", Template.WebRootPath);
         if (!Directory.Exists(booksXmlPath))
         {
             throw new ArgumentException("Expect the books folder exists!", nameof(args));
         }
 
-        var outputPath = Path.GetFullPath(isBuildingIndex ? "../../public_html" : "../public_html", srcBookPath);
+        var outputPath = Path.GetFullPath("../../../artifacts/public_html", Template.WebRootPath);
 
         if (args.Length > 1 && args[1] == "merge")
         {
