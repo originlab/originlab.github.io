@@ -31,8 +31,9 @@ jobs:
 
       - name: Optimize files
         run: |
+          sudo apt-get update
           sudo apt-get install -y oxipng gifsicle minify parallel
-          find pages/ -name "*.png" | parallel oxipng -o 4 {}
+          find pages/ -name "*.png" | parallel oxipng --strip safe {}
           find pages/ -name "*.gif" | parallel gifsicle --batch -O3 {}
           find pages/ -name "*.html" | parallel minify --mime=text/html -o {} {}
           find pages/ -name "*.css"  | parallel minify --mime=text/css -o {} {}
