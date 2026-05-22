@@ -41,6 +41,10 @@ p {
     border-top: 2px solid #ccc;
 }
 
+#doc-nav-siblings > button > span.glyphicon {
+    transform: rotate(90deg);
+}
+
 .glyphicon {
     line-height: 1.428;
 }
