@@ -19,8 +19,33 @@ jobs:
       is_index: ${{ inputs.is_index }}
       upload_pages: true
 
-  deploy:
+  optimize:
     needs: convert
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Pages artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: github-pages
+          path: pages
+
+      - name: Optimize files
+        run: |
+          sudo apt-get install -y oxipng gifsicle minify parallel
+          find pages/ -name "*.png" | parallel oxipng -o 4 {}
+          find pages/ -name "*.gif" | parallel gifsicle --batch -O3 {}
+          find pages/ -name "*.html" | parallel minify --mime=text/html -o {} {}
+          find pages/ -name "*.css"  | parallel minify --mime=text/css -o {} {}
+          find pages/ -name "*.js"   | parallel minify --mime=text/javascript -o {} {}
+
+      - name: Upload optimized Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: pages
+
+  deploy:
+    needs: optimize
+    runs-on: ubuntu-slim
     permissions:
       contents: read
       pages: write
@@ -28,7 +53,6 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-slim
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
