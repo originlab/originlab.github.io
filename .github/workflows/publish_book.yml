@@ -29,6 +29,9 @@ jobs:
           name: github-pages
           path: pages
 
+      - name: Install apt
+        run: sudo apt-get install -y ripgrep gifsicle minify parallel
+
       - name: Install oxipng
         run: |
           oxipng_download_url=$(curl -s https://api.github.com/repos/oxipng/oxipng/releases/latest | rg -o -r '$1' '"browser_download_url": "(.+_amd64\.deb)"')
@@ -37,7 +40,6 @@ jobs:
 
       - name: Optimize files
         run: |
-          sudo apt-get install -y gifsicle minify parallel
           find pages/ -name "*.png" | parallel oxipng --strip safe {}
           find pages/ -name "*.gif" | parallel gifsicle --batch -O3 {}
           find pages/ -name "*.html" | parallel minify --mime=text/html -o {} {}
