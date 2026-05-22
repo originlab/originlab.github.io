@@ -31,7 +31,7 @@ jobs:
 
       - name: Install oxipng
         run: |
-          oxipng_download_url=$(curl -s https://api.github.com/repos/oxipng/oxipng/releases/latest | rg -o -r '$1' '"browser_download_url": "(.+_amd64\.deb)"')"
+          oxipng_download_url=$(curl -s https://api.github.com/repos/oxipng/oxipng/releases/latest | rg -o -r '$1' '"browser_download_url": "(.+_amd64\.deb)"')
           wget $oxipng_download_url
           sudo apt-get install ./*.deb
 
