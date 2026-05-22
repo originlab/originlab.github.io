@@ -41,9 +41,9 @@ jobs:
         run: |
           find pages/ -name "*.png" | parallel oxipng --strip safe {}
           find pages/ -name "*.gif" | parallel gifsicle --batch -O3 {}
-          find pages/ -name "*.html" | parallel minify --mime=text/html -o {} {}
-          find pages/ -name "*.css"  | parallel minify --mime=text/css -o {} {}
-          find pages/ -name "*.js"   | parallel minify --mime=text/javascript -o {} {}
+          find pages/ -name "*.html" | parallel minify --type=text/html -o {} {}
+          find pages/ -name "*.css"  | parallel minify --type=text/css -o {} {}
+          find pages/ -name "*.js"   | parallel minify --type=text/javascript -o {} {}
 
       - name: Upload optimized artifact
         uses: actions/upload-pages-artifact@v5
