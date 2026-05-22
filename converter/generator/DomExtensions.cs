@@ -14,4 +14,27 @@ internal static class DomExtensions
             }
         }
     }
+
+    extension(IElement element)
+    {
+        public IElement? SelfOrNextElementSibling(Predicate<IElement> predicate)
+        {
+            if (predicate(element))
+            {
+                return element;
+            }
+
+            while (element.NextElementSibling is IElement next)
+            {
+                if (predicate(next))
+                {
+                    return next;
+                }
+
+                element = next;
+            }
+
+            return null;
+        }
+    }
 }

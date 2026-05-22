@@ -66,26 +66,25 @@ function applyNavMenuData(dataId, groupId, minItems) {
     let bookIndex = nav.getAttribute('data-book-index');
     if (bookIndex) {
         let data = document.getElementById('doc-siblings-data');
-        let otherBooks = [...document.getElementById('docSearchBook').querySelectorAll('option')];
+        if (data.childElementCount > 0) {
+            data.firstElementChild.remove();
+        }
+        let allBooks = [...document.getElementById('docSearchBook').querySelectorAll('option')];
         let lang = nav.getAttribute('data-lang');
-        for (let i = 1; i < otherBooks.length; i++) {
-            let book = otherBooks[i];
+        for (let i = 1; i < allBooks.length; i++) {
+            let book = allBooks[i];
             let li = document.createElement('li');
-            if (book.value.toLocaleLowerCase() != bookIndex) {
-                let a = document.createElement('a');
-                if (lang == 'en') {
-                    a.href = `/${book.value.toLowerCase()}/`;
-                } else {
-                    a.href = `/${book.value.toLowerCase()}/${lang}/`;
-                }
-                a.text = book.text;
-                li.appendChild(a);
-                data.appendChild(li);
-            } else if (i != 1 && i != otherBooks.length - 1) {
-                li.className = 'divider';
-                li.setAttribute('role', 'separator');
-                data.appendChild(li);
+            let a = document.createElement('a');
+
+            a.text = book.text;
+            if (book.value.toLocaleLowerCase() == bookIndex) {
+                li.className = 'disabled';
+            } else {
+                a.href = lang == 'en' ? `/${book.value.toLowerCase()}/` : `/${book.value.toLowerCase()}/${lang}/`;
             }
+
+            li.appendChild(a);
+            data.appendChild(li);
         }
         nav.appendChild(data);
     }

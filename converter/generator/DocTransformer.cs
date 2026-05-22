@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -15,6 +16,8 @@ namespace OriginLab.DocumentGeneration;
 
 internal abstract partial class DocTransformer : IDocTransformer
 {
+    public const int MaxSiblingNodes = 10 * 2;
+
     protected string SourceFolder { get; }
     protected string SourceFolderEn { get; }
     protected string OutputFolder { get; }
@@ -274,6 +277,10 @@ internal abstract partial class DocTransformer : IDocTransformer
         document.QuerySelectorAll<IHtmlSpanElement>("span.mw-editsection").Remove();
     }
 
+    string? CachedSiblingsParent;
+    int CachedSiblingsCurrentIndex;
+    IHtmlElement? CachedSiblings;
+
     private IHtmlDivElement CreateNavDataDiv(IHtmlDocument document, in Nav nav, string sourceDir)
     {
         var navDataDiv = document.CreateElement<IHtmlDivElement>();
@@ -305,7 +312,18 @@ internal abstract partial class DocTransformer : IDocTransformer
 
         if (files.Siblings is not null)
         {
-            var ul = CreateDataUL("doc-siblings-data", files.Siblings, nav.Titles);
+            IHtmlElement ul;
+
+            if (nav.Files.Parent is string parent && parent == CachedSiblingsParent)
+            {
+                ul = CreateSiblingsULFromCache(CachedSiblings!, files.Siblings, nav.Titles);
+            }
+            else
+            {
+                CachedSiblingsParent = nav.Files.Parent;
+                CachedSiblings = ul = CreateDataUL("doc-siblings-data", files.Siblings, nav.Titles);
+            }
+
             navDataDiv.AppendChild(ul);
         }
 
@@ -317,42 +335,100 @@ internal abstract partial class DocTransformer : IDocTransformer
 
         return navDataDiv;
 
-        IHtmlUnorderedListElement CreateDataUL(string id, string[] files, Dictionary<string, string> titles)
+        IHtmlElement CreateDataUL(string id, string[] files, Dictionary<string, string> titles)
         {
             var ul = document.CreateElement<IHtmlUnorderedListElement>();
 
             ul.Id = id;
 
-            foreach (var path in files)
+            for (int i = 0; i < files.Length; i++)
             {
+                string? path = files[i];
                 var li = document.CreateElement<IHtmlListItemElement>();
+                var a = document.CreateElement<IHtmlAnchorElement>();
+                var pathSpan = path.AsSpan();
+                var isCurrent = false;
 
-                if (TryResolveHref(sourceDir, "../" + path, out var url, out var titleEn))
+                if (path.StartsWith('*'))
                 {
-                    var a = document.CreateElement<IHtmlAnchorElement>();
+                    pathSpan = pathSpan[1..];
+                    isCurrent = true;
+                    CachedSiblingsCurrentIndex = i;
+                }
 
-                    a.SetAttribute("href", url);
-
-                    if (titles.TryGetValue(path, out var title))
+                if (TryResolveHref(sourceDir, $"../{pathSpan}", out var url, out var _))
+                {
+                    if (isCurrent)
                     {
-                        a.TextContent = title;
+                        li.ClassName = "disabled";
                     }
                     else
                     {
-                        a.TextContent = titleEn ?? "";
+                        a.SetAttribute("href", url);
                     }
 
-                    li.AppendChild(a);
-                }
-                else
-                {
-                    li.SetAttribute("role", "separator");
-                    li.ClassName = "divider";
+                    a.TextContent = titles.GetAlternateLookup<ReadOnlySpan<char>>()[pathSpan];
                 }
 
+                li.AppendChild(a);
                 ul.AppendChild(li);
             }
 
+            return ul;
+        }
+
+        IHtmlElement CreateSiblingsULFromCache(IHtmlElement ul, string[] files, Dictionary<string, string> titles)
+        {
+            document.AdoptNode(ul);
+
+            var currentIdx = Array.FindIndex(files, CachedSiblingsCurrentIndex, files.Length - CachedSiblingsCurrentIndex, f => f.StartsWith('*'));
+            var previousLi = ul.Children[CachedSiblingsCurrentIndex].SelfOrNextElementSibling(li => li.FirstElementChild!.GetAttribute("href").IsEmpty);
+
+            Debug.Assert(currentIdx > 0);
+            Debug.Assert(previousLi is not null);
+
+            if (TryResolveHref(sourceDir, $"../{files[currentIdx - 1]}", out var url, out var _))
+            {
+                previousLi.FirstElementChild!.SetAttribute("href", url);
+            }
+
+            previousLi.ClassName = null;
+
+            var currentLi = previousLi.NextElementSibling!;
+            currentLi.FirstElementChild!.SetAttribute("href", null);
+            currentLi.ClassName = "disabled";
+
+            if (ul.ChildElementCount < files.Length)
+            {
+                var li = document.CreateElement<IHtmlListItemElement>();
+                var a = document.CreateElement<IHtmlAnchorElement>();
+
+                if (TryResolveHref(sourceDir, $"../{files[^1]}", out var endUrl, out var _))
+                {
+                    a.SetAttribute("href", endUrl);
+                    a.TextContent = titles[files[^1]];
+                }
+
+                li.AppendChild(a);
+                ul.AppendChild(li);
+            }
+            else if (currentIdx == MaxSiblingNodes / 2 && currentIdx != files.Length - 1 && currentIdx == CachedSiblingsCurrentIndex)
+            {
+                var li = (IHtmlElement)ul.RemoveChild(ul.FirstElementChild!);
+
+                if (TryResolveHref(sourceDir, $"../{files[^1]}", out var endUrl, out var _)
+                    && endUrl != ul.LastElementChild!.FirstElementChild!.GetAttribute("href"))
+                {
+                    var a = li.FirstElementChild!;
+
+                    a.SetAttribute("href", endUrl);
+                    a.TextContent = titles[files[^1]];
+
+                    ul.AppendChild(li);
+                }
+            }
+
+            CachedSiblingsCurrentIndex = currentIdx;
             return ul;
         }
     }
