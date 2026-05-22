@@ -26,17 +26,15 @@ jobs:
       - name: Download Pages artifact
         uses: actions/download-artifact@v8
         with:
-          name: github-pages
+          name: converted
           path: pages
 
-      - name: Install apt
-        run: sudo apt-get install -y ripgrep gifsicle minify parallel
-
-      - name: Install oxipng
+      - name: Install tools
         run: |
-          oxipng_download_url=$(curl -s https://api.github.com/repos/oxipng/oxipng/releases/latest | rg -o -r '$1' '"browser_download_url": "(.+_amd64\.deb)"')
+          oxipng_download_url=$(curl -s https://api.github.com/repos/oxipng/oxipng/releases/latest | rg -o -r '$1' '"browser_download_url":\s""')
           wget $oxipng_download_url
-          sudo apt-get install ./*.deb
+          sudo apt-get install ./oxipng_*.deb
+          sudo apt-get install -y ripgrep gifsicle minify parallel
 
       - name: Optimize files
         run: |
@@ -46,7 +44,7 @@ jobs:
           find pages/ -name "*.css"  | parallel minify --mime=text/css -o {} {}
           find pages/ -name "*.js"   | parallel minify --mime=text/javascript -o {} {}
 
-      - name: Upload optimized Pages artifact
+      - name: Upload optimized artifact
         uses: actions/upload-pages-artifact@v5
         with:
           path: pages

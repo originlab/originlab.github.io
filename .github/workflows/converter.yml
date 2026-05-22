@@ -43,7 +43,9 @@ jobs:
         run: dotnet "originlab.github.io/artifacts/bin/generator/$build_config_lower/generator.dll" "$book_folder" ${{ case(inputs.is_index, 'merge', '') }}
       - name: Upload Pages artifact
         if: ${{ inputs.upload_pages }}
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
+          name: converted
           path: originlab.github.io/artifacts/public_html
+          retention-days: 1
 
