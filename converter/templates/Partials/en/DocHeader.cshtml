@@ -23,18 +23,18 @@
     </div>
     @if (!String.IsNullOrEmpty(Model.BookUrlName))
     {
-        <a class="btn btn-default" href="@(Model.RootUrlPrefix)/" title="Return home"><span class="glyphicon glyphicon-home"></span></a>
-        <a class="btn btn-default" href="@(Model.RootUrlPrefix)/@(Model.BookUrlName)/" title="Return to book"><span class="glyphicon glyphicon-book"></span></a>
-        <a id="doc-nav-parent" class="btn btn-default"><span class="glyphicon glyphicon-arrow-up"></span></a>
+        <a class="btn btn-default" href="@(Model.RootUrlPrefix)/" title="Go to docs index"><span class="glyphicon glyphicon-home"></span></a>
+        <a class="btn btn-default" href="@(Model.RootUrlPrefix)/@(Model.BookUrlName)/" title="Go to book index"><span class="glyphicon glyphicon-book"></span></a>
+        <a id="doc-nav-parent" class="btn btn-default" title="Go one level up"><span class="glyphicon glyphicon-arrow-up"></span></a>
         <div id="doc-nav-siblings" class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-default dropdown-toggle" title="Toggle sibling pages list" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="glyphicon glyphicon-sort"></span>
             </button>
             <ul class="dropdown-menu">
             </ul>
         </div>
         <div id="doc-nav-children" class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-default dropdown-toggle" title="Toggle child pages list" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="glyphicon glyphicon-arrow-down"></span>
             </button>
             <ul class="dropdown-menu">
