@@ -1,0 +1,40 @@
+name: Build and run the converter
+
+on:
+  workflow_call:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download converted artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: converted
+          path: pages
+
+      - name: Install tools
+        run: |
+          sudo apt-get install -y ripgrep
+          oxipng_download_url=$(curl -s https://api.github.com/repos/oxipng/oxipng/releases/latest | rg -o -r '$1' '"browser_download_url":\s"(.+_amd64\.deb)"')
+          wget $oxipng_download_url
+          sudo apt-get install ./oxipng_*.deb
+          sudo apt-get install -y gifsicle minify parallel
+
+      - name: Optimize images
+        run: |
+          find pages/ -name "*.png" | parallel oxipng --strip safe {}
+          #find pages/ -name "*.gif" | parallel gifsicle --batch -O3 {}
+
+      - name: Optimize text
+        run: |
+          find pages/ -name "*.html" | parallel minify --html-keep-document-tags --html-keep-end-tags -o {} {}
+          find pages/ -name "*.css"  | parallel minify -o {} {}
+          find pages/ -name "*.js"   | parallel minify -o {} {}
+
+      - name: Upload optimized artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: optimized
+          path: pages
+          retention-days: 1

@@ -17,38 +17,11 @@ jobs:
     with:
       run_tests: ${{ inputs.is_index }}
       is_index: ${{ inputs.is_index }}
-      upload_pages: true
+      upload_converted: true
 
   optimize:
     needs: convert
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Pages artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: converted
-          path: pages
-
-      # - name: Install tools
-      #   run: |
-      #     sudo apt-get install -y ripgrep
-      #     oxipng_download_url=$(curl -s https://api.github.com/repos/oxipng/oxipng/releases/latest | rg -o -r '$1' '"browser_download_url":\s"(.+_amd64\.deb)"')
-      #     wget $oxipng_download_url
-      #     sudo apt-get install ./oxipng_*.deb
-      #     sudo apt-get install -y gifsicle minify parallel
-
-      # - name: Optimize files
-      #   run: |
-      #     find pages/ -name "*.png" | parallel oxipng --strip safe {}
-      #     find pages/ -name "*.gif" | parallel gifsicle --batch -O3 {}
-      #     find pages/ -name "*.html" | parallel minify --type=text/html -o {} {}
-      #     find pages/ -name "*.css"  | parallel minify --type=text/css -o {} {}
-      #     find pages/ -name "*.js"   | parallel minify --type=text/javascript -o {} {}
-
-      - name: Upload optimized artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: pages
+    uses: ./.github/workflows/optimize.yml
 
   deploy:
     needs: optimize
@@ -61,6 +34,17 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Download optimized artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: optimized
+          path: pages
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: pages
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

@@ -7,7 +7,7 @@ on:
         type: boolean
       is_index:
         type: boolean
-      upload_pages:
+      upload_converted:
         type: boolean
 
 jobs:
