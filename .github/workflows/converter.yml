@@ -49,9 +49,9 @@ jobs:
         run: dotnet run -c $build_config --project originlab.github.io/converter/tests/tests.csproj
 
       - name: Run the Converter
-        run: >
-          dotnet "originlab.github.io/artifacts/bin/generator/$build_config_lower/generator.dll" "$book_folder"
-            ${{ case(inputs.is_index, '--merge', '') }}
+        run: |
+          dotnet "originlab.github.io/artifacts/bin/generator/$build_config_lower/generator.dll" "$book_folder" \
+            ${{ case(inputs.is_index, '--merge', '') }} \
             ${{ case(inputs.is_optimizing, '--optimizing', '') }}
 
       - name: Upload converted artifact
