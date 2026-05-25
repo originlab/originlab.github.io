@@ -20,29 +20,37 @@ jobs:
     steps:
       - name: Set $build_config_lower
         run: echo "build_config_lower=${build_config@L}" >> "$GITHUB_ENV"
+
       - name: Checkout Book
         if: ${{ !inputs.is_index }}
         uses: actions/checkout@v6
         with:
           path: ${{ env.book_folder }}
+
       - name: Checkout Index with Converter
         uses: actions/checkout@v6
         with:
           repository: originlab/originlab.github.io
           path: originlab.github.io
+
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.x'
+
       #- run: ls -l -R
+
       - name: Build the converter
         run: dotnet build -c $build_config originlab.github.io/converter/generator/generator.csproj
+
       - name: Test the converter
         if: ${{ inputs.run_tests }}
         run: dotnet run -c $build_config --project originlab.github.io/converter/tests/tests.csproj
+
       - name: Run the Converter
         run: dotnet "originlab.github.io/artifacts/bin/generator/$build_config_lower/generator.dll" "$book_folder" ${{ case(inputs.is_index, 'merge', '') }}
-      - name: Upload Pages artifact
-        if: ${{ inputs.upload_pages }}
+
+      - name: Upload converted artifact
+        if: ${{ inputs.upload_converted }}
         uses: actions/upload-artifact@v7
         with:
           name: converted
