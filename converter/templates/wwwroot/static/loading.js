@@ -30,6 +30,8 @@ async function fetchApplyLayout(layoutUrl, placeholderId, mainContentId) {
         var script = document.createElement("script");
         if (s.src != "") {
             script.async = false;
+            script.integrity = s.integrity;
+            script.crossOrigin = s.crossOrigin;
             script.src = s.src;
         } else {
             script.innerHTML = s.innerHTML;
