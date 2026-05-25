@@ -91,7 +91,7 @@ jobs:
       - name: Print converter output
         run: >
           gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log
-          | awk '/generator\.dll"/ {f=1} /upload-pages-artifact/ {f=0} f'
+          | awk '/generator\.dll"/ {f=1} /upload-artifact/ {f=0} f'
           | cut -f3- | cut -d' ' -f2-
       - name: Print the book artifact summary
         run: >
