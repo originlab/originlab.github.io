@@ -28,7 +28,7 @@ jobs:
 
       - name: Optimize text
         run: |
-          find pages/ -name "*.html" | parallel minify --html-keep-document-tags --html-keep-end-tags -o {} {}
+          find pages/ -name "*.html" | parallel minify --html-keep-document-tags --html-keep-end-tags --html-keep-whitespace -o {} {}
           find pages/ -name "*.css"  | parallel minify -o {} {}
           find pages/ -name "*.js"   | parallel minify -o {} {}
 
