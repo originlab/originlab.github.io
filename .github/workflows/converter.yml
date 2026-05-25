@@ -7,6 +7,8 @@ on:
         type: boolean
       is_index:
         type: boolean
+      is_optimizing:
+        type: boolean
       upload_converted:
         type: boolean
 
@@ -47,7 +49,10 @@ jobs:
         run: dotnet run -c $build_config --project originlab.github.io/converter/tests/tests.csproj
 
       - name: Run the Converter
-        run: dotnet "originlab.github.io/artifacts/bin/generator/$build_config_lower/generator.dll" "$book_folder" ${{ case(inputs.is_index, 'merge', '') }}
+        run: >
+          dotnet "originlab.github.io/artifacts/bin/generator/$build_config_lower/generator.dll" "$book_folder"
+            ${{ case(inputs.is_index, '--merge', '') }}
+            ${{ case(inputs.is_optimizing, '--optimizing', '') }}
 
       - name: Upload converted artifact
         if: ${{ inputs.upload_converted }}

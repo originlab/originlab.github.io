@@ -5,12 +5,17 @@ namespace OriginLab.DocumentGeneration;
 
 class Program
 {
-    async static Task Main(string[] args)
+    async static Task Main(string[] cmdArgs)
     {
-        var srcBookPath = Path.GetFullPath(args[0]);
+        if (CommandLine.Parser.Default.ParseArguments<ProgramArgs>(cmdArgs).Value is not ProgramArgs args)
+        {
+            return;
+        }
+
+        var srcBookPath = Path.GetFullPath(args.SourceBookPath);
         if (!Directory.Exists(srcBookPath))
         {
-            throw new ArgumentException("Expect book folder exists!", nameof(args));
+            throw new ArgumentException("Expect book folder exists!", nameof(cmdArgs));
         }
 
         var bookUrlName = Path.GetFileName(srcBookPath);
@@ -19,12 +24,12 @@ class Program
         var booksXmlPath = Path.GetFullPath("../../../books", Template.WebRootPath);
         if (!Directory.Exists(booksXmlPath))
         {
-            throw new ArgumentException("Expect the books folder exists!", nameof(args));
+            throw new ArgumentException("Expect the books folder exists!", nameof(cmdArgs));
         }
 
         var outputPath = Path.GetFullPath("../../../artifacts/public_html", Template.WebRootPath);
 
-        if (args.Length > 1 && args[1] == "merge")
+        if (args.Merge)
         {
             CopyContents(Template.WebRootPath, outputPath);
             CopyContents(booksXmlPath, Path.Combine(outputPath, "books"));
