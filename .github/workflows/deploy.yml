@@ -93,11 +93,9 @@ jobs:
           gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log
           | awk '/generator\.dll"/ {f=1} /upload-artifact/ {f=0} f'
           | cut -f3- | cut -d' ' -f2-
-      - name: Print the book artifact summary
+      - name: Print artifacts summary
         run: >
-          gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log
-          | awk '/Run actions\/upload-artifact|Finished uploading/{f=1} /Beginning upload|Artifact download/{f=0} f'
-          | cut -f3- | cut -d' ' -f2-
+          gh api /repos/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id/artifacts -q '.artifacts[] | {name:.name,mb:(.size_in_bytes/1024/1024 | round)}'
       
 
         
