@@ -20,12 +20,12 @@ jobs:
       - name: Optimize still images
         run: >
           find pages/ \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \)
-          | parallel -q 'cwebp -q 80 {} -o {.}.webp && rm {}'
+          | parallel sh -c 'cwebp -q 80 "$1" -o "${1%.*}.webp" && rm "$1"' _ {}
 
       - name: Optimize gif images
         run: >
           find pages/ -iname "*.gif"
-          | parallel -q 'gif2webp -q 80 {} -o {.}.webp && rm {}'
+          | parallel sh -c 'gif2webp -q 80 "$1" -o "${1%.*}.webp" && rm "$1"' _ {}
 
       - name: Optimize text
         run: |
