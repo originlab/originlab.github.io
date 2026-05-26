@@ -25,7 +25,7 @@ jobs:
       - name: Optimize gif images
         run: >
           find pages/ -iname "*.gif" -print0
-          | parallel -0 'gif2webp -lossless -q 100 {} -o {.}.webp && rm {} || echo "::warning::Skipped optimizing {}"'
+          | parallel -0 'gif2webp -min_size -q 100 {} -o {.}.webp && rm {} || echo "::warning::Skipped optimizing {}"'
 
       - name: Optimize text
         run: |
