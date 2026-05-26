@@ -17,6 +17,7 @@ jobs:
     with:
       run_tests: ${{ inputs.is_index }}
       is_index: ${{ inputs.is_index }}
+      is_optimizing: true
       upload_converted: true
 
   optimize:

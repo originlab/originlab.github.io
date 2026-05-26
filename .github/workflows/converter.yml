@@ -52,7 +52,7 @@ jobs:
         run: |
           dotnet "originlab.github.io/artifacts/bin/generator/$build_config_lower/generator.dll" "$book_folder" \
             ${{ case(inputs.is_index, '--merge', '') }} \
-            ${{ case(inputs.is_optimizing, '--optimizing', '') }}
+            ${{ case(inputs.is_optimizing, '--webp', '') }}
 
       - name: Upload converted artifact
         if: ${{ inputs.upload_converted }}

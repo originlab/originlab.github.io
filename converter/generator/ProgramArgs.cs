@@ -11,5 +11,5 @@ internal class ProgramArgs
     public bool Merge { get; init; }
 
     [Option]
-    public bool Optimizing { get; init; }
+    public bool Webp { get; init; }
 }

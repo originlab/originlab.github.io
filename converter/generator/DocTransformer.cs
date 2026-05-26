@@ -36,6 +36,8 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     private readonly Dictionary<string, (long size, ulong hash, string url)> EnglishImages = new(StringComparer.OrdinalIgnoreCase);
 
+    private readonly bool UseWebp;
+
     private readonly ProblemRecorder Problems;
 
     #region Language specific members
@@ -50,13 +52,14 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     protected DocTransformer(DocTransformerArgs args, ProblemRecorder problems)
     {
-        var (sourceFolder, outputFolder, booksXmlFolder, bookUrlName) = args;
+        var (sourceFolder, outputFolder, booksXmlFolder, bookUrlName, useWebp) = args;
 
         SourceFolder = sourceFolder;
         SourceFolderEn = Path.Combine(sourceFolder, "en");
         OutputFolder = outputFolder;
         BooksXmlFolder = booksXmlFolder;
         BookUrlName = bookUrlName;
+        UseWebp = useWebp;
 
         Problems = problems;
 
@@ -582,6 +585,22 @@ internal abstract partial class DocTransformer : IDocTransformer
 
                 url = '/'.TryPrefixEach(BookUrlName, "en", srcFull["../".Length..]);
                 copy = false;
+            }
+
+            if (UseWebp)
+            {
+                sep = url.AsSpan().IndexOfAny("?#");
+
+                if (sep > -1)
+                {
+                    var dot = url.AsSpan(..sep).LastIndexOf('.');
+                    url = $"{url.AsSpan(..dot)}.webp{url.AsSpan(sep)}";
+                }
+                else
+                {
+                    var dot = url.AsSpan().LastIndexOf('.');
+                    url = $"{url.AsSpan(..dot)}.webp";
+                }
             }
 
             img.SetAttribute("src", url);

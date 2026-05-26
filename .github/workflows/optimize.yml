@@ -15,16 +15,17 @@ jobs:
 
       - name: Install tools
         run: |
-          sudo apt-get install -y ripgrep
-          oxipng_download_url=$(curl -s https://api.github.com/repos/oxipng/oxipng/releases/latest | rg -o -r '$1' '"browser_download_url":\s"(.+_amd64\.deb)"')
-          wget $oxipng_download_url
-          sudo apt-get install ./oxipng_*.deb
-          sudo apt-get install -y gifsicle minify parallel
+          sudo apt-get install -y webp minify parallel
 
-      - name: Optimize images
-        run: |
-          find pages/ -name "*.png" | parallel oxipng --strip safe {}
-          #find pages/ -name "*.gif" | parallel gifsicle --batch -O3 {}
+      - name: Optimize still images
+        run: >
+          find pages/ \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" \)
+          | parallel 'cwebp -q 80 "{}" -o "{.}.webp" && rm "{}"'
+
+      - name: Optimize gif images
+        run: >
+          find pages/ -name "*.gif"
+          | parallel 'gif2webp -q 80 "{}" -o "{.}.webp" && rm "{}"'
 
       - name: Optimize text
         run: |
