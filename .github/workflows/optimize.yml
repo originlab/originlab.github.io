@@ -23,10 +23,9 @@ jobs:
           | parallel -0 'cwebp -q 90 {} -o {.}.webp && rm {}'
 
       - name: Optimize gif images
-        if: false
         run: >
           find pages/ -iname "*.gif" -print0
-          | parallel -0 'mogrify -format webp -quality 90 {} && rm {}'
+          | parallel -0 'mogrify -coalesce -format webp -quality 90 {} && rm {}'
 
       - name: Optimize text
         run: |
