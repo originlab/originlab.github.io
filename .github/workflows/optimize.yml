@@ -1,4 +1,4 @@
-name: Build and run the converter
+name: Optimize the converter output
 
 on:
   workflow_call:
