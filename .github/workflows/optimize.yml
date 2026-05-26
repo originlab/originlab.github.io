@@ -18,13 +18,13 @@ jobs:
           sudo apt-get install -y webp minify parallel
 
       - name: Optimize still images
-        run: >
-          find pages/ \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \)
+        run: |
+          find pages/ \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) \
           | parallel sh -c 'cwebp -q 80 "$1" -o "${1%.*}.webp" && rm "$1"' _ {}
 
       - name: Optimize gif images
-        run: >
-          find pages/ -iname "*.gif"
+        run: |
+          find pages/ -iname "*.gif" \
           | parallel sh -c 'gif2webp -q 80 "$1" -o "${1%.*}.webp" && rm "$1"' _ {}
 
       - name: Optimize text
