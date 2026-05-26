@@ -25,7 +25,7 @@ jobs:
       - name: Optimize gif images
         run: >
           find pages/ -iname "*.gif" -print0
-          | parallel -0 'gif2webp -q 80 {} -o {.}.webp && rm {}'
+          | parallel -0 'mogrify -format webp {} && rm {}'
 
       - name: Optimize text
         run: |
