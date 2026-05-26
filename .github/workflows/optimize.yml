@@ -20,12 +20,12 @@ jobs:
       - name: Optimize still images
         run: >
           find pages/ \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) -print0
-          | parallel -0 'cwebp -q 90 {} -o {.}.webp && rm {}'
+          | parallel -0 'cwebp -lossless -q 100 {} -o {.}.webp && rm {}'
 
       - name: Optimize gif images
         run: >
           find pages/ -iname "*.gif" -print0
-          | parallel -0 'mogrify -coalesce -format webp -quality 90 {} && rm {}'
+          | parallel -0 'mogrify -coalesce -format webp -define webp:lossless=true {} && rm {}'
 
       - name: Optimize text
         run: |
