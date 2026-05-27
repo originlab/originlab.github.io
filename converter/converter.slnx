@@ -8,6 +8,7 @@
     <File Path="../.github/workflows/deploy.yml" />
     <File Path="../.github/workflows/optimize.yml" />
     <File Path="../.github/workflows/publish_book.yml" />
+    <File Path="../.github/workflows/publish_index.yml" />
   </Folder>
   <Project Path="generator/generator.csproj" />
   <Project Path="templates/templates.csproj" />

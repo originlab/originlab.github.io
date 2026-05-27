@@ -1,0 +1,12 @@
+name: Publish only index to Pages
+
+on:
+  workflow_call:  
+  workflow_dispatch:
+
+jobs:
+  
+  run:
+    uses: ./.github/workflows/publish_book.yml
+    with:
+      is_index: true

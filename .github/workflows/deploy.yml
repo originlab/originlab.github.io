@@ -11,9 +11,7 @@ on:
 jobs:
   
   publish_index:
-    uses: ./.github/workflows/publish_book.yml
-    with:
-      is_index: true
+    uses: ./.github/workflows/publish_index.yml
 
   setup_array:
     runs-on: ubuntu-slim
