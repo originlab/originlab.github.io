@@ -69,7 +69,7 @@ jobs:
           retention-days: 1
 
   get_result:
-    name: ${{ matrix.site }} deployment
+    name: Watch ${{ matrix.site }} deployment
     needs: [setup_array, start_array]
     runs-on: ubuntu-slim
     environment: deploy_watch
@@ -91,16 +91,16 @@ jobs:
 
       - name: Print converter output
         run: |
-          echo '# Converter output'
+          echo '# Converter output' >> "$GITHUB_STEP_SUMMARY"
           gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log \
           | awk '/generator\.dll"/ {f=1} /upload-artifact/ {f=0} f' \
           | cut -f3- | cut -d' ' -f2- \
           | sed -E \
-            -e "s/"$'\x1b'"\[[0-9;]*[a-zA-Z]//g" \
             -e 's/\r//g' \
+            -e "s/\^\[\[[0-9;]*[a-zA-Z]//g' \
             -e 's/^##\[group\](.*)/<details><summary><b>\1<\/b><\/summary><pre>/g' \
             -e 's/^##\[endgroup\]/<\/pre><\/details>/g' \
-            -e 's/^##\[warning\](.*)/<blockquote><b>Warning:<\/b> \1<\/blockquote>/g' \
+            -e 's/^##\[warning\](.*)/> [!WARNING]\n> \1/g' \
           >> "$GITHUB_STEP_SUMMARY"
 
       - name: Print artifacts summary
