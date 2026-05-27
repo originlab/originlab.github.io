@@ -6,7 +6,6 @@
   <Folder Name="/Solution Items/Workflows/">
     <File Path="../.github/workflows/converter.yml" />
     <File Path="../.github/workflows/deploy.yml" />
-    <File Path="../.github/workflows/optimize.yml" />
     <File Path="../.github/workflows/publish_book.yml" />
     <File Path="../.github/workflows/publish_index.yml" />
   </Folder>
