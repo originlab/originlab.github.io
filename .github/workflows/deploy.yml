@@ -127,7 +127,7 @@ jobs:
             -e 's/\^\[\[[0-9;]*[a-zA-Z]//g' \
             -e 's/^##\[group\](.*)/<details><summary>\1<\/summary><pre>/g' \
             -e 's/^##\[endgroup\]/<\/pre><\/details>/g' \
-            -e 's/^##\[notice\](.*)/> [!NOTICE]\n> \1/g' \
+            -e 's/^##\[notice\](.*)/> [!NOTE]\n> \1/g' \
             -e 's/^##\[warning\](.*)/> [!WARNING]\n> \1/g' \
           >> "$GITHUB_STEP_SUMMARY"
 
