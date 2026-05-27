@@ -87,12 +87,15 @@ jobs:
       - name: Set $build_job_id
         run: echo "build_job_id=$(gh run view $deploy_run_id -R originlab/${{ matrix.site }} | grep 'publish_book / convert' | grep -oP '\(ID \K\d+')" >> "$GITHUB_ENV"
       - name: Print converter output
-        run: >
-          gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log
-          | awk '/generator\.dll"/ {f=1} /upload-artifact/ {f=0} f'
+        run: |
+          gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log \
+          | awk '/generator\.dll"/ {f=1} /upload-artifact/ {f=0} f' \
           | cut -f3- | cut -d' ' -f2-
       - name: Print artifacts summary
-        run: >
-          gh api /repos/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id/artifacts -q '.artifacts[] | {name:.name,mb:(.size_in_bytes/1024/1024 | round)}'      
-          >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          echo '# Artifacts' >> "$GITHUB_STEP_SUMMARY"
+          echo '| Name | Size (MB) |' >> "$GITHUB_STEP_SUMMARY"
+          echo '| :--- | :---: |' >> "$GITHUB_STEP_SUMMARY"
+          gh api /repos/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id/artifacts \
+            -q '[.artifacts[]] | sort_by(.size_in_bytes) | reverse | .[] | "| \(.name) | \((.size_in_bytes/1024/1024*10|round)/10) MB |"' >> "$GITHUB_STEP_SUMMARY"
         

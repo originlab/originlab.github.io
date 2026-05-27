@@ -14,7 +14,7 @@ on:
 
 jobs:
   
-  run:
+  build_and_run:
     env:
       build_config: Release
       book_folder: ${{ github.event.repository.name }}${{ case(inputs.is_index, '/index', '') }}
