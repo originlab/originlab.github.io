@@ -37,12 +37,12 @@ jobs:
       - name: Optimize still images
         run: >
           find pages/ \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) -print0
-          | parallel -0 'cwebp -lossless -q 100 {} -o {.}.webp && rm {}'
+          | parallel -0 'cwebp -quiet -lossless -q 100 {} -o {.}.webp && rm {} || echo "::warning::Skipped optimizing {}"'
 
       - name: Optimize gif images
         run: >
           find pages/ -iname "*.gif" -print0
-          | parallel -0 'gif2webp -min_size -q 100 {} -o {.}.webp && rm {} || echo "::warning::Skipped optimizing {}"'
+          | parallel -0 'gif2webp -quiet -min_size -q 100 {} -o {.}.webp && rm {} || echo "::warning::Skipped optimizing {}"'
 
       - name: Optimize text
         run: |

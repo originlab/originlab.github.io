@@ -79,19 +79,32 @@ jobs:
       matrix:
         site: ${{ fromJson(needs.setup_array.outputs.sites) }}
     steps:
-      - uses: actions/download-artifact@v8
+      - name: Download run_id-${{ matrix.site }}
+        uses: actions/download-artifact@v8
         with:
           name: run_id-${{ matrix.site }}
+
       - name: Set $deploy_run_id
         run: echo "deploy_run_id=$(cat run_id.txt)" >> "$GITHUB_ENV"
+
+      - name: Delete run_id-${{ matrix.site }}
+        run: |
+          gh api /repos/originlab/originlab.github.io/actions/runs/$GITHUB_RUN_ID/artifacts \
+            -q '.artifacts[] | select(.name == "run_id-${{ matrix.site }}") | .id' \
+          | xargs -I {} gh api --method DELETE /repos/originlab/originlab.github.io/actions/artifacts/{}
+
       - name: Watch the deployment
         run: gh run watch $deploy_run_id -R originlab/${{ matrix.site }} -i 10 --exit-status
+
       - name: Set $build_job_id
         run: echo "build_job_id=$(gh run view $deploy_run_id -R originlab/${{ matrix.site }} | grep 'publish_book / convert' | grep -oP '\(ID \K\d+')" >> "$GITHUB_ENV"
 
-      - name: Print converter output
+      - name: Set $optimize_job_id
+        run: echo "optimize_job_id=$(gh run view $deploy_run_id -R originlab/${{ matrix.site }} | grep 'publish_book / optimize' | grep -oP '\(ID \K\d+')" >> "$GITHUB_ENV"
+
+      - name: Summarize the converter run
         run: |
-          echo '# Converter output' >> "$GITHUB_STEP_SUMMARY"
+          echo '# Converter run' >> "$GITHUB_STEP_SUMMARY"
           gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log \
           | awk '/generator\.dll"/ {f=1} /upload-artifact/ {f=0} f' \
           | cut -f3- | cut -d' ' -f2- \
@@ -103,7 +116,22 @@ jobs:
             -e 's/^##\[warning\](.*)/> [!WARNING]\n> \1/g' \
           >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Print artifacts summary
+      - name: Summarize the optimization run
+        run: |
+          echo '# Optimization run' >> "$GITHUB_STEP_SUMMARY"
+          gh run view $deploy_run_id -j $optimize_job_id -R originlab/${{ matrix.site }} --log \
+          | awk '/find pages\// {f=1} /upload-artifact/ {f=0} f' \
+          | cut -f3- | cut -d' ' -f2- \
+          | grep '##[warning]' \
+          | sed -E \
+            -e 's/\r//g' \
+            -e 's/\^\[\[[0-9;]*[a-zA-Z]//g' \
+            -e 's/^##\[group\](.*)/<details><summary>\1<\/summary><pre>/g' \
+            -e 's/^##\[endgroup\]/<\/pre><\/details>/g' \
+            -e 's/^##\[warning\](.*)/> [!WARNING]\n> \1/g' \
+          >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Summarize artifacts
         run: |
           echo '# Artifacts' >> "$GITHUB_STEP_SUMMARY"
           echo '| Name | Size |' >> "$GITHUB_STEP_SUMMARY"
@@ -115,9 +143,3 @@ jobs:
               else
                 "| \(.name) | \((.size_in_bytes/1024/1024*10|round)/10) MB |"
               end' >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Clean up
-        run: |
-          gh api /repos/originlab/originlab.github.io/actions/runs/$GITHUB_RUN_ID/artifacts \
-            -q '.artifacts[] | select(.name == "run_id-${{ matrix.site }}") | .id' \
-          | xargs -I {} gh api --method DELETE /repos/originlab/originlab.github.io/actions/artifacts/{}
