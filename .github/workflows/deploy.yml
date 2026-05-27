@@ -120,4 +120,4 @@ jobs:
         run: |
           gh api repos/originlab/originlab.github.io/actions/runs/$GITHUB_RUN_ID/artifacts \
             -q --arg target "run_id-${{ matrix.site }}" '.artifacts[] | select(.name == $target) | .id' \
-          | xargs -I {} gh api -X DELETE repos/originlab/originlab.github.io/artifacts/{}
+          | xargs -I {} gh api --method DELETE repos/originlab/originlab.github.io/artifacts/{}
