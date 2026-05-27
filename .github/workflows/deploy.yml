@@ -98,7 +98,7 @@ jobs:
           | sed -E \
             -e 's/\r//g' \
             -e 's/\^\[\[[0-9;]*[a-zA-Z]//g' \
-            -e 's/^##\[group\](.*)/<details><summary><b>\1<\/b><\/summary><pre>/g' \
+            -e 's/^##\[group\](.*)/<details><summary>\1<\/summary><pre>/g' \
             -e 's/^##\[endgroup\]/<\/pre><\/details>/g' \
             -e 's/^##\[warning\](.*)/> [!WARNING]\n> \1/g' \
           >> "$GITHUB_STEP_SUMMARY"
@@ -107,7 +107,7 @@ jobs:
         run: |
           echo '# Artifacts' >> "$GITHUB_STEP_SUMMARY"
           echo '| Name | Size |' >> "$GITHUB_STEP_SUMMARY"
-          echo '| :--- | :---: |' >> "$GITHUB_STEP_SUMMARY"
+          echo '| :--- | ---: |' >> "$GITHUB_STEP_SUMMARY"
           gh api /repos/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id/artifacts \
             -q '[.artifacts[]] | sort_by(.size_in_bytes) | reverse | .[] |
               if .size_in_bytes < 1048576 then
