@@ -55,7 +55,7 @@ jobs:
 
       - name: Optimize gif images
         run: |
-          find pages/ -iname "*.gif" -print0 | \  
+          find pages/ -iname "*.gif" -print0 | \
           parallel -0 '
             file="{}"
             output="{.}.webp"
