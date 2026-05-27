@@ -93,7 +93,6 @@ jobs:
           | cut -f3- | cut -d' ' -f2-
       - name: Print artifacts summary
         run: >
-          gh api /repos/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id/artifacts -q '.artifacts[] | {name:.name,mb:(.size_in_bytes/1024/1024 | round)}'
-      
-
+          gh api /repos/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id/artifacts -q '.artifacts[] | {name:.name,mb:(.size_in_bytes/1024/1024 | round)}'      
+          >> "$GITHUB_STEP_SUMMARY"
         
