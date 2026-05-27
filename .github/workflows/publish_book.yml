@@ -35,14 +35,36 @@ jobs:
           sudo apt-get install -y webp minify parallel
 
       - name: Optimize still images
-        run: >
-          find pages/ \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) -print0
-          | parallel -0 'cwebp -quiet -lossless -q 100 {} -o {.}.webp && rm {} || echo "::warning::Skipped optimizing {}"'
+        run: |
+          find pages/ \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) -print0 \
+          | parallel -0 << 'EOF'
+              msg=$(cwebp -quiet -lossless -q 100 {} -o {.}.webp 2>&1 >/dev/null)
+              status=$?
+              if [ $status -eq 0 ]; then
+                rm {}
+                if [ -n "$msg" ]; then
+                  echo "::notice::Optimized {}, but had warnings: $msg"
+                fi
+              else
+                echo "::warning::Skipped optimizing {} because $msg"
+              fi
+          EOF
 
       - name: Optimize gif images
-        run: >
-          find pages/ -iname "*.gif" -print0
-          | parallel -0 'gif2webp -quiet -min_size -q 100 {} -o {.}.webp && rm {} || echo "::warning::Skipped optimizing {}"'
+        run: |
+          find pages/ -iname "*.gif" -print0 \
+          | parallel -0 << 'EOF'
+              msg=$(gif2webp -quiet -min_size -q 100 {} -o {.}.webp 2>&1 >/dev/null)
+              status=$?
+              if [ $status -eq 0 ]; then
+                rm {}
+                if [ -n "$msg" ]; then
+                  echo "::notice::Optimized {}, but had warnings: $msg"
+                fi
+              else
+                echo "::warning::Skipped optimizing {} because $msg"
+              fi
+          EOF
 
       - name: Optimize text
         run: |
