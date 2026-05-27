@@ -94,8 +94,13 @@ jobs:
       - name: Print artifacts summary
         run: |
           echo '# Artifacts' >> "$GITHUB_STEP_SUMMARY"
-          echo '| Name | Size (MB) |' >> "$GITHUB_STEP_SUMMARY"
+          echo '| Name | Size |' >> "$GITHUB_STEP_SUMMARY"
           echo '| :--- | :---: |' >> "$GITHUB_STEP_SUMMARY"
           gh api /repos/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id/artifacts \
-            -q '[.artifacts[]] | sort_by(.size_in_bytes) | reverse | .[] | "| \(.name) | \((.size_in_bytes/1024/1024*10|round)/10) MB |"' >> "$GITHUB_STEP_SUMMARY"
+            -q '[.artifacts[]] | sort_by(.size_in_bytes) | reverse | .[] |
+              if .size_in_bytes < 1048576 then
+                "| \(.name) | \((.size_in_bytes/1024*10|round)/10) KB |"
+              else
+                "| \(.name) | \((.size_in_bytes/1024/1024*10|round)/10) MB |"
+              end' >> "$GITHUB_STEP_SUMMARY"
         
