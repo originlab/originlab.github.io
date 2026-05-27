@@ -119,5 +119,5 @@ jobs:
       - name: Clean up
         run: |
           gh api repos/originlab/originlab.github.io/actions/runs/$GITHUB_RUN_ID/artifacts \
-            -q --arg target "run_id-${{ matrix.site }}" '.artifacts[] | select(.name == $target) | .id' \
+            -q ".artifacts[] | select(.name == \"run_id-${{ matrix.site }}\") | .id" \
           | xargs -I {} gh api --method DELETE repos/originlab/originlab.github.io/artifacts/{}
