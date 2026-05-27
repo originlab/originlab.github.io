@@ -116,12 +116,8 @@ jobs:
                 "| \(.name) | \((.size_in_bytes/1024/1024*10|round)/10) MB |"
               end' >> "$GITHUB_STEP_SUMMARY"
 
-  cleanup:
-    needs: get_result
-    runs-on: ubuntu-slim
-    steps:
-      - name: Delete run_id-* artifacts
+      - name: Clean up
         run: |
           gh api repos/originlab/originlab.github.io/actions/runs/$GITHUB_RUN_ID/artifacts \
-            -q '.artifacts[] | select(.name | startswith("run_id-")) | .id' \
+            -q --arg target "run_id-${{ matrix.site }}" '.artifacts[] | select(.name == $target) | .id' \
           | xargs -I {} gh api -X DELETE repos/originlab/originlab.github.io/artifacts/{}
