@@ -36,7 +36,7 @@ jobs:
 
       - name: Optimize still images
         run: |
-          parallel -0 -a < (find pages/ \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) -print0) << 'EOF'
+          parallel -0 -a <(find pages/ \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) -print0) << 'EOF'
             msg=$(cwebp -quiet -lossless -q 100 {} -o {.}.webp 2>&1 >/dev/null)
             status=$?
             if [ $status -eq 0 ]; then
@@ -51,7 +51,7 @@ jobs:
 
       - name: Optimize gif images
         run: |
-          parallel -0 -a < (find pages/ -iname "*.gif" -print0) << 'EOF'
+          parallel -0 -a <(find pages/ -iname "*.gif" -print0) << 'EOF'
             msg=$(gif2webp -quiet -min_size -q 100 {} -o {.}.webp 2>&1 >/dev/null)
             status=$?
             if [ $status -eq 0 ]; then
