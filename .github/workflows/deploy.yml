@@ -144,9 +144,9 @@ jobs:
                   for (msg in count) {
                     print "\n> [!WARNING]"
                     print "> " count[msg] " file(s) were skipped because `" msg "`\n"
-                    print "<details><summary>Show affected files</summary><pre>\n"
+                    print "<details><summary>Show affected files</summary>\n```\n"
                     print files[msg]
-                    print "</pre></details>"
+                    print "```</details>"
                   }
                 }
               ' >> "$GITHUB_STEP_SUMMARY"
@@ -165,9 +165,9 @@ jobs:
                   for (msg in count) {
                     print "\n> [!NOTE]"
                     print "> " count[msg] " file(s) were optimized despite `" msg "`\n"
-                    print "<details><summary>Show affected files</summary><pre>\n"
+                    print "<details><summary>Show affected files</summary>\n```\n"
                     print files[msg]
-                    print "</pre></details>"
+                    print "```</details>"
                   }
                 }
               ' >> "$GITHUB_STEP_SUMMARY"
