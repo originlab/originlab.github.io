@@ -136,10 +136,10 @@ jobs:
 
             if [ -n "$notices" ]; then
               {
-                echo -e '> [!NOTE]\n> Some files had warnings\n'
-                echo -e '<details><summary>Details</summary><pre>\n'
-                echo "$notices" | sed -E 's/^##\[notice\](.*)/- \1\n/'
-                echo -e "</pre></details>"
+                printf '> [!NOTE]\n> Some files had warnings\n'
+                printf '<details><summary>Details</summary><pre>\n'
+                echo "$notices" | sed -E 's/^##\[notice\](.*)/- \1/'
+                echo '</pre></details>'
               } >> "$GITHUB_STEP_SUMMARY"
             fi
           fi

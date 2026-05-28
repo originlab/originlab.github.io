@@ -47,10 +47,10 @@ jobs:
             if [ $status -eq 0 ]; then
               rm "$file"
               if [ -n "$msg" ]; then
-                echo "::notice file=$file::$msg"
+                echo "::notice file=$file::Optimized `$file` but `$msg`"
               fi
             else
-              echo "::warning file=$file::Skipped because $msg"
+              echo "::warning file=$file::Skipped `$file` because `$msg`"
             fi'
 
       - name: Optimize gif images
@@ -66,10 +66,10 @@ jobs:
             if [ $status -eq 0 ]; then
               rm "$file"
               if [ -n "$msg" ]; then
-                echo "::notice file=$file::$msg"
+                echo "::notice file=$file::Optimized `$file` but `$msg`"
               fi
             else
-              echo "::warning file=$file::Skipped because $msg"
+              echo "::warning file=$file::Skipped `$file` because `$msg`"
             fi'
 
       - name: Optimize text
