@@ -119,10 +119,10 @@ jobs:
       - name: Summarize the optimization run
         run: |
           echo '# Optimization run' >> "$GITHUB_STEP_SUMMARY"
-          opt_log = $(gh run view $deploy_run_id -j $optimize_job_id -R originlab/${{ matrix.site }} --log \
-                      | awk '/find pages\// {f=1} /upload-artifact/ {f=0} f' \
-                      | cut -f3- | cut -d' ' -f2- \
-                      | sed -E -e 's/\r//g' -e 's/\^\[\[[0-9;]*[a-zA-Z]//g')
+          opt_log=$(gh run view $deploy_run_id -j $optimize_job_id -R originlab/${{ matrix.site }} --log \
+                    | awk '/find pages\// {f=1} /upload-artifact/ {f=0} f' \
+                    | cut -f3- | cut -d' ' -f2- \
+                    | sed -E -e 's/\r//g' -e 's/\^\[\[[0-9;]*[a-zA-Z]//g')
 
           echo "$opt_log" | grep '^##\[warning\]' | sed -E 's/^##\[warning\](.*)/\n> [!WARNING]\n> \1/' >> "$GITHUB_STEP_SUMMARY"
 
@@ -131,7 +131,6 @@ jobs:
             echo "$opt_log" | grep '^##\[notice\]' | sed -E 's/^##\[notice\](.*)/- \1\n/' >> "$GITHUB_STEP_SUMMARY"
             echo -e "\n</pre></details>" >> "$GITHUB_STEP_SUMMARY"
           fi
-          >> "$GITHUB_STEP_SUMMARY"
 
       - name: Summarize artifacts
         run: |
