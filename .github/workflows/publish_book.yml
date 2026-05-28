@@ -37,8 +37,27 @@ jobs:
         run: |
           sudo apt-get install -y webp minify parallel
 
+      - name: Setup Optimization Helpers
+        run: |
+          cat << 'EOF' > helpers.sh
+          log_msg() {
+            local status=$1; local file=$2; local msg=$3
+            if [ $status -eq 0 ]; then
+              if [ -n "$msg" ]; then
+                echo "::notice file=$file::Optimized \`$file\` despite \`$msg\`"
+              fi
+            else
+              echo "::warning file=$file::Skipped \`$file\` because \`$msg\`"
+            fi
+          }
+          export -f log_msg
+          EOF
+          chmod +x helpers.sh
+
       - name: Optimize still images
         run: |
+          source ./helpers.sh
+
           find pages/ \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) -print0 | \
           parallel -0 -q bash -c '
             file="{}"
@@ -47,17 +66,17 @@ jobs:
             msg=$(cwebp -quiet -lossless -q 100 "$file" -o "$output" 2>&1 >/dev/null)
             status=$?
 
-            if [ $status -eq 0 ]; then
-              rm "$file"
-              if [ -n "$msg" ]; then
-                echo "::notice file=$file::Optimized \`$file\` despite \`$msg\`"
-              fi
-            else
-              echo "::warning file=$file::Skipped \`$file\` because \`$msg\`"
-            fi'
+            if [ $status -eq 0 ]; then rm "$file"; fi
+            log_msg $status "$file" "$msg"
+          '
+
+          # Need some single quote to workaround a VS colorizer bug
+          echo 'Done.'
 
       - name: Optimize gif images
         run: |
+          source ./helpers.sh
+
           find pages/ -iname "*.gif" -print0 | \
           parallel -0 -q bash -c '
             file="{}"
@@ -66,20 +85,30 @@ jobs:
             msg=$(gif2webp -quiet -min_size -q 100 "$file" -o "$output" 2>&1 >/dev/null)
             status=$?
 
-            if [ $status -eq 0 ]; then
-              rm "$file"
-              if [ -n "$msg" ]; then
-                echo "::notice file=$file::Optimized \`$file\` despite \`$msg\`"
-              fi
-            else
-              echo "::warning file=$file::Skipped \`$file\` because \`$msg\`"
-            fi'
+            if [ $status -eq 0 ]; then rm "$file"; fi
+            log_msg $status "$file" "$msg"
+          '
+
+          # Need some single quote to workaround a VS colorizer bug
+          echo 'Done.'
 
       - name: Optimize text
         run: |
-          find pages/ -name "*.html" | parallel minify --quiet --html-keep-document-tags --html-keep-end-tags --html-keep-whitespace -o {} {}
-          find pages/ -name "*.css"  | parallel minify --quiet -o {} {}
-          find pages/ -name "*.js"   | parallel minify --quiet -o {} {}
+          source ./helpers.sh
+
+          find pages/ \( -name "*.html" -o -name "*.css" -o -name "*.js" \) -print0 | \
+          parallel -0 -q bash -c '
+            file="{}"
+            if [[ "$file" == *.html ]]; then
+              msg=$(minify --quiet --html-keep-document-tags --html-keep-end-tags --html-keep-whitespace -o "$file" "$file" 2>&1)
+            else
+              msg=$(minify --quiet -o "$file" "$file" 2>&1)
+            fi
+            log_msg $? "$file" "$msg"
+          '
+
+          # Need some single quote to workaround a VS colorizer bug
+          echo 'Done.'
 
       - name: Upload optimized artifact
         uses: actions/upload-artifact@v7
