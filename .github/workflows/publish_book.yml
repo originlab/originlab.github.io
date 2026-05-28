@@ -41,16 +41,16 @@ jobs:
             file="{}"
             output="{.}.webp"
 
-            err=$(cwebp -quiet -lossless -q 100 "$file" -o "$output" 2>&1 >/dev/null)
+            msg=$(cwebp -quiet -lossless -q 100 "$file" -o "$output" 2>&1 >/dev/null)
             status=$?
 
             if [ $status -eq 0 ]; then
               rm "$file"
-              if [ -n "$err" ]; then
-                echo "::notice::Optimized $file, but had warnings 👉 $err"
+              if [ -n "$msg" ]; then
+                echo "::notice file=$file::$msg"
               fi
             else
-              echo "::warning::Skipped optimizing $file because 👉 $err"
+              echo "::warning file=$file::Skipped because $msg"
             fi'
 
       - name: Optimize gif images
@@ -60,16 +60,16 @@ jobs:
             file="{}"
             output="{.}.webp"
 
-            err=$(gif2webp -quiet -min_size -q 100 "$file" -o "$output" 2>&1 >/dev/null)
+            msg=$(gif2webp -quiet -min_size -q 100 "$file" -o "$output" 2>&1 >/dev/null)
             status=$?
 
             if [ $status -eq 0 ]; then
               rm "$file"
-              if [ -n "$err" ]; then
-                echo "::notice::Optimized $file, but had warnings 👉 $err"
+              if [ -n "$msg" ]; then
+                echo "::notice file=$file::$msg"
               fi
             else
-              echo "::warning::Skipped optimizing $file because 👉 $err"
+              echo "::warning file=$file::Skipped because $msg"
             fi'
 
       - name: Optimize text
