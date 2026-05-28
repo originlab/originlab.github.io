@@ -131,41 +131,46 @@ jobs:
             printf "All images are optimized without problems.\n" >> "$GITHUB_STEP_SUMMARY"
           else
             if [ -n "$warnings" ]; then
-              echo "$warnings" | awk '
-                match($0, /^##\[warning\]Skipped `([^`]+)` because `([^`]+)`/, arr) {
-                  file = arr[1]
-                  msg = arr[2]
-                  count[msg]++
-                  files[msg] = (files[msg] == "" ? "" : files[msg] "\n") "- `" file "`"
+              echo "$warnings" | sed -E 's/^##\[warning\]Skipped `(.*)` because `(.*)`/\2|||\1/' \
+              | awk -F'|||' '
+                {
+                  msg = $1; file = $2
+                  if (msg != "" && file != "") {
+                    count[msg]++
+                    files[msg] = (files[msg] == "" ? "" : files[msg] "\n") "- `" file "`"
+                  }
                 }
                 END {
                   for (msg in count) {
                     print "\n> [!WARNING]"
-                    print "> " count[msg] "x Skipped because " msg "\n"
-                    print "<details><summary>Show files</summary>\n"
+                    print "> " count[msg] "x Skipped because: " msg "\n"
+                    print "<details><summary>Show affected files</summary>\n"
                     print files[msg]
                     print "\n</details>"
                   }
-                }' >> "$GITHUB_STEP_SUMMARY"
+                }
+              ' >> "$GITHUB_STEP_SUMMARY"
             fi
-
             if [ -n "$notices" ]; then
-              echo "$notices" | awk '
-                match($0, /^##\[notice\]Optimized `([^`]+)` despite `([^`]+)`/, arr) {
-                  file = arr[1]
-                  msg = arr[2]
-                  count[msg]++
-                  files[msg] = (files[msg] == "" ? "" : files[msg] "\n") "- `" file "`"
+              echo "$notices" | sed -E 's/^##\[notice\]Optimized `(.*)` despite `(.*)`/\2|||\1/' \
+              | awk -F'|||' '
+                {
+                  msg = $1; file = $2
+                  if (msg != "" && file != "") {
+                    count[msg]++
+                    files[msg] = (files[msg] == "" ? "" : files[msg] "\n") "- `" file "`"
+                  }
                 }
                 END {
                   for (msg in count) {
                     print "\n> [!NOTE]"
                     print "> Files optimized despite " count[msg] "x " msg "\n"
-                    print "<details><summary>Show files</summary>\n"
+                    print "<details><summary>Show affected files</summary>\n"
                     print files[msg]
                     print "\n</details>"
                   }
-                }' >> "$GITHUB_STEP_SUMMARY"
+                }
+              ' >> "$GITHUB_STEP_SUMMARY"
             fi
           fi
 
