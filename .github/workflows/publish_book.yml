@@ -6,10 +6,6 @@ on:
       is_index:
         type: boolean
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
   
   convert:
@@ -87,6 +83,9 @@ jobs:
 
   deploy:
     needs: optimize
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
     runs-on: ubuntu-slim
     permissions:
       contents: read
