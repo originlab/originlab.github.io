@@ -131,44 +131,61 @@ jobs:
             printf "All files are optimized without problems.\n" >> "$GITHUB_STEP_SUMMARY"
           else
             if [ -n "$warnings" ]; then
-              echo "$warnings" | sed -E 's/^##\[warning\]Skipped `(.*)` because `(.*)`/\2\t\1/' \
+              echo "$warnings" \
+              | sed -E 's/^##\[warning\]Skipped `(.*)` because `(.*)`/\2\t\1/' \
               | awk -F'\t' '
                 {
                   msg = $1; file = $2
                   if (msg != "" && file != "") {
                     count[msg]++
-                    files[msg] = files[msg] "- " file "\n"
+                    files[msg] = files[msg] "#" file
                   }
                 }
                 END {
                   for (msg in count) {
-                    print "\n> [!WARNING]"
-                    print "> " count[msg] " file(s) were skipped because `" msg "`\n"
-                    print "<details><summary>Show affected files</summary>\n"
-                    print files[msg]
-                    print "</details>"
+                    print count[msg] "\t" msg "\t" files[msg]
                   }
+                }
+              ' \
+              | sort -rn -t$'\t' -k1,1 \
+              | awk -F'\t' '
+                {
+                  cnt = $1; msg = $2; fls = $3
+                  gsub(/#/, "\n- ", fls)
+                  print "\n> [!WARNING]"
+                  print "> " cnt " file(s) were skipped because `" msg "`"
+                  print fls
                 }
               ' >> "$GITHUB_STEP_SUMMARY"
             fi
+
             if [ -n "$notices" ]; then
-              echo "$notices" | sed -E 's/^##\[notice\]Optimized `(.*)` despite `(.*)`/\2\t\1/' \
+              echo "$notices" \
+              | sed -E 's/^##\[notice\]Optimized `(.*)` despite `(.*)`/\2\t\1/' \
               | awk -F'\t' '
                 {
                   msg = $1; file = $2
                   if (msg != "" && file != "") {
                     count[msg]++
-                    files[msg] = files[msg] "- " file "\n"
+                    files[msg] = files[msg] "#" file
                   }
                 }
                 END {
                   for (msg in count) {
-                    print "\n> [!NOTE]"
-                    print "> " count[msg] " file(s) were optimized despite `" msg "`\n"
-                    print "<details><summary>Show affected files</summary>\n"
-                    print files[msg]
-                    print "</details>"
+                    print count[msg] "\t" msg "\t" files[msg]
                   }
+                }
+              ' \
+              | sort -rn -t$'\t' -k1,1 \
+              | awk -F'\t' '
+                {
+                  cnt = $1; msg = $2; fls = $3
+                  gsub(/#/, "\n- ", fls)
+                  print "\n> [!NOTE]"
+                  print "> " cnt " file(s) were optimized despite `" msg "`\n"
+                  print "<details><summary>Show affected files</summary>"
+                  print fls
+                  print "</details>"
                 }
               ' >> "$GITHUB_STEP_SUMMARY"
             fi
