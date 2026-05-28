@@ -131,8 +131,8 @@ jobs:
             printf "All images are optimized without problems.\n" >> "$GITHUB_STEP_SUMMARY"
           else
             if [ -n "$warnings" ]; then
-              echo "$warnings" | sed -E 's/^##\[warning\]Skipped `(.*)` because `(.*)`/\2|||\1/' \
-              | awk -F'|||' '
+              echo "$warnings" | sed -E 's/^##\[warning\]Skipped `(.*)` because `(.*)`/\2\t\1/' \
+              | awk -F'\t' '
                 {
                   msg = $1; file = $2
                   if (msg != "" && file != "") {
@@ -143,7 +143,7 @@ jobs:
                 END {
                   for (msg in count) {
                     print "\n> [!WARNING]"
-                    print "> " count[msg] "x Skipped because: " msg "\n"
+                    print "> " count[msg] " file(s) skipped because " msg "\n"
                     print "<details><summary>Show affected files</summary>\n"
                     print files[msg]
                     print "\n</details>"
@@ -152,8 +152,8 @@ jobs:
               ' >> "$GITHUB_STEP_SUMMARY"
             fi
             if [ -n "$notices" ]; then
-              echo "$notices" | sed -E 's/^##\[notice\]Optimized `(.*)` despite `(.*)`/\2|||\1/' \
-              | awk -F'|||' '
+              echo "$notices" | sed -E 's/^##\[notice\]Optimized `(.*)` despite `(.*)`/\2\t\1/' \
+              | awk -F'\t' '
                 {
                   msg = $1; file = $2
                   if (msg != "" && file != "") {
@@ -164,7 +164,7 @@ jobs:
                 END {
                   for (msg in count) {
                     print "\n> [!NOTE]"
-                    print "> Files optimized despite " count[msg] "x " msg "\n"
+                    print "> " count[msg] " file(s) optimized despite " msg "\n"
                     print "<details><summary>Show affected files</summary>\n"
                     print files[msg]
                     print "\n</details>"
