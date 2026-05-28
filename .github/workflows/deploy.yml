@@ -128,7 +128,7 @@ jobs:
           notices=$(echo "$opt_log" | grep '^##\[notice\]' || true)
 
           if [ -z "$warnings" ] && [ -z "$notices" ]; then
-            printf "All images are optimized without problems.\n" >> "$GITHUB_STEP_SUMMARY"
+            printf "All files are optimized without problems.\n" >> "$GITHUB_STEP_SUMMARY"
           else
             if [ -n "$warnings" ]; then
               echo "$warnings" | sed -E 's/^##\[warning\]Skipped `(.*)` because `(.*)`/\2\t\1/' \
@@ -137,16 +137,16 @@ jobs:
                   msg = $1; file = $2
                   if (msg != "" && file != "") {
                     count[msg]++
-                    files[msg] = (files[msg] == "" ? "" : files[msg] "\n") "- `" file "`"
+                    files[msg] = files[msg] "- " file "\n"
                   }
                 }
                 END {
                   for (msg in count) {
                     print "\n> [!WARNING]"
-                    print "> " count[msg] " file(s) skipped because " msg "\n"
-                    print "<details><summary>Show affected files</summary>\n"
+                    print "> " count[msg] " file(s) were skipped because `" msg "`\n"
+                    print "<details><summary>Show affected files</summary><pre>\n"
                     print files[msg]
-                    print "\n</details>"
+                    print "</pre></details>"
                   }
                 }
               ' >> "$GITHUB_STEP_SUMMARY"
@@ -158,16 +158,16 @@ jobs:
                   msg = $1; file = $2
                   if (msg != "" && file != "") {
                     count[msg]++
-                    files[msg] = (files[msg] == "" ? "" : files[msg] "\n") "- `" file "`"
+                    files[msg] = files[msg] "- " file "\n"
                   }
                 }
                 END {
                   for (msg in count) {
                     print "\n> [!NOTE]"
-                    print "> " count[msg] " file(s) optimized despite " msg "\n"
-                    print "<details><summary>Show affected files</summary>\n"
+                    print "> " count[msg] " file(s) were optimized despite `" msg "`\n"
+                    print "<details><summary>Show affected files</summary><pre>\n"
                     print files[msg]
-                    print "\n</details>"
+                    print "</pre></details>"
                   }
                 }
               ' >> "$GITHUB_STEP_SUMMARY"
