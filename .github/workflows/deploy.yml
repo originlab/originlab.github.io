@@ -131,18 +131,46 @@ jobs:
             printf "All images are optimized without problems.\n" >> "$GITHUB_STEP_SUMMARY"
           else
             if [ -n "$warnings" ]; then
-              echo "$warnings" | sed -E 's/^##\[warning\](.*)/\n> [!WARNING]\n> \1\n/' >> "$GITHUB_STEP_SUMMARY"
+              echo "$warnings" | awk '
+                match($0, /^##\[warning\]Skipped `([^`]+)` because `([^`]+)`/, arr) {
+                  file = arr[1]
+                  msg = arr[2]
+                  count[msg]++
+                  files[msg] = (files[msg] == "" ? "" : files[msg] "\n") "- `" file "`"
+                }
+                END {
+                  for (msg in count) {
+                    print "\n> [!WARNING]"
+                    print "> " count[msg] "x Skipped because " msg "\n"
+                    print "<details><summary>Show files</summary>\n"
+                    print files[msg]
+                    print "\n</details>"
+                  }
+                }' >> "$GITHUB_STEP_SUMMARY"
             fi
 
             if [ -n "$notices" ]; then
-              {
-                printf '> [!NOTE]\n> Some files had warnings\n'
-                printf '<details><summary>Details</summary><pre>\n'
-                echo "$notices" | sed -E 's/^##\[notice\](.*)/- \1/'
-                echo '</pre></details>'
-              } >> "$GITHUB_STEP_SUMMARY"
+              echo "$notices" | awk '
+                match($0, /^##\[notice\]Optimized `([^`]+)` despite `([^`]+)`/, arr) {
+                  file = arr[1]
+                  msg = arr[2]
+                  count[msg]++
+                  files[msg] = (files[msg] == "" ? "" : files[msg] "\n") "- `" file "`"
+                }
+                END {
+                  for (msg in count) {
+                    print "\n> [!NOTE]"
+                    print "> Files optimized despite " count[msg] "x " msg "\n"
+                    print "<details><summary>Show files</summary>\n"
+                    print files[msg]
+                    print "\n</details>"
+                  }
+                }' >> "$GITHUB_STEP_SUMMARY"
             fi
           fi
+
+          # Need some single quote to workaround a VS colorizer bug
+          echo 'Done.'
 
       - name: Summarize artifacts
         run: |
