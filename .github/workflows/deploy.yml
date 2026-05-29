@@ -14,9 +14,6 @@ jobs:
     uses: ./.github/workflows/publish_index.yml
 
   setup_array:
-    concurrency:
-      group: "prepare_pages"
-      cancel-in-progress: true
     runs-on: ubuntu-slim
     outputs:
       sites: ${{ steps.set_sites.outputs.sites }}
