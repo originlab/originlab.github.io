@@ -268,16 +268,26 @@ jobs:
           optimized_size=$(echo "$artifacts_json" | jq -r '.artifacts[] | select(.name == "optimized") | .size_in_bytes // 0' | head -n 1)
           
           if [ -z "$converted_size" ] || [ "$converted_size" -eq 0 ] || [ -z "$optimized_size" ] || [ "$optimized_size" -eq 0 ]; then
-            savings_header="# Artifacts"
+            header="# Artifacts"
           else
-            saved_bytes=$((converted_size - optimized_size))
-            saved_pct=$(( 100 * saved_bytes / converted_size ))            
-            saved_human=$(get_human_bytes "$saved_bytes")
+            bytes_delta=$((converted_size - optimized_size))
             
-            savings_header="# Artifact Summary <sub><sup>:green_circle: Saved $saved_human ($saved_pct%)</sup></sub>"
+            if [ "$bytes_delta" -lt 0 ]; then
+              verb_delta="Increased"
+              icon_delta=":yellow_circle:"
+              bytes_delta=$((optimized_size - converted_size))
+            else
+              verb_delta="Saved"
+              icon_delta=":green_circle:"
+            fi
+
+            pct_delta=$(( 100 * bytes_delta / converted_size ))            
+            size_delta=$(get_human_bytes "$bytes_delta")
+            
+            header="# Artifact Summary <sub><sup>$icon_delta $verb_delta $size_delta ($pct_delta%)</sup></sub>"
           fi
 
-          echo "$savings_header" >> "$GITHUB_STEP_SUMMARY"
+          echo "$header" >> "$GITHUB_STEP_SUMMARY"
           echo "| Name | Size |" >> "$GITHUB_STEP_SUMMARY"
           echo "| :--- | ---: |" >> "$GITHUB_STEP_SUMMARY"
           
