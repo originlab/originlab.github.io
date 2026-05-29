@@ -46,6 +46,10 @@ public abstract class ProblemSummarizer
                     textWriter.WriteLine("==============================================");
                 }
             }
+            else
+            {
+                textWriter.WriteLine("No problems found.");
+            }
         }
     }
 
@@ -87,6 +91,10 @@ public abstract class ProblemSummarizer
                         textWriter.WriteLine("::endgroup::");
                     }
                 }
+            }
+            else
+            {
+                textWriter.WriteLine(":white_check_mark: No problems found.");
             }
         }
     }
