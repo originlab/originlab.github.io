@@ -272,19 +272,17 @@ jobs:
           else
             bytes_delta=$((converted_size - optimized_size))
             
-            if [ "$bytes_delta" -lt 0 ]; then
-              verb_delta="Increased"
-              icon_delta=":yellow_circle:"
-              bytes_delta=$((optimized_size - converted_size))
+            if [ "$bytes_delta" -ge 0 ]; then
+              desc_delta=":green_circle: Saved"
             else
-              verb_delta="Saved"
-              icon_delta=":green_circle:"
+              desc_delta=":yellow_circle: Increased"
+              bytes_delta=$((optimized_size - converted_size))
             fi
 
             pct_delta=$(( 100 * bytes_delta / converted_size ))            
             size_delta=$(get_human_bytes "$bytes_delta")
             
-            header="# Artifacts <sub><sup>$icon_delta $verb_delta $size_delta ($pct_delta%)</sup></sub>"
+            header="# Artifact Summary <sub><sup>$desc_delta $size_delta ($pct_delta%)</sup></sub>"
           fi
 
           echo "$header" >> "$GITHUB_STEP_SUMMARY"
