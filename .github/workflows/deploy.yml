@@ -154,12 +154,12 @@ jobs:
           EOF
           chmod +x helpers.sh
 
-      - name: Summarize the converter run
+      - name: Summarize the conversion run
         run: |
           source ./helpers.sh
           duration=$(get_duration "originlab/${{ matrix.site }}" "$build_job_id")
 
-          echo -e "# Converter run ($duration)\n" >> "$GITHUB_STEP_SUMMARY"
+          echo -e "# Conversion <small>:stopwatch:\`$duration\`</small>\n" >> "$GITHUB_STEP_SUMMARY"
           gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log \
           | awk '/generator\.dll"/ {f=1} /upload-artifact/ {f=0} f' \
           | cut -f3- | cut -d' ' -f2- \
@@ -176,7 +176,7 @@ jobs:
           source ./helpers.sh
           duration=$(get_duration "originlab/${{ matrix.site }}" "$optimize_job_id")
 
-          echo -e "# Optimization run ($duration)\n" >> "$GITHUB_STEP_SUMMARY"
+          echo -e "# Optimization <small>:stopwatch:\`$duration\`</small>\n" >> "$GITHUB_STEP_SUMMARY"
           opt_log=$(gh run view $deploy_run_id -j $optimize_job_id -R originlab/${{ matrix.site }} --log \
                     | awk '/find pages\// {f=1} /upload-artifact/ {f=0} f' \
                     | cut -f3- | cut -d' ' -f2- \
@@ -215,7 +215,7 @@ jobs:
                   cnt = $1; msg = $2; fls = $3
                   gsub(/#/, "\n- ", fls)
                   print "\n> [!WARNING]"
-                  print "> " cnt " file(s) were skipped because `" msg "`"
+                  print "> " cnt " file(s) were skipped because <small>:rotating_light:`" msg "`</small>"
                   print fls
                 }
               ' >> "$GITHUB_STEP_SUMMARY"
@@ -223,7 +223,7 @@ jobs:
 
             if [ -n "$notices" ]; then
               echo "$notices" \
-              | sed -E 's/^##\[notice\]Optimized `(.*)` despite `(.*)`/\2\t\1/' \
+              | sed -E 's/^##\[notice\]Optimized `(.*)` despite <small>:warning:`(.*)`</small>/\2\t\1/' \
               | sorted_group \
               | awk -F'\t' '
                 {
