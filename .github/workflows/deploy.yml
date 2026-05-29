@@ -82,6 +82,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.PAT_DOC_WORKFLOW }}
     strategy:
+      fail-fast: false
       matrix:
         site: ${{ fromJson(needs.setup_array.outputs.sites) }}
     steps:
