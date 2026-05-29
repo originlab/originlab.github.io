@@ -282,7 +282,7 @@ jobs:
             pct_delta=$(( 100 * bytes_delta / converted_size ))            
             size_delta=$(get_human_bytes "$bytes_delta")
             
-            header="# Artifact Summary <sub><sup>$desc_delta $size_delta ($pct_delta%)</sup></sub>"
+            header="# Artifacts <sub><sup>$desc_delta $size_delta ($pct_delta%)</sup></sub>"
           fi
 
           echo "$header" >> "$GITHUB_STEP_SUMMARY"
