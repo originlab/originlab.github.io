@@ -103,9 +103,64 @@ jobs:
       - name: Set $optimize_job_id
         run: echo "optimize_job_id=$(gh run view $deploy_run_id -R originlab/${{ matrix.site }} | grep 'publish_book / optimize' | grep -oP '\(ID \K\d+')" >> "$GITHUB_ENV"
 
+      - name: Setup helper scripts
+        run: |
+          cat << 'EOF' > helpers.sh
+          #!/bin/bash
+
+          to_human_readable() {
+            local total_seconds=$1
+            
+            if [ "$total_seconds" -eq 0 ]; then
+              echo "0s"
+              return
+            fi
+
+            local hours=$((total_seconds / 3600))
+            local minutes=$(((total_seconds % 3600) / 60))
+            local seconds=$((total_seconds % 60))
+
+            local result=""
+            [ $hours -gt 0 ] && result+="${hours}h "
+            [ $minutes -gt 0 ] && result+="${minutes}m "
+            [ $seconds -gt 0 ] && result+="${seconds}s"
+            
+            # Trim trailing spaces
+            echo "$result" | xargs
+          }
+
+          get_duration() {
+            local repo="$1"
+            local job_id="$2"
+            
+            local job_data
+            job_data=$(gh api "/repos/${repo}/actions/jobs/${job_id}")
+            
+            local start_time end_time
+            start_time=$(echo "$job_data" | jq -r '.started_at')
+            end_time=$(echo "$job_data" | jq -r '.completed_at')
+            
+            if [ "$start_time" = "null" ] || [ "$end_time" = "null" ]; then
+              echo "0"
+              return
+            fi
+            
+            local start_epoch end_epoch raw_seconds
+            start_epoch=$(date -d "$start_time" +%s)
+            end_epoch=$(date -d "$end_time" +%s)
+            raw_seconds=$((end_epoch - start_epoch))
+            
+            to_human_readable "$raw_seconds"
+          }
+          EOF
+          chmod +x helpers.sh
+
       - name: Summarize the converter run
         run: |
-          echo '# Converter run' >> "$GITHUB_STEP_SUMMARY"
+          source ./helpers.sh
+          duration=$(get_duration "originlab/${{ matrix.site }}" "$build_job_id")
+
+          echo -e "# Converter run ($duration)\n" >> "$GITHUB_STEP_SUMMARY"
           gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log \
           | awk '/generator\.dll"/ {f=1} /upload-artifact/ {f=0} f' \
           | cut -f3- | cut -d' ' -f2- \
@@ -119,7 +174,10 @@ jobs:
 
       - name: Summarize the optimization run
         run: |
-          printf '# Optimization run\n' >> "$GITHUB_STEP_SUMMARY"
+          source ./helpers.sh
+          duration=$(get_duration "originlab/${{ matrix.site }}" "$optimize_job_id")
+
+          echo -e "# Optimization run ($duration)\n" >> "$GITHUB_STEP_SUMMARY"
           opt_log=$(gh run view $deploy_run_id -j $optimize_job_id -R originlab/${{ matrix.site }} --log \
                     | awk '/find pages\// {f=1} /upload-artifact/ {f=0} f' \
                     | cut -f3- | cut -d' ' -f2- \
