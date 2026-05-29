@@ -49,9 +49,6 @@ jobs:
   start_array:
     name: Start ${{ matrix.site }} deployment
     needs: [setup_array, publish_index]
-    concurrency:
-      group: "prepare_pages"
-      cancel-in-progress: true
     runs-on: ubuntu-slim
     environment: deploy
     env:
