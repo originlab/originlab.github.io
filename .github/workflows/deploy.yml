@@ -107,7 +107,7 @@ jobs:
           cat << 'EOF' > helpers.sh
           #!/bin/bash
 
-          to_human_readable() {
+          get_human_time() {
             local total_seconds=$1
             
             if [ "$total_seconds" -eq 0 ]; then
@@ -149,17 +149,51 @@ jobs:
             end_epoch=$(date -d "$end_time" +%s)
             raw_seconds=$((end_epoch - start_epoch))
             
-            to_human_readable "$raw_seconds"
+            get_human_time "$raw_seconds"
           }
+
+          get_sorted_groups() {
+            awk -F'\t' '
+              {
+                k = $1; v = $2
+                if (k != "" && v != "") {
+                  n[k]++
+                  vs[k] = vs[k] "#" v
+                }
+              }
+              END {
+                for (k in n) {
+                  print n[k] "\t" k "\t" vs[k]
+                }
+              }
+            ' \
+            | sort -rn -t$'\t' -k1,1
+          }
+
+          get_human_bytes() {
+            local bytes=$1
+            if [ -z "$bytes" ] || [ "$bytes" -eq 0 ]; then
+              echo "0 B"
+              return
+            fi
+            
+            if [ "$bytes" -gt 1048576 ]; then
+              awk "BEGIN {printf \"%.1f MB\", $bytes/1048576}"
+            else
+              awk "BEGIN {printf \"%.1f KB\", $bytes/1024}"
+            fi
+          }
+
           EOF
           chmod +x helpers.sh
 
       - name: Summarize the conversion run
         run: |
           source ./helpers.sh
+
           duration=$(get_duration "originlab/${{ matrix.site }}" "$build_job_id")
 
-          echo -e "# Conversion <sub><sup>:stopwatch:$duration</sup></sub>\n" >> "$GITHUB_STEP_SUMMARY"
+          echo "# Conversion <sub><sup>:stopwatch:$duration</sup></sub>" >> "$GITHUB_STEP_SUMMARY"
           gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log \
           | awk '/generator\.dll"/ {f=1} /upload-artifact/ {f=0} f' \
           | cut -f3- | cut -d' ' -f2- \
@@ -174,9 +208,10 @@ jobs:
       - name: Summarize the optimization run
         run: |
           source ./helpers.sh
+
           duration=$(get_duration "originlab/${{ matrix.site }}" "$optimize_job_id")
 
-          echo -e "# Optimization <sub><sup>:stopwatch:$duration</sup></sub>\n" >> "$GITHUB_STEP_SUMMARY"
+          echo "# Optimization <sub><sup>:stopwatch:$duration</sup></sub>" >> "$GITHUB_STEP_SUMMARY"
           opt_log=$(gh run view $deploy_run_id -j $optimize_job_id -R originlab/${{ matrix.site }} --log \
                     | awk '/find pages\// {f=1} /upload-artifact/ {f=0} f' \
                     | cut -f3- | cut -d' ' -f2- \
@@ -185,31 +220,13 @@ jobs:
           warnings=$(echo "$opt_log" | grep '^##\[warning\]' || true)
           notices=$(echo "$opt_log" | grep '^##\[notice\]' || true)
 
-          sorted_group() {
-            awk -F'\t' '
-              {
-                msg = $1; file = $2
-                if (msg != "" && file != "") {
-                  count[msg]++
-                  files[msg] = files[msg] "#" file
-                }
-              }
-              END {
-                for (msg in count) {
-                  print count[msg] "\t" msg "\t" files[msg]
-                }
-              }
-            ' \
-            | sort -rn -t$'\t' -k1,1
-          }
-
           if [ -z "$warnings" ] && [ -z "$notices" ]; then
-            printf ":white_check_mark: All files are optimized without problems.\n" >> "$GITHUB_STEP_SUMMARY"
+            echo ':white_check_mark: All files are optimized without problems.' >> "$GITHUB_STEP_SUMMARY"
           else
             if [ -n "$warnings" ]; then
               echo "$warnings" \
               | sed -E 's/^##\[warning\]Skipped `(.*)` because `(.*)`/\2\t\1/' \
-              | sorted_group \
+              | get_sorted_groups \
               | awk -F'\t' '
                 {
                   cnt = $1; msg = $2; fls = $3
@@ -224,7 +241,7 @@ jobs:
             if [ -n "$notices" ]; then
               echo "$notices" \
               | sed -E 's/^##\[notice\]Optimized `(.*)` despite `(.*)`/\2\t\1/' \
-              | sorted_group \
+              | get_sorted_groups \
               | awk -F'\t' '
                 {
                   cnt = $1; msg = $2; fls = $3
@@ -244,13 +261,33 @@ jobs:
 
       - name: Summarize artifacts
         run: |
-          echo '# Artifacts' >> "$GITHUB_STEP_SUMMARY"
-          echo '| Name | Size |' >> "$GITHUB_STEP_SUMMARY"
-          echo '| :--- | ---: |' >> "$GITHUB_STEP_SUMMARY"
-          gh api /repos/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id/artifacts \
-            -q '[.artifacts[]] | sort_by(.size_in_bytes) | reverse | .[] |
-              if .size_in_bytes < 1048576 then
-                "| \(.name) | \((.size_in_bytes/1024*10|round)/10) KB |"
-              else
-                "| \(.name) | \((.size_in_bytes/1024/1024*10|round)/10) MB |"
-              end' >> "$GITHUB_STEP_SUMMARY"
+          source ./helpers.sh
+
+          artifacts_json=$(gh api /repos/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id/artifacts)
+          converted_size=$(echo "$artifacts_json" | jq -r '.artifacts[] | select(.name == "converted") | .size_in_bytes // 0' | head -n 1)
+          optimized_size=$(echo "$artifacts_json" | jq -r '.artifacts[] | select(.name == "optimized") | .size_in_bytes // 0' | head -n 1)
+          
+          if [ -z "$converted_size" ] || [ "$converted_size" -eq 0 ] || [ -z "$optimized_size" ] || [ "$optimized_size" -eq 0 ]; then
+            savings_header="# Artifacts"
+          else
+            saved_bytes=$((converted_size - optimized_size))
+            saved_pct=$(( 100 * saved_bytes / converted_size ))            
+            saved_human=$(get_human_bytes "$saved_bytes")
+            
+            savings_header="# Artifact Summary <sub><sup>:green_circle: Saved $saved_human ($saved_pct%)</sup></sub>"
+          fi
+
+          echo "$savings_header" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Name | Size |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| :--- | ---: |" >> "$GITHUB_STEP_SUMMARY"
+          
+          echo "$artifacts_json" | jq -c '[.artifacts[]] | sort_by(.size_in_bytes) | reverse | .[]' | while read -r artifact; do
+            name=$(echo "$artifact" | jq -r '.name')
+            size_bytes=$(echo "$artifact" | jq -r '.size_in_bytes')
+            size_human=$(get_human_bytes "$size_bytes")
+            
+            echo "| $name | $size_human |" >> "$GITHUB_STEP_SUMMARY"
+          done
+
+          # Need some single quote to workaround a VS colorizer bug
+          echo 'Done.'
