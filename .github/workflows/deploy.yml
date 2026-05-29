@@ -159,7 +159,7 @@ jobs:
           source ./helpers.sh
           duration=$(get_duration "originlab/${{ matrix.site }}" "$build_job_id")
 
-          echo -e "# Conversion <small>:stopwatch:\`$duration\`</small>\n" >> "$GITHUB_STEP_SUMMARY"
+          echo -e "# Conversion ($duration)\n" >> "$GITHUB_STEP_SUMMARY"
           gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log \
           | awk '/generator\.dll"/ {f=1} /upload-artifact/ {f=0} f' \
           | cut -f3- | cut -d' ' -f2- \
@@ -176,7 +176,7 @@ jobs:
           source ./helpers.sh
           duration=$(get_duration "originlab/${{ matrix.site }}" "$optimize_job_id")
 
-          echo -e "# Optimization <small>:stopwatch:\`$duration\`</small>\n" >> "$GITHUB_STEP_SUMMARY"
+          echo -e "# Optimization ($duration)\n" >> "$GITHUB_STEP_SUMMARY"
           opt_log=$(gh run view $deploy_run_id -j $optimize_job_id -R originlab/${{ matrix.site }} --log \
                     | awk '/find pages\// {f=1} /upload-artifact/ {f=0} f' \
                     | cut -f3- | cut -d' ' -f2- \
@@ -215,7 +215,7 @@ jobs:
                   cnt = $1; msg = $2; fls = $3
                   gsub(/#/, "\n- ", fls)
                   print "\n> [!WARNING]"
-                  print "> " cnt " file(s) were skipped because <small>:rotating_light:`" msg "`</small>"
+                  print "> " cnt " file(s) were skipped because :rotating_light:`" msg "`"
                   print fls
                 }
               ' >> "$GITHUB_STEP_SUMMARY"
@@ -223,14 +223,14 @@ jobs:
 
             if [ -n "$notices" ]; then
               echo "$notices" \
-              | sed -E 's/^##\[notice\]Optimized `(.*)` despite <small>:warning:`(.*)`</small>/\2\t\1/' \
+              | sed -E 's/^##\[notice\]Optimized `(.*)` despite `(.*)`/\2\t\1/' \
               | sorted_group \
               | awk -F'\t' '
                 {
                   cnt = $1; msg = $2; fls = $3
                   gsub(/#/, "\n- ", fls)
                   print "\n> [!NOTE]"
-                  print "> " cnt " file(s) were optimized despite `" msg "`\n"
+                  print "> " cnt " file(s) were optimized despite :warning:`" msg "`"
                   print "<details><summary>Show affected files</summary>"
                   print fls
                   print "</details>"
