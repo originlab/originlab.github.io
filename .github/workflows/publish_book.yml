@@ -96,11 +96,13 @@ jobs:
         run: |
           source ./helpers.sh
 
-          find pages/ \( -name "*.html" -o -name "*.css" -o -name "*.js" \) -print0 | \
+          find pages/ \( -iname "*.html" -o -iname "*.xml" -o -iname "*.json" -o -iname "*.css" -o -iname "*.js" \) -print0 | \
           parallel -0 -q bash -c '
             file="{}"
             if [[ "$file" == *.html ]]; then
               msg=$(minify --quiet --html-keep-document-tags --html-keep-end-tags --html-keep-whitespace -o "$file" "$file" 2>&1)
+            elif [[ "$file" == *.xml ]]; then
+              msg=$(minify --quiet --xml-keep-whitespace -o "$file" "$file" 2>&1)
             else
               msg=$(minify --quiet -o "$file" "$file" 2>&1)
             fi

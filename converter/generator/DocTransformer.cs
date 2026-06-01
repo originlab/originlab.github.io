@@ -121,10 +121,10 @@ internal abstract partial class DocTransformer : IDocTransformer
     {
         var images = new Dictionary<string, string>();
 
-        foreach (var imgFile in Directory.EnumerateFiles(Path.Combine(Template.WebRootPath, "images/books")))
+        foreach (var imgFile in Directory.EnumerateFiles(Path.Combine(Template.WebRootPath, "books/images")))
         {
             var fileName = Path.GetFileName(imgFile);
-            images.Add(fileName, $"/images/books/{fileName}?v={FileHash.StringFromFile(imgFile)}");
+            images.Add(fileName, $"/books/images/{fileName}?v={FileHash.StringFromFile(imgFile)}");
         }
 
         return images;
