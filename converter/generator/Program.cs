@@ -32,7 +32,6 @@ class Program
         if (args.Merge)
         {
             CopyContents(Template.WebRootPath, outputPath);
-            CopyContents(booksXmlPath, Path.Combine(outputPath, "books"));
 
             if (!isBuildingIndex)
             {
