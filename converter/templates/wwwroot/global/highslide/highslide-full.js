@@ -532,7 +532,7 @@ dim : function(exp) {
 	if (isNew) {
 		if (hs.geckoMac && hs.dimmingGeckoFix)
 			hs.setStyles(hs.dimmer, {
-				background: 'url('+ hs.graphicsDir + 'geckodimmer.png)',
+				background: 'url('+ hs.graphicsDir + 'geckodimmer.webp)',
 				opacity: 1
 			});
 		else
@@ -1125,7 +1125,7 @@ hs.Outline =  function (outlineType, onLoad) {
 
 hs.Outline.prototype = {
 preloadGraphic : function () {
-	var src = hs.graphicsDir + (hs.outlinesDir || "outlines/")+ this.outlineType +".png";
+	var src = hs.graphicsDir + (hs.outlinesDir || "outlines/")+ this.outlineType +".webp";
 				
 	var appendTo = hs.safari && hs.uaVersion < 525 ? hs.container : null;
 	this.graphic = hs.createElement('img', null, { position: 'absolute', 
