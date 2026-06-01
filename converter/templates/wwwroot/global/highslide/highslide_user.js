@@ -2,7 +2,7 @@
 hs.showCredits = false;
 hs.dimmingOpacity = 0.15;
 
-hs.graphicsDir = '/global/graphics/';
+hs.graphicsDir = 'https://docs.originlab.com/global/highslide/graphics/';
 hs.align = 'center';
 hs.transitions = ['expand', 'crossfade'];
 hs.outlineType = 'rounded-white';

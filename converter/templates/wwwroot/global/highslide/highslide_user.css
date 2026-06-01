@@ -1,0 +1,65 @@
+.highslide-dimming
+{
+	background: #000;
+}
+.highslide-controls .highslide-full-expand
+{
+	display: none;
+}
+.highslide-caption
+{
+	display: none;
+	font-size: 1em;
+	padding: 5px;
+	/*background: white;*/
+}
+.highslide-thumbstrip-horizontal img
+{
+	height: 80px;
+	background-color: #FFF;
+}
+.highslide-thumbstrip-horizontal .highslide-marker
+{
+	top: 87px;
+}
+
+.highslide-thumbstrip-horizontal .highslide-scroll-up,
+.highslide-thumbstrip-horizontal .highslide-scroll-down
+{
+	top: 23px;
+}
+.highslide-header ul a
+{
+	background-image: url(graphics/controlbar-text-buttons.webp);
+	padding-left: 16px;
+	display: inline-block;
+	height: 16px;
+}
+.highslide-header ul li span
+{
+	display: none;
+}
+.highslide-header .highslide-move a
+{
+	background-position: 0 -281px;
+}
+.highslide-header .highslide-close a
+{
+	background-position: 0 -221px;
+}
+
+.large-dark .highslide-controls
+{
+    width: 135px;
+}
+.large-dark .highslide-controls,
+.large-dark .highslide-controls ul,
+.large-dark .highslide-controls a
+{
+    background-image: url(graphics/controlbar-black-border.webp); 
+}
+.large-dark .highslide-controls .highslide-play,
+.large-dark .highslide-controls .highslide-pause
+{
+	display: none;
+}
