@@ -32,6 +32,10 @@
     font-size: 60px;
 }
 
+.error-template h3 {
+    font-size: 16px;
+}
+
 .error-template {
     padding: 40px 15px;
     text-align: center;

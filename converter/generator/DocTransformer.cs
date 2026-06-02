@@ -160,8 +160,6 @@ internal abstract partial class DocTransformer : IDocTransformer
         var scripts = await Template.RenderApplyLayoutScriptsAsync(new ApplyLayoutModel
         {
             LayoutPageUrl = '/'.TryPrefixEach(BookUrlName, language, $"layout.html?v={FileHash.FromString(html)}"),
-            PlaceHolderId = "doc-content-placeholder",
-            MainContentId = "main-content",
         });
 
         Language = language;

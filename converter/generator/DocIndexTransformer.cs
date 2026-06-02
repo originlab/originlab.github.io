@@ -1,4 +1,6 @@
-﻿namespace OriginLab.DocumentGeneration;
+﻿using OriginLab.DocumentGeneration.Templates;
+
+namespace OriginLab.DocumentGeneration;
 
 internal class DocIndexTransformer : DocTransformer
 {
@@ -25,5 +27,7 @@ internal class DocIndexTransformer : DocTransformer
 
             Transform(sourceFile, destinationFile);
         }
+
+        File.WriteAllText(Path.Combine(OutputFolder, language, "404.html"), await Template.Render404PageAsync(language));
     }
 }

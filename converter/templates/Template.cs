@@ -30,7 +30,7 @@ public class Template
 
     public static Task<string> Render404PageAsync(string? language = null)
     {
-        return Engine.RenderPartialAsync('/'.TryPrefixEach("Partials", language, "404.cshtml"));
+        return Engine.RenderAsync('/'.TryPrefixEach("Partials", language, "404.cshtml"));
     }
 
     private static ServiceProvider BuildServiceProvider()
