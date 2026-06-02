@@ -29,10 +29,6 @@ p {
     transform: rotate(90deg);
 }
 
-.glyphicon {
-    line-height: 1.428;
-}
-
 .DocContent {
     margin-top: 24px;
 }

@@ -275,6 +275,8 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     private static void CleanUp(IHtmlDocument document)
     {
+        document.Prepend(document.Implementation.CreateDocumentType("html", "", ""));
+
         document.Title = document.QuerySelector("h1")?.Text() ?? "";
 
         document.QuerySelectorAll<IHtmlSpanElement>("span.mw-editsection").Remove();
