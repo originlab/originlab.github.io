@@ -40,12 +40,12 @@ async function fetchApplyLayout(layoutUrl, placeholderId, mainContentId) {
     };
 }
 
-function tryRedirectToLowerOrEnglish() {
+function tryRedirectFrom404() {
     var currentURL = window.location.href;
     var lowerCaseURL = currentURL.toLowerCase();
     if (currentURL != lowerCaseURL) {
         location.replace(lowerCaseURL);
-    } else if (/\/\w{2}\/?$/.test(currentURL)) {
+    } else if (/\/\w{2}\/?$/.test(currentURL.replace(/[#?&].*/, ''))) {
         location.replace(currentURL.substring(0, currentURL.lastIndexOf('/', currentURL.length - 2)));
     }
 }

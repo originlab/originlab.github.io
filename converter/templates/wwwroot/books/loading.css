@@ -1,6 +1,7 @@
 ﻿#main-content {
     display: none;
 }
+
 .loading {
     margin: auto;
     position: relative;
@@ -16,6 +17,7 @@
     background-position: 0px center, 15px center, 30px center, 45px center, 60px center, 75px center, 90px center;
     animation: rikSpikeRoll 0.95s linear infinite alternate;
 }
+
 @keyframes rikSpikeRoll {
   0% { background-size: 10px 3px;}
   16% { background-size: 10px 50px, 10px 3px, 10px 3px, 10px 3px, 10px 3px, 10px 3px}
@@ -24,4 +26,22 @@
   66% { background-size: 10px 3px, 10px 10px, 10px 30px, 10px 50px, 10px 3px, 10px 3px}
   83% { background-size: 10px 3px, 10px 3px,  10px 10px, 10px 30px, 10px 50px, 10px 3px}
   100% { background-size: 10px 3px, 10px 3px, 10px 3px,  10px 10px, 10px 30px, 10px 50px}
+}
+
+.error-template h1 {
+    font-size: 60px;
+}
+
+.error-template {
+    padding: 40px 15px;
+    text-align: center;
+}
+
+.error-actions {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.error-actions .btn {
+    margin-right: 10px;
 }
