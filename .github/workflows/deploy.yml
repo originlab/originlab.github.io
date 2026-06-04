@@ -195,7 +195,7 @@ jobs:
             /^[[:space:]]+Ln [0-9]+,/ {
               match($0, /Ln [0-9]+/)
               line_num = substr($0, RSTART + 3, RLENGTH - 3)
-              print ">> [Ln " line_num ", " substr($0, index($0, "Col")) "](https://github.com/originlab/" site "/blob/" sha "/" file_path "#L" line_num ")"
+              print "> - [Ln " line_num ", " substr($0, index($0, "Col")) "](https://github.com/originlab/" site "/blob/" sha "/" file_path "#L" line_num ")"
               next
             }
             { print }
