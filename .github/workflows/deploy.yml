@@ -88,9 +88,6 @@ jobs:
       - name: Set $deploy_run_id
         run: echo "deploy_run_id=$(cat run_id.txt)" >> "$GITHUB_ENV"
 
-      - name: Print the link to the run in summary
-        run: echo "[Link to the run](https://github.com/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id)" >> "$GITHUB_STEP_SUMMARY"
-
       - name: Delete run_id-${{ matrix.site }}
         run: |
           gh api /repos/originlab/originlab.github.io/actions/runs/$GITHUB_RUN_ID/artifacts \
@@ -208,6 +205,8 @@ jobs:
             -e 's/^##\[warning\](.*)/> [!WARNING]\n> \1/g' \
           >> "$GITHUB_STEP_SUMMARY"
 
+          echo 'Done.'
+
       - name: Summarize the optimization run
         run: |
           source ./helpers.sh
@@ -292,7 +291,9 @@ jobs:
           echo "| Name | Size |" >> "$GITHUB_STEP_SUMMARY"
           echo "| :--- | ---: |" >> "$GITHUB_STEP_SUMMARY"
           
-          echo "$artifacts_json" | jq -c '[.artifacts[]] | sort_by(.size_in_bytes) | reverse | .[]' | while read -r artifact; do
+          echo "$artifacts_json"
+          | jq -c '[.artifacts[]] | sort_by(.size_in_bytes) | reverse | .[]'
+          | while read -r artifact; do
             name=$(echo "$artifact" | jq -r '.name')
             size_bytes=$(echo "$artifact" | jq -r '.size_in_bytes')
             size_human=$(get_human_bytes "$size_bytes")
@@ -300,5 +301,10 @@ jobs:
             echo "| $name | $size_human |" >> "$GITHUB_STEP_SUMMARY"
           done
 
-          # Need some single quote to workaround a VS colorizer bug
+          echo 'Done.'
+
+      - name: Print the link to the run in summary
+        run: |
+          echo '# Full Details' >> "$GITHUB_STEP_SUMMARY"
+          echo "https://github.com/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id" >> "$GITHUB_STEP_SUMMARY"
           echo 'Done.'
