@@ -6,7 +6,6 @@ on:
       is_index:
         type: boolean
 
-
 jobs:
   
   convert:
@@ -33,6 +32,15 @@ jobs:
           name: converted
           path: pages
 
+      - name: Checkout book.xml
+        if: ${{ !inputs.is_index }}
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            en/${{ jobs.convert.outputs.chm_name }}/book.xml
+          sparse-checkout-cone-mode: false
+          path: book
+
       - name: Install tools
         run: |
           sudo apt-get install -y webp minify parallel
@@ -40,16 +48,66 @@ jobs:
       - name: Setup Optimization Helpers
         run: |
           cat << 'EOF' > helpers.sh
-          log_msg() {
-            local status=$1; local file=$2; local msg=$3
-            if [ $status -eq 0 ]; then
-              if [ -n "$msg" ]; then
-                echo "::notice file=$file::Optimized \`$file\` despite \`$msg\`"
+          get_source_path() {
+            local file=$1
+            
+            file="${file#pages/}"
+            
+            if [ "${{ inputs.is_index }}" = "true" ]; then
+              if [[ "$file" =~ ^[a-z]{2}/ ]] || [[ "$file" =~ ^programming/ ]]; then
+                echo "index/${file}"
+              else
+                echo "converter/templates/wwwroot/${file}"
               fi
             else
-              echo "::warning file=$file::Skipped \`$file\` because \`$msg\`"
+              if [[ "$file" =~ ^[a-z]{2}/ ]]; then
+                local lang="${file%%/*}"
+                echo "${lang}/${{ jobs.convert.outputs.chm_name }}/${file#*/}"
+              else
+                if [[ "$file" != */index.html ]]; then
+                  echo "$file"
+                  return
+                fi
+
+                # Find the url needed in the book.xml
+                local dir_path="${file%/index.html}"
+                local last_folder="${dir_path##*/}"
+                local lang="en"
+                local url=""
+
+                if [[ "$last_folder" =~ ^[a-z]{2}$ ]]; then
+                  lang="$last_folder"
+                  url="${dir_path%/$lang}"
+                else
+                  url="$dir_path"
+                fi
+                
+                local source_page_path
+
+                local xml_path="book/en/${{ jobs.convert.outputs.chm_name }}/book.xml"
+                local u="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                local l="abcdefghijklmnopqrstuvwxyz"
+
+                source_page_path=$(xmllint --xpath "string(//page[translate(@url, '$u', '$l')='$url']/@file)" "$xml_path" 2>/dev/null)
+                
+                echo "${lang}/${source_page_path}"
+              fi
             fi
           }
+
+          log_msg() {
+            local status=$1; local file=$2; local msg=$3
+            local source_file=$(get_source_path "$file")
+
+            if [ $status -eq 0 ]; then
+              if [ -n "$msg" ]; then
+                echo "::notice file=$source_file::Optimized \`$file\` despite \`$msg\`"
+              fi
+            else
+              echo "::warning file=$source_file::Skipped \`$file\` because \`$msg\`"
+            fi
+          }
+          export -f get_source_path
           export -f log_msg
           EOF
           chmod +x helpers.sh
