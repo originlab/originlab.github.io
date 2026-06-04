@@ -291,8 +291,8 @@ jobs:
           echo "| Name | Size |" >> "$GITHUB_STEP_SUMMARY"
           echo "| :--- | ---: |" >> "$GITHUB_STEP_SUMMARY"
           
-          echo "$artifacts_json"
-          | jq -c '[.artifacts[]] | sort_by(.size_in_bytes) | reverse | .[]'
+          echo "$artifacts_json" \
+          | jq -c '[.artifacts[]] | sort_by(.size_in_bytes) | reverse | .[]' \
           | while read -r artifact; do
             name=$(echo "$artifact" | jq -r '.name')
             size_bytes=$(echo "$artifact" | jq -r '.size_in_bytes')
