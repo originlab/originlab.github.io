@@ -51,8 +51,6 @@ jobs:
           get_source_path() {
             local file=$1
             
-            file="${file#pages/}"
-            
             if [ "${{ inputs.is_index }}" = "true" ]; then
               if [[ "$file" =~ ^[a-z]{2}/ ]] || [[ "$file" =~ ^programming/ ]]; then
                 echo "index/${file}"
@@ -98,8 +96,8 @@ jobs:
           log_msg() {
             local status=$1; local file=$2; local msg=$3
 
-            local source_file=$(get_source_path "$file")
             file="${file#pages/}"
+            local source_file=$(get_source_path "$file")
 
             if [ $status -eq 0 ]; then
               if [ -n "$msg" ]; then
