@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           sparse-checkout: |
-            en/${{ jobs.convert.outputs.chm_name }}/book.xml
+            en/${{ needs.convert.outputs.chm_name }}/book.xml
           sparse-checkout-cone-mode: false
           path: book
 
@@ -62,7 +62,7 @@ jobs:
             else
               if [[ "$file" =~ ^[a-z]{2}/ ]]; then
                 local lang="${file%%/*}"
-                echo "${lang}/${{ jobs.convert.outputs.chm_name }}/${file#*/}"
+                echo "${lang}/${{ needs.convert.outputs.chm_name }}/${file#*/}"
               else
                 if [[ "$file" != */index.html ]]; then
                   echo "$file"
@@ -84,7 +84,7 @@ jobs:
                 
                 local source_page_path
 
-                local xml_path="book/en/${{ jobs.convert.outputs.chm_name }}/book.xml"
+                local xml_path="book/en/${{ needs.convert.outputs.chm_name }}/book.xml"
                 local u="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 local l="abcdefghijklmnopqrstuvwxyz"
 
