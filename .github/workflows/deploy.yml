@@ -186,7 +186,20 @@ jobs:
             -e 's/^##\[group\](.*)/<details><summary>\1<\/summary><pre>/g' \
             -e 's/^##\[endgroup\]/<\/pre><\/details>/g' \
             -e 's/^##\[warning\](.*)/> [!WARNING]\n> \1/g' \
-          >> "$GITHUB_STEP_SUMMARY"
+          | awk -v sha="$run_sha" -v site="${{ matrix.site }}" '
+            /^File: / { 
+              file_path = $2
+              print "File: [" file_path "](https://github.com/originlab" site "/blob/" sha "/" file_path ")"
+              next 
+            }
+            /^[[:space:]]+Ln [0-9]+,/ {
+              match($0, /Ln [0-9]+/)
+              line_num = substr($0, RSTART + 3, RLENGTH - 3)
+              print "\t[Ln " line_num ", " substr($0, index($0, "Col")) "](https://github.com/originlab" site "/blob/" sha "/" file_path "#L" line_num ")"
+              next
+            }
+            { print }
+          ' >> "$GITHUB_STEP_SUMMARY"
 
           echo 'Done.'
 
