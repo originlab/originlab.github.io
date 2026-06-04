@@ -88,6 +88,9 @@ jobs:
       - name: Set $deploy_run_id
         run: echo "deploy_run_id=$(cat run_id.txt)" >> "$GITHUB_ENV"
 
+      - name: Print the link to the run in summary
+        run: echo "[Link to the run](https://github.com/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id)" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Delete run_id-${{ matrix.site }}
         run: |
           gh api /repos/originlab/originlab.github.io/actions/runs/$GITHUB_RUN_ID/artifacts \
