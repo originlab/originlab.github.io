@@ -189,7 +189,7 @@ jobs:
           | awk -v sha="$run_sha" -v site="${{ matrix.site }}" '
             /^File: / { 
               file_path = $2
-              print "> File: [" file_path "](https://github.com/originlab/" site "/blob/" sha "/" file_path ")"
+              print "\n> File: [" file_path "](https://github.com/originlab/" site "/blob/" sha "/" file_path ")"
               next 
             }
             /^[[:space:]]+Ln [0-9]+,/ {
