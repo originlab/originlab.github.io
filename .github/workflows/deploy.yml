@@ -97,10 +97,15 @@ jobs:
       - name: Watch the deployment
         run: gh run watch $deploy_run_id -R originlab/${{ matrix.site }} -i 10 --exit-status
 
-      - name: Set $build_job_id and $optimize_job_id
+      - name: Find job IDs and the SHA
         run: |
-          echo "build_job_id=$(gh run view $deploy_run_id -R originlab/${{ matrix.site }} | grep 'publish_book / convert' | grep -oP '\(ID \K\d+')" >> "$GITHUB_ENV"
-          echo "optimize_job_id=$(gh run view $deploy_run_id -R originlab/${{ matrix.site }} | grep 'publish_book / optimize' | grep -oP '\(ID \K\d+')" >> "$GITHUB_ENV"
+          run_view_json=$(gh run view "$deploy_run_id" -R "originlab/${{ matrix.site }}" --json jobs,headSha)
+
+          echo "$run_view_json"
+
+          echo "build_job_id=$(echo "$run_view_json" | jq -r '.jobs[] | select(.name == "publish_book / convert") | .id')" >> "$GITHUB_ENV"
+          echo "optimize_job_id=$(echo "$run_view_json" | jq -r '.jobs[] | select(.name == "publish_book / optimize") | .id')" >> "$GITHUB_ENV"
+          echo "run_sha=$(echo "$run_view_json" | jq -r '.headSha')" >> "$GITHUB_ENV"
 
       - name: Setup helper scripts
         run: |
