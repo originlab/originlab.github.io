@@ -97,7 +97,9 @@ jobs:
 
           log_msg() {
             local status=$1; local file=$2; local msg=$3
+
             local source_file=$(get_source_path "$file")
+            file="${file#pages/}"
 
             if [ $status -eq 0 ]; then
               if [ -n "$msg" ]; then
