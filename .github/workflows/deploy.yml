@@ -303,7 +303,7 @@ jobs:
 
           echo 'Done.'
 
-      - name: Print the link to the run in summary
+      - name: Print the link to the workflow run
         run: |
           echo '# Full Details' >> "$GITHUB_STEP_SUMMARY"
           echo "https://github.com/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id" >> "$GITHUB_STEP_SUMMARY"
