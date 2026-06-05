@@ -73,7 +73,7 @@ public abstract class ProblemSummarizer
 
                     foreach (var details in locations.ToLookup(i => i.details, i => i.filePosition).OrderByDescending(fps => fps.Count()))
                     {
-                        textWriter.WriteLine($"::group::{details.Count()}x `{details.Key}`");
+                        textWriter.WriteLine($"::group::{details.Count()}x <code>{details.Key}</code>");
 
                         foreach (var ps in details.ToLookup(fp => fp.File, fp => fp.Position).OrderByDescending(p => p.Count()))
                         {
