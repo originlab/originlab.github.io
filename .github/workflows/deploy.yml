@@ -69,7 +69,7 @@ jobs:
           retention-days: 1
 
   get_result:
-    name: Watch ${{ matrix.site }} deployment
+    name: The ${{ matrix.site }} deployment
     needs: [setup_array, start_array]
     runs-on: ubuntu-slim
     environment: deploy_watch
