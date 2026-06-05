@@ -183,13 +183,13 @@ jobs:
           | sed -E \
             -e 's/\r//g' \
             -e 's/\^\[\[[0-9;]*[a-zA-Z]//g' \
-            -e 's/^##\[group\](.*)/<details><summary>\1<\/summary>/g' \
+            -e 's/^##\[group\](.*)/<details><summary>\1<\/summary>\n/g' \
             -e 's/^##\[endgroup\]/<\/details>/g' \
             -e 's/^##\[warning\](.*)/> [!WARNING]\n> \1/g' \
           | awk -v sha="$run_sha" -v site="${{ matrix.site }}" '
             /^File: / { 
               file_path = $2
-              print "\n- File: [" file_path "](https://github.com/originlab/" site "/blob/" sha "/" file_path ")"
+              print "- File: [" file_path "](https://github.com/originlab/" site "/blob/" sha "/" file_path ")"
               next 
             }
             /^[[:space:]]+Ln [0-9]+,/ {
