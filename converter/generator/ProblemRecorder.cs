@@ -5,7 +5,7 @@ namespace OriginLab.DocumentGeneration;
 public sealed class ProblemRecorder
 {
     private readonly string SourceFolder;
-    private readonly Dictionary<string, List<(FilePosition filePosition, string? details)>> Problems = [];
+    private readonly Dictionary<string, HashSet<(FilePosition filePosition, string? details)>> Problems = [];
 
     public bool Any => Problems.Count > 0;
 
@@ -28,6 +28,6 @@ public sealed class ProblemRecorder
 
     public List<(string category, List<(FilePosition filePosition, string? details)> locations)> GetRecords()
     {
-        return (from kvp in Problems select (kvp.Key, kvp.Value)).ToList();
+        return (from kvp in Problems select (kvp.Key, kvp.Value.ToList())).ToList();
     }
 }
