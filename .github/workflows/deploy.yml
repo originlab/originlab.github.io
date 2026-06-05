@@ -300,7 +300,7 @@ jobs:
       - name: Print additional links
         run: |
           {
-            echo '# Full Details'
+            echo '# Links'
             echo "- Workflow Run: https://github.com/originlab/${{ matrix.site }}/actions/runs/$deploy_run_id"
             echo "- Deployed URL: https://docs.originlab.com/${{ matrix.site }}"
           } >> "$GITHUB_STEP_SUMMARY"
