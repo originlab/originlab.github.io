@@ -277,9 +277,7 @@ internal abstract partial class DocTransformer : IDocTransformer
 
         document.Title = document.QuerySelector("h1")?.Text() ?? "";
 
-        document.QuerySelectorAll<IHtmlSpanElement>("span.mw-editsection").Remove();
-
-        document.QuerySelectorAll<IHtmlParagraphElement>("p.urlname, p.hierarchy").Remove();
+        document.QuerySelectorAll("span.mw-editsection, p.urlname, p.hierarchy").Remove();
     }
 
     string? CachedSiblingsParent;
