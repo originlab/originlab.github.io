@@ -69,11 +69,11 @@ public abstract class ProblemSummarizer
                 foreach (var (category, locations) in problems)
                 {
                     textWriter.WriteLine();
-                    textWriter.WriteLine($"::warning::{locations.Count}x {category}");
+                    textWriter.WriteLine($"::warning::{locations.Count}x `{category}`");
 
                     foreach (var details in locations.ToLookup(i => i.details, i => i.filePosition).OrderByDescending(fps => fps.Count()))
                     {
-                        textWriter.WriteLine($"::group::{details.Count()}x {details.Key}");
+                        textWriter.WriteLine($"::group::{details.Count()}x `{details.Key}`");
 
                         foreach (var ps in details.ToLookup(fp => fp.File, fp => fp.Position).OrderByDescending(p => p.Count()))
                         {
