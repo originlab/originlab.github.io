@@ -154,7 +154,7 @@ internal abstract partial class DocTransformer
         {
             var parts = new UrlParts(href);
 
-            if (TryResolveHref(sourceDir, parts.File.Length == href.Length ? href : parts.File.ToString(), out var result, out var title))
+            if (TryResolveHref(parts.File.Length == href.Length ? href : parts.File.ToString(), sourceDir, out var result, out var title))
             {
                 a.SetAttribute("href", $"{result}{parts.Query}{parts.Hash}");
 
