@@ -137,18 +137,18 @@ internal abstract partial class DocTransformer
 
         foreach (var a in document.Descendants<IHtmlAnchorElement>())
         {
-            TransformAnchor(a, sourceFile, sourceDir);
+            TransformAnchor(document, a, sourceFile, sourceDir);
         }
 
         foreach (var img in document.Descendants<IHtmlImageElement>())
         {
-            TransformImage(img, sourceFile, sourceDir);
+            TransformImage(document, img, sourceFile, sourceDir);
         }
     }
 
     protected abstract bool TryResolveHref(string href, string sourceDir, out string result, out string? titleEn);
 
-    protected virtual void TransformAnchor(IHtmlAnchorElement a, string sourceFile, string sourceDir)
+    protected virtual IHtmlElement? TransformAnchor(IHtmlDocument document, IHtmlAnchorElement a, string sourceFile, string sourceDir)
     {
         if (a.GetAttribute("href") is string href && !href.IsBlank)
         {
@@ -162,21 +162,25 @@ internal abstract partial class DocTransformer
                 {
                     a.Title = title;
                 }
+
+                return a;
             }
             else
             {
                 ReportProblem(sourceFile, result, href.ToString(), a.SourceReference?.Position);
             }
         }
+
+        return null;
     }
 
     protected abstract bool TryResolveSrc(string src, string sourceDir, out string result, out (string src, string dst)? copy);
 
-    protected virtual void TransformImage(IHtmlImageElement img, string sourceFile, string sourceDir)
+    protected virtual IHtmlElement? TransformImage(IHtmlDocument document, IHtmlImageElement img, string sourceFile, string sourceDir)
     {
         if (img.GetAttribute("src") is not string src)
         {
-            return;
+            return null;
         }
 
         var parts = new UrlParts(src);
@@ -190,11 +194,15 @@ internal abstract partial class DocTransformer
                 Directory.CreateDirectory(Path.GetDirectoryName(dstImg)!);
                 File.Copy(srcImg, dstImg, overwrite: true);
             }
+
+            return img;
         }
         else
         {
             ReportProblem(sourceFile, result, parts.File.ToString(), img.SourceReference?.Position);
         }
+
+        return null;
     }
 
     private static void CleanUp(IHtmlDocument document)

@@ -220,10 +220,15 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer, ID
         return false;
     }
 
-    protected override void TransformImage(IHtmlImageElement img, string sourceFile, string sourceDir)
+    protected override IHtmlElement? TransformImage(IHtmlDocument document, IHtmlImageElement img, string sourceFile, string sourceDir)
     {
-        base.TransformImage(img, sourceFile, sourceDir);
+        if (base.TransformImage(document, img, sourceFile, sourceDir) is IHtmlElement transformed)
+        {
+            transformed.SetAttribute("loading", "lazy");
 
-        img.SetAttribute("loading", "lazy");
+            return transformed;
+        }
+
+        return null;
     }
 }
