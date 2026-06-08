@@ -136,11 +136,6 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
         });
     }
 
-
-    string? CachedSiblingsParent;
-    int CachedSiblingsCurrentIndex;
-    IHtmlElement? CachedSiblings;
-
     private IHtmlDivElement CreateNavDataDiv(IHtmlDocument document, in Nav nav, string sourceDir)
     {
         var navDataDiv = document.CreateElement<IHtmlDivElement>();
@@ -172,17 +167,7 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
 
         if (files.Siblings is not null)
         {
-            IHtmlElement ul;
-
-            if (nav.Files.Parent is string parent && parent == CachedSiblingsParent)
-            {
-                ul = CreateSiblingsULFromCache(CachedSiblings!, files.Siblings, nav.Titles);
-            }
-            else
-            {
-                CachedSiblingsParent = nav.Files.Parent;
-                CachedSiblings = ul = CreateDataUL("doc-siblings-data", files.Siblings, nav.Titles);
-            }
+            var ul = CreateDataUL("doc-siblings-data", files.Siblings, nav.Titles);
 
             navDataDiv.AppendChild(ul);
         }
@@ -213,82 +198,23 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
                 {
                     pathSpan = pathSpan[1..];
                     isCurrent = true;
-                    CachedSiblingsCurrentIndex = i;
                 }
 
-                if (TryResolveHref(sourceDir, $"../{pathSpan}", out var url, out var _))
+                if (isCurrent)
                 {
-                    if (isCurrent)
-                    {
-                        li.ClassName = "disabled";
-                    }
-                    else
-                    {
-                        a.SetAttribute("href", url);
-                    }
-
-                    a.TextContent = titles.GetAlternateLookup<ReadOnlySpan<char>>()[pathSpan];
+                    li.ClassName = "disabled";
                 }
+                else
+                {
+                    a.SetAttribute("href", $"../{pathSpan}");
+                }
+
+                a.TextContent = titles.GetAlternateLookup<ReadOnlySpan<char>>()[pathSpan];
 
                 li.AppendChild(a);
                 ul.AppendChild(li);
             }
 
-            return ul;
-        }
-
-        IHtmlElement CreateSiblingsULFromCache(IHtmlElement ul, string[] files, Dictionary<string, string> titles)
-        {
-            document.AdoptNode(ul);
-
-            var currentIdx = Array.FindIndex(files, CachedSiblingsCurrentIndex, files.Length - CachedSiblingsCurrentIndex, f => f.StartsWith('*'));
-            var previousLi = ul.Children[CachedSiblingsCurrentIndex].SelfOrNextElementSibling(li => li.FirstElementChild!.GetAttribute("href").IsEmpty);
-
-            Debug.Assert(currentIdx > 0);
-            Debug.Assert(previousLi is not null);
-
-            if (TryResolveHref(sourceDir, $"../{files[currentIdx - 1]}", out var url, out var _))
-            {
-                previousLi.FirstElementChild!.SetAttribute("href", url);
-            }
-
-            previousLi.ClassName = null;
-
-            var currentLi = previousLi.NextElementSibling!;
-            currentLi.FirstElementChild!.SetAttribute("href", null);
-            currentLi.ClassName = "disabled";
-
-            if (ul.ChildElementCount < files.Length)
-            {
-                var li = document.CreateElement<IHtmlListItemElement>();
-                var a = document.CreateElement<IHtmlAnchorElement>();
-
-                if (TryResolveHref(sourceDir, $"../{files[^1]}", out var endUrl, out var _))
-                {
-                    a.SetAttribute("href", endUrl);
-                    a.TextContent = titles[files[^1]];
-                }
-
-                li.AppendChild(a);
-                ul.AppendChild(li);
-            }
-            else if (currentIdx == MaxSiblingNodes / 2 && currentIdx != files.Length - 1 && currentIdx == CachedSiblingsCurrentIndex)
-            {
-                var li = (IHtmlElement)ul.RemoveChild(ul.FirstElementChild!);
-
-                if (TryResolveHref(sourceDir, $"../{files[^1]}", out var endUrl, out var _)
-                    && endUrl != ul.LastElementChild!.FirstElementChild!.GetAttribute("href"))
-                {
-                    var a = li.FirstElementChild!;
-
-                    a.SetAttribute("href", endUrl);
-                    a.TextContent = titles[files[^1]];
-
-                    ul.AppendChild(li);
-                }
-            }
-
-            CachedSiblingsCurrentIndex = currentIdx;
             return ul;
         }
     }
