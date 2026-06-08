@@ -71,6 +71,7 @@ class Program
             services.AddTransient<IDocTransformer, DocBookTransformer>();
         }
 
+        services.AddSingleton<DocTransformerArgs>(sp => sp.GetRequiredService<DocToStaticPagesTransformerArgs>());
         services.AddSingleton<ProblemRecorder>();
 
         var serviceProvider = services.BuildServiceProvider();
