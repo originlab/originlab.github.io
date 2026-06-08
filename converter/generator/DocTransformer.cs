@@ -1,5 +1,4 @@
 ﻿using System.Buffers;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -146,7 +145,7 @@ internal abstract partial class DocTransformer
         }
     }
 
-    protected abstract bool TryResolveHref(string href, string sourceDir, out string result, out string? titleEn);
+    protected internal abstract bool TryResolveHref(string href, string sourceDir, out string result, out string? titleEn);
 
     protected virtual IHtmlElement? TransformAnchor(IHtmlDocument document, IHtmlAnchorElement a, string sourceFile, string sourceDir)
     {
@@ -179,7 +178,7 @@ internal abstract partial class DocTransformer
         return null;
     }
 
-    protected abstract bool TryResolveSrc(string src, string sourceDir, out string result, out (string src, string dst)? copy);
+    protected internal abstract bool TryResolveSrc(string src, string sourceDir, out string result, out (string src, string dst)? copy);
 
     protected virtual IHtmlElement? TransformImage(IHtmlDocument document, IHtmlImageElement img, string sourceFile, string sourceDir)
     {

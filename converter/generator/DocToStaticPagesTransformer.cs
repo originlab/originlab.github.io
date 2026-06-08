@@ -1,5 +1,4 @@
 ﻿using System.Buffers;
-using System.Diagnostics;
 using System.Net;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
@@ -87,7 +86,7 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer, ID
         body.AppendNodes(loading, mainContent);
     }
 
-    protected override bool TryResolveHref(string href, string sourceDir, out string result, out string? titleEn)
+    protected internal override bool TryResolveHref(string href, string sourceDir, out string result, out string? titleEn)
     {
         titleEn = null;
 
@@ -129,7 +128,7 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer, ID
         return false;
     }
 
-    protected override bool TryResolveSrc(string src, string sourceDir, out string result, out (string src, string dst)? copy)
+    protected internal override bool TryResolveSrc(string src, string sourceDir, out string result, out (string src, string dst)? copy)
     {
         if (src.StartsWith("../images/"))
         {
