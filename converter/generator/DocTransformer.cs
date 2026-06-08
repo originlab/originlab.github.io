@@ -171,7 +171,7 @@ internal abstract partial class DocTransformer
             }
             else
             {
-                ReportProblem(sourceFile, result, href.ToString(), a.SourceReference?.Position);
+                ReportProblem(sourceFile, result, parts.File.ToString(), a.SourceReference?.Position);
             }
         }
 
