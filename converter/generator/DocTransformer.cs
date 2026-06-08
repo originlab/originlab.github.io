@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -145,27 +146,17 @@ internal abstract partial class DocTransformer
         }
     }
 
-    protected abstract bool TryResolveHref(string sourceDir, string href, out string result, out string? titleEn);
+    protected abstract bool TryResolveHref(string href, string sourceDir, out string result, out string? titleEn);
 
     protected virtual void TransformAnchor(IHtmlAnchorElement a, string sourceFile, string sourceDir)
     {
-        if (a.GetAttribute("href") is string strHref && !strHref.IsBlank)
+        if (a.GetAttribute("href") is string href && !href.IsBlank)
         {
-            ReadOnlySpan<char> href = strHref, hash = "";
-            var hashIndex = strHref.IndexOf('#');
-            if (hashIndex == 0)
-            {
-                return;
-            }
-            else if (hashIndex > 0)
-            {
-                hash = strHref.AsSpan(hashIndex);
-                href = strHref.AsSpan(..hashIndex);
-            }
+            var parts = new UrlParts(href);
 
-            if (TryResolveHref(sourceDir, hashIndex > 0 ? href.ToString() : strHref, out var result, out var title))
+            if (TryResolveHref(sourceDir, parts.File.Length == href.Length ? href : parts.File.ToString(), out var result, out var title))
             {
-                a.SetAttribute("href", $"{result}{hash}");
+                a.SetAttribute("href", $"{result}{parts.Query}{parts.Hash}");
 
                 if (a.Title.IsBlank && !title.IsEmpty)
                 {
@@ -179,7 +170,32 @@ internal abstract partial class DocTransformer
         }
     }
 
-    protected abstract void TransformImage(IHtmlImageElement img, string sourceFile, string sourceDir);
+    protected abstract bool TryResolveSrc(string src, string sourceDir, out string result, out (string src, string dst)? copy);
+
+    protected virtual void TransformImage(IHtmlImageElement img, string sourceFile, string sourceDir)
+    {
+        if (img.GetAttribute("src") is not string src)
+        {
+            return;
+        }
+
+        var parts = new UrlParts(src);
+
+        if (TryResolveSrc(parts.File.ToString(), sourceDir, out var result, out var copy))
+        {
+            img.SetAttribute("src", $"{result}{parts.Query}{parts.Hash}");
+
+            if (copy is (string srcImg, string dstImg))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(dstImg)!);
+                File.Copy(srcImg, dstImg, overwrite: true);
+            }
+        }
+        else
+        {
+            ReportProblem(sourceFile, result, parts.File.ToString(), img.SourceReference?.Position);
+        }
+    }
 
     private static void CleanUp(IHtmlDocument document)
     {

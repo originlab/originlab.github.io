@@ -150,7 +150,7 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
 
         if (!files.Parent.IsEmpty)
         {
-            if (TryResolveHref(sourceDir, "../" + files.Parent, out var url, out var _))
+            if (TryResolveHref("../" + files.Parent, sourceDir, out var url, out var _))
             {
                 navDataDiv.SetAttribute("data-parent-link", url);
             }

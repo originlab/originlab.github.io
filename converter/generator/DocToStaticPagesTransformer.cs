@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Diagnostics;
 using System.Net;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
@@ -13,7 +14,6 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer, ID
 
     private readonly bool UseWebp;
 
-
     #region Language specific members
 
     protected string Language { get; private set; } = null!;
@@ -23,7 +23,6 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer, ID
     private readonly Dictionary<string, string> VisitedImages = new(StringComparer.OrdinalIgnoreCase);
 
     #endregion
-
 
     protected DocToStaticPagesTransformer(DocToStaticPagesTransformerArgs args, ProblemRecorder problems) : base(args, problems)
     {
@@ -88,7 +87,7 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer, ID
         body.AppendNodes(loading, mainContent);
     }
 
-    protected override bool TryResolveHref(string sourceDir, string href, out string result, out string? titleEn)
+    protected override bool TryResolveHref(string href, string sourceDir, out string result, out string? titleEn)
     {
         titleEn = null;
 
@@ -130,35 +129,21 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer, ID
         return false;
     }
 
-    protected override void TransformImage(IHtmlImageElement img, string sourceFile, string sourceDir)
+    protected override bool TryResolveSrc(string src, string sourceDir, out string result, out (string src, string dst)? copy)
     {
-        if (img.GetAttribute("src") is not string srcFull)
-        {
-            return;
-        }
-
-        var src = srcFull;
-        var sep = srcFull.AsSpan().IndexOfAny("?#");
-        if (sep > -1)
-        {
-            src = srcFull[..sep];
-        }
-
         if (src.StartsWith("../images/"))
         {
-            img.SetAttribute("loading", "lazy");
-
             var srcImg = new FileInfo(Path.GetFullPath(src, sourceDir));
-            var copy = true;
+            var needsCopy = true;
 
-            var fileName = Path.GetFileName(src.AsSpan());
-            if (SharedImages.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(fileName, out var url))
+            var fileName = Path.GetFileName(src);
+            if (SharedImages.TryGetValue(fileName, out result!))
             {
-                copy = false;
+                needsCopy = false;
             }
             else if (srcImg.Exists)
             {
-                url = '/'.TryPrefixEach(BookUrlName, Language, srcFull["../".Length..]);
+                result = '/'.TryPrefixEach(BookUrlName, Language, src["../".Length..]);
 
                 if (Language == "en")
                 {
@@ -167,29 +152,29 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer, ID
                         var size = srcImg.Length;
                         var hash = FileHash.UInt64FromFile(srcImg.FullName);
 
-                        EnglishImages.Add(src, (size, hash, url));
+                        EnglishImages.Add(src, (size, hash, result));
                     }
                     else
                     {
-                        url = visited.url;
-                        copy = false;
+                        result = visited.url;
+                        needsCopy = false;
                     }
                 }
                 else
                 {
                     if (VisitedImages.TryGetValue(src, out var prevUrl))
                     {
-                        url = prevUrl;
-                        copy = false;
+                        result = prevUrl;
+                        needsCopy = false;
                     }
                     else
                     {
-                        VisitedImages.Add(src, url);
+                        VisitedImages.Add(src, result);
 
                         if (EnglishImages.TryGetValue(src, out var visited) && srcImg.Length == visited.size && FileHash.UInt64FromFile(srcImg.FullName) == visited.hash)
                         {
-                            url = VisitedImages[src] = visited.url;
-                            copy = false;
+                            result = VisitedImages[src] = visited.url;
+                            needsCopy = false;
                         }
                     }
                 }
@@ -200,44 +185,45 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer, ID
 
                 if (!File.Exists(srcImgEn))
                 {
-                    ReportProblem(sourceFile, "Image src not found", src, img.SourceReference?.Position);
+                    result = "Image src not found";
+                    copy = null;
+                    return false;
                 }
 
-                url = '/'.TryPrefixEach(BookUrlName, "en", srcFull["../".Length..]);
-                copy = false;
+                result = '/'.TryPrefixEach(BookUrlName, "en", src["../".Length..]);
+                needsCopy = false;
             }
 
             if (UseWebp)
             {
-                sep = url.AsSpan().IndexOfAny("?#");
+                var resultDir = Path.GetDirectoryName(result.AsSpan());
+                var resultFileName = Path.GetFileNameWithoutExtension(result.AsSpan());
 
-                if (sep > -1)
-                {
-                    var dot = url.AsSpan(..sep).LastIndexOf('.');
-                    url = $"{url.AsSpan(..dot)}.webp{url.AsSpan(sep)}";
-                }
-                else
-                {
-                    var dot = url.AsSpan().LastIndexOf('.');
-                    url = $"{url.AsSpan(..dot)}.webp";
-                }
+                result = $"{resultDir}/{resultFileName}.webp";
             }
 
-            img.SetAttribute("src", url);
-
-            if (copy)
+            if (!needsCopy)
+            {
+                copy = null;
+            }
+            else
             {
                 var dstImg = Path.Combine(OutputFolder, Language, src["../".Length..]);
-
-                Directory.CreateDirectory(Path.GetDirectoryName(dstImg)!);
-
-                File.Copy(srcImg.FullName, dstImg, overwrite: true);
+                copy = (srcImg.FullName, dstImg);
             }
-        }
-        else if (!Uri.IsWellFormedUriString(srcFull, UriKind.Absolute))
-        {
-            ReportProblem(sourceFile, "Unrecognized src", src, img.SourceReference?.Position);
+
+            return true;
         }
 
+        result = "Unrecognized src";
+        copy = null;
+        return false;
+    }
+
+    protected override void TransformImage(IHtmlImageElement img, string sourceFile, string sourceDir)
+    {
+        base.TransformImage(img, sourceFile, sourceDir);
+
+        img.SetAttribute("loading", "lazy");
     }
 }
