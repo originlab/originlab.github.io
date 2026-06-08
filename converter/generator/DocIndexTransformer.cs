@@ -2,13 +2,13 @@
 
 namespace OriginLab.DocumentGeneration;
 
-internal class DocIndexTransformer : DocTransformer
+internal class DocIndexTransformer : DocToStaticPagesTransformer
 {
-    public DocIndexTransformer(DocTransformerArgs args, ProblemRecorder problems) : base(args, problems)
+    public DocIndexTransformer(DocToStaticPagesTransformerArgs args, ProblemRecorder problems) : base(args, problems)
     {
     }
 
-    public override async Task TransformFilesAsync(string language)
+    protected override async Task TransformAsync(string language)
     {
         foreach (var sourceFile in Directory.EnumerateFiles(SourceFolder, "index.html", SearchOption.AllDirectories))
         {

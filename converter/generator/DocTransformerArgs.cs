@@ -1,3 +1,12 @@
 ﻿namespace OriginLab.DocumentGeneration;
 
-public record class DocTransformerArgs(string SourceFolder, string OutputFolder, string BooksXmlFolder, string BookUrlName, bool UseWebp);
+public class DocTransformerArgs
+{
+    public required string SourceFolder { get; init; }
+
+    public required string OutputFolder { get; init; }
+    
+    public required string BooksXmlFolder { get; init; }
+    
+    public required string BookUrlName { get; init; }
+}

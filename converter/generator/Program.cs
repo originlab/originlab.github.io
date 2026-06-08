@@ -48,12 +48,26 @@ class Program
 
         if (isBuildingIndex)
         {
-            services.AddSingleton<DocTransformerArgs>(sp => new(srcBookPath, outputPath, booksXmlPath, "", args.Webp));
+            services.AddSingleton(sp => new DocToStaticPagesTransformerArgs()
+            {
+                SourceFolder = srcBookPath,
+                OutputFolder = outputPath,
+                BooksXmlFolder = booksXmlPath,
+                BookUrlName = "",
+                UseWebp = args.Webp
+            });
             services.AddTransient<IDocTransformer, DocIndexTransformer>();
         }
         else
         {
-            services.AddSingleton<DocTransformerArgs>(sp => new(srcBookPath, outputPath, booksXmlPath, Path.GetFileName(srcBookPath), args.Webp));
+            services.AddSingleton(sp => new DocToStaticPagesTransformerArgs()
+            {
+                SourceFolder = srcBookPath,
+                OutputFolder = outputPath,
+                BooksXmlFolder = booksXmlPath,
+                BookUrlName = Path.GetFileName(srcBookPath),
+                UseWebp = args.Webp
+            });
             services.AddTransient<IDocTransformer, DocBookTransformer>();
         }
 
