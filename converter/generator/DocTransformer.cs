@@ -152,6 +152,11 @@ internal abstract partial class DocTransformer
     {
         if (a.GetAttribute("href") is string href && !href.IsBlank)
         {
+            if (href.StartsWith('#'))
+            {
+                return null;
+            }
+
             var parts = new UrlParts(href);
 
             if (TryResolveHref(parts.File.Length == href.Length ? href : parts.File.ToString(), sourceDir, out var result, out var title))
