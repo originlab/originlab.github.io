@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0"?>
 <book wiki="ocwiki">
-  <page title="Builder" file="Category/Builder.html" url="Builder" src="Category:Builder">
+  <page title="Builder" file="Category/Builder.html" url="Build" src="Category:Builder">
     <page title="B Scripts (Moved from App)" file="Builder/B_Scripts.html" url="Build/B-Scripts" src="Builder:B_Scripts"/>
     <page title="C Scripts" file="Builder/C_Scripts.html" url="Build/C-Scripts" src="Builder:C_Scripts"/>
   </page>
