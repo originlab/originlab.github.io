@@ -18,7 +18,6 @@ internal abstract partial class DocTransformer : IDocTransformer
     protected string SourceFolderEn { get; }
     protected string OutputFolder { get; }
     protected string BooksXmlFolder { get; }
-    protected string BookUrlName { get; }
 
     protected string[] AvailableLanguages { get; }
 
@@ -38,7 +37,6 @@ internal abstract partial class DocTransformer : IDocTransformer
         BooksXmlFolder = booksXmlFolder;
 
         OutputFolder = args.OutputFolder;
-        BookUrlName = args.BookUrlName;
 
         Problems = problems;
 

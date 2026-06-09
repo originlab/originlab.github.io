@@ -12,6 +12,8 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
 {
     public const int MaxSiblingNodes = 10 * 2;
 
+    protected string BookUrlName { get; }
+
     private readonly Dictionary<string, (string book, string url, string titleEn)> PageLinks;
 
     private readonly bool UseWebp;
@@ -30,6 +32,8 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
 
     protected DocToStaticPagesTransformer(DocToStaticPagesTransformerArgs args, ProblemRecorder problems) : base(args, problems)
     {
+        BookUrlName = args.BookUrlName;
+
         var pages = new List<(string file, string book, string url, string title)>();
 
         foreach (var xmlFile in Directory.EnumerateFiles(BooksXmlFolder, "*.xml"))
