@@ -66,9 +66,11 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
     protected override async Task TransformAsync(string language)
     {
         var html = await InitializeLanguageLayoutAsync(language);
+        var dir = Path.Combine(OutputFolder, language);
 
-        var langDir = Directory.CreateDirectory(Path.Combine(OutputFolder, language));
-        await File.WriteAllTextAsync(Path.Combine(langDir.FullName, "layout.html"), html);
+        Directory.CreateDirectory(dir);
+
+        await File.WriteAllTextAsync(Path.Combine(dir, "layout.html"), html);
     }
 
     internal async Task<string> InitializeLanguageLayoutAsync(string language)
