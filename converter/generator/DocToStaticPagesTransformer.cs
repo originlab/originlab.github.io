@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Net;
+using System.Xml.Linq;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
@@ -10,6 +11,8 @@ namespace OriginLab.DocumentGeneration;
 internal abstract partial class DocToStaticPagesTransformer : DocTransformer
 {
     public const int MaxSiblingNodes = 10 * 2;
+
+    private readonly Dictionary<string, (string book, string url, string titleEn)> PageLinks;
 
     private readonly bool UseWebp;
 
@@ -25,6 +28,25 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
 
     protected DocToStaticPagesTransformer(DocToStaticPagesTransformerArgs args, ProblemRecorder problems) : base(args, problems)
     {
+        var pages = new List<(string file, string book, string url, string title)>();
+
+        foreach (var xmlFile in Directory.EnumerateFiles(BooksXmlFolder, "*.xml"))
+        {
+            var dirName = Path.GetFileNameWithoutExtension(xmlFile);
+
+            foreach (var p in XElement.Load(xmlFile).Descendants("page"))
+            {
+                var file = $"{dirName}/{p.Attribute("file")!.Value}";
+                var url = p.Attribute("url")!.Value;
+                var sep = url.IndexOf('/');
+                var title = p.Attribute("title")!.Value;
+
+                pages.Add((file, book: sep < 0 ? url : url[..sep], url: sep < 0 ? "" : url[(sep + 1)..], title));
+            }
+        }
+
+        PageLinks = pages.ToDictionary(p => p.file, p => (p.book.ToLowerInvariant(), p.url.ToLowerInvariant(), p.title), StringComparer.OrdinalIgnoreCase);
+
         UseWebp = args.UseWebp;
     }
 

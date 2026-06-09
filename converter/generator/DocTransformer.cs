@@ -22,8 +22,6 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     protected string[] AvailableLanguages { get; }
 
-    protected readonly Dictionary<string, (string book, string url, string titleEn)> PageLinks;
-
     protected Dictionary<string, string> MovedPages => field ??= GetMovedPages();
 
     protected static Dictionary<string, string> SharedImages => field ??= GetSharedImages();
@@ -63,25 +61,6 @@ internal abstract partial class DocTransformer : IDocTransformer
         }
 
         AvailableLanguages = languages;
-
-        var pages = new List<(string file, string book, string url, string title)>();
-
-        foreach (var xmlFile in Directory.EnumerateFiles(booksXmlFolder, "*.xml"))
-        {
-            var dirName = Path.GetFileNameWithoutExtension(xmlFile);
-
-            foreach (var p in XElement.Load(xmlFile).Descendants("page"))
-            {
-                var file = $"{dirName}/{p.Attribute("file")!.Value}";
-                var url = p.Attribute("url")!.Value;
-                var sep = url.IndexOf('/');
-                var title = p.Attribute("title")!.Value;
-
-                pages.Add((file, book: sep < 0 ? url : url[..sep], url: sep < 0 ? "" : url[(sep + 1)..], title));
-            }
-        }
-
-        PageLinks = pages.ToDictionary(p => p.file, p => (p.book.ToLowerInvariant(), p.url.ToLowerInvariant(), p.title), StringComparer.OrdinalIgnoreCase);
     }
 
     private Dictionary<string, string> GetMovedPages()
