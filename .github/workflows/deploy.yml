@@ -186,16 +186,16 @@ jobs:
             -e 's/^##\[group\](.*)/<details><summary>\1<\/summary>\n/g' \
             -e 's/^##\[endgroup\]/<\/details>/g' \
             -e 's/^##\[warning\](.*)/> [!WARNING]\n> \1/g' \
-          | awk -v sha="$run_sha" -v site="${{ matrix.site }}" '
+          | awk -v sha="$run_sha" -v site="https://github.com/originlab/${{ matrix.site }}" '
             /^File: / { 
               file_path = $2
-              print "- File: [" file_path "](https://github.com/originlab/" site "/blob/" sha "/" file_path ")"
-              next 
+              print "- File: [" file_path "](" site "/blob/" sha "/" file_path ")"
+              next
             }
             /^[[:space:]]+Ln [0-9]+,/ {
               match($0, /Ln [0-9]+/)
               line_num = substr($0, RSTART + 3, RLENGTH - 3)
-              print "    - [Ln " line_num ", " substr($0, index($0, "Col")) "](https://github.com/originlab/" site "/blob/" sha "/" file_path "#L" line_num ")"
+              print "    - [Ln " line_num ", " substr($0, index($0, "Col")) "](" site "/blob/" sha "/" file_path "#L" line_num ")"
               next
             }
             { print }

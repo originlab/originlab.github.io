@@ -90,6 +90,15 @@ public abstract class ProblemSummarizer
 
                         textWriter.WriteLine("::endgroup::");
                     }
+
+                    textWriter.WriteLine($"::group::Show affected files");
+
+                    foreach (var file in locations.Select(l => l.filePosition.File).Distinct())
+                    {
+                        textWriter.WriteLine($"- {file}");
+                    }
+
+                    textWriter.WriteLine("::endgroup::");
                 }
             }
             else
