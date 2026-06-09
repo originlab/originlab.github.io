@@ -13,7 +13,7 @@ public class DocToStaticPagesTransformerTests
         var bookDir = Path.GetFullPath("../../../../converter/tests/books/" + book, AppContext.BaseDirectory);
         var args = new DocToStaticPagesTransformerArgs
         {
-            BookUrlName = "",
+            BookUrlName = book,
             BooksXmlFolder = Path.GetFullPath("../xml", bookDir),
             SourceFolder = bookDir,
             OutputFolder = Path.GetFullPath("../../../../artifacts/tests/public_html" + book, AppContext.BaseDirectory),
