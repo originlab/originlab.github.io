@@ -1,0 +1,8 @@
+﻿<?xml version="1.0"?>
+<book wiki="howto">
+  <page title="Apps" file="Category/App(App).html" url="App" src="Category:App(App)">
+    <page title="App A" file="App/A.html" url="App/A" src="App:A"/>
+    <page title="App B" file="App/B.html" url="App/B" src="App:B"/>
+    <page title="App C" file="App/C.html" url="App/C" src="App:C"/>
+  </page>
+</book>

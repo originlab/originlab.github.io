@@ -1,21 +1,22 @@
-﻿using OriginLab.DocumentGeneration.Templates;
-
-namespace OriginLab.DocumentGeneration.Tests;
+﻿namespace OriginLab.DocumentGeneration.Tests;
 
 public class DocToStaticPagesTransformerTests
 {
     [Theory]
-    [InlineData("./GettingStarted/Category/Origin_9.1_Getting_Started_Booklet.html", "en", "/user-guide/", "User Guide")]
-    [InlineData("./GettingStarted/Category/Origin_9.1_Getting_Started_Booklet.html", "de", "/user-guide/de/", "User Guide")]
-    public async Task HrefShouldResolveCorrectly(string href, string language, string expectedUrl, string expectedTitle)
+    [InlineData("./A/Category/App(App).html", "app", "en", "/app/", "Apps")]
+    [InlineData("./A/Category/App(App).html", "app", "de", "/app/de/", "Apps")]
+    [InlineData("./A/App/A.html", "app", "en", "/app/a/", "App A")]
+    [InlineData("./A/App/B.html", "app", "de", "/app/b/de/", "App B")]
+    [InlineData("./A/App/B_Script.html", "app", "de", "/build/b-scripts/de/", "B Scripts (Moved from App)")]
+    public async Task HrefShouldResolveCorrectly(string href, string book, string language, string expectedUrl, string expectedTitle)
     {
-        var bookDir = Path.GetFullPath("../../../index", Template.WebRootPath);
+        var bookDir = Path.GetFullPath("../../../../converter/tests/books/" + book, AppContext.BaseDirectory);
         var args = new DocToStaticPagesTransformerArgs
         {
             BookUrlName = "",
-            BooksXmlFolder = Path.GetFullPath("../../../books", Template.WebRootPath),
+            BooksXmlFolder = Path.GetFullPath("../xml", bookDir),
             SourceFolder = bookDir,
-            OutputFolder = Path.GetFullPath("../../../artifacts/tests/public_html", Template.WebRootPath),
+            OutputFolder = Path.GetFullPath("../../../../artifacts/tests/public_html" + book, AppContext.BaseDirectory),
         };
         var transformer = new FakeDocToStaticPagesTransformer(args, new ProblemRecorder(args));
 
