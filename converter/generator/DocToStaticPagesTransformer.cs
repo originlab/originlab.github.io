@@ -22,6 +22,8 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
 
     private INode[] LayoutNodes = null!;
 
+    private readonly Dictionary<string, (long size, ulong hash, string url)> EnglishImages = new(StringComparer.OrdinalIgnoreCase);
+
     private readonly Dictionary<string, string> VisitedImages = new(StringComparer.OrdinalIgnoreCase);
 
     #endregion

@@ -26,8 +26,6 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     protected static Dictionary<string, string> SharedImages => field ??= GetSharedImages();
 
-    protected readonly Dictionary<string, (long size, ulong hash, string url)> EnglishImages = new(StringComparer.OrdinalIgnoreCase);
-
     private readonly ProblemRecorder Problems;
 
     protected DocTransformer(DocTransformerArgs args, ProblemRecorder problems)
