@@ -134,30 +134,26 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     protected virtual IHtmlElement? TransformAnchor(IHtmlDocument document, IHtmlAnchorElement a, string sourceFile, string sourceDir)
     {
-        if (a.GetAttribute("href") is string href && !href.IsBlank)
+        if (a.GetAttribute("href") is not string href || href.IsBlank)
         {
-            if (href.StartsWith('#'))
+            return null;
+        }
+
+        if (TryResolveHref(href, sourceDir, out var result, out var title))
+        {
+            a.SetAttribute("href", result);
+
+            if ((a.Title.IsBlank || a.Title.Contains(':')) && !title.IsEmpty)
             {
-                return null;
+                a.Title = title;
             }
 
+            return a;
+        }
+        else
+        {
             var parts = new UrlParts(href);
-
-            if (TryResolveHref(parts.File.Length == href.Length ? href : parts.File.ToString(), sourceDir, out var result, out var title))
-            {
-                a.SetAttribute("href", $"{result}{parts.Query}{parts.Hash}");
-
-                if (a.Title.IsBlank && !title.IsEmpty)
-                {
-                    a.Title = title;
-                }
-
-                return a;
-            }
-            else
-            {
-                ReportProblem(sourceFile, result, parts.File.ToString(), a.SourceReference?.Position);
-            }
+            ReportProblem(sourceFile, result, parts.Path.ToString(), a.SourceReference?.Position);
         }
 
         return null;
@@ -167,16 +163,14 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     protected virtual IHtmlElement? TransformImage(IHtmlDocument document, IHtmlImageElement img, string sourceFile, string sourceDir)
     {
-        if (img.GetAttribute("src") is not string src)
+        if (img.GetAttribute("src") is not string src || src.IsBlank)
         {
             return null;
         }
 
-        var parts = new UrlParts(src);
-
-        if (TryResolveSrc(parts.File.ToString(), sourceDir, out var result, out var copy))
+        if (TryResolveSrc(src, sourceDir, out var result, out var copy))
         {
-            img.SetAttribute("src", $"{result}{parts.Query}{parts.Hash}");
+            img.SetAttribute("src", result);
 
             if (copy is (string srcImg, string dstImg))
             {
@@ -188,7 +182,8 @@ internal abstract partial class DocTransformer : IDocTransformer
         }
         else
         {
-            ReportProblem(sourceFile, result, parts.File.ToString(), img.SourceReference?.Position);
+            var parts = new UrlParts(src);
+            ReportProblem(sourceFile, result, parts.Path.ToString(), img.SourceReference?.Position);
         }
 
         return null;

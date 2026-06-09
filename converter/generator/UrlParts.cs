@@ -2,7 +2,8 @@
 
 internal readonly ref struct UrlParts
 {
-    public ReadOnlySpan<char> File { get; }
+    public bool IsAbosolute { get; }
+    public ReadOnlySpan<char> Path { get; }
     public ReadOnlySpan<char> Query { get; }
     public ReadOnlySpan<char> Hash { get; }
 
@@ -25,6 +26,14 @@ internal readonly ref struct UrlParts
             span = span[..sep];
         }
 
-        File = sep > -1 ? span[..sep] : span;
+        if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
+        {
+            Path = uri.AbsolutePath;
+            IsAbosolute = true;
+        }
+        else
+        {
+            Path = sep > -1 ? span[..sep] : span;
+        }
     }
 }

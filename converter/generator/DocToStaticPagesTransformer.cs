@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Diagnostics;
 using System.Net;
 using System.Xml.Linq;
 using AngleSharp.Dom;
@@ -120,41 +121,46 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
     {
         titleEn = null;
 
-        if (!href.StartsWith('/') && Uri.IsWellFormedUriString(href, UriKind.Relative))
-        {
-            var fullPath = Path.GetFullPath(href, sourceDir);
-            if (fullPath.StartsWith(SourceFolder)
-                && Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(fullPath.AsSpan()))) is { IsEmpty: false } targetBookDirContainer)
-            {
-                var targetFile = WebUtility.UrlDecode(fullPath[(targetBookDirContainer.Length + 1)..].Replace('\\', '/'));
+        var parts = new UrlParts(href);
 
-                if (PageLinks.TryGetValue(targetFile, out var link)
-                    || (MovedPages.TryGetValue(targetFile, out var movedToFile) && PageLinks.TryGetValue(movedToFile, out link)))
-                {
-                    if (Language == "en")
-                    {
-                        result = '/'.TrySurroundEach(link.book, link.url);
-                    }
-                    else
-                    {
-                        result = '/'.TrySurroundEach(link.book, link.url, Language);
-                    }
-
-                    titleEn = link.titleEn;
-                    return true;
-                }
-            }
-
-            result = "Unknown href mapping";
-            return false;
-        }
-        else if (href.StartsWith("mailto:") || href.StartsWith("javascript:") || Uri.IsWellFormedUriString(href, UriKind.Absolute))
+        if (parts.IsAbosolute || href.StartsWith('/') || href.StartsWith('#'))
         {
             result = href;
             return true;
         }
 
-        result = "Unrecognized href pattern";
+        var path = parts is { Query.Length: 0, Hash.Length: 0 } ? href : parts.Path.ToString();
+        Debug.Assert(!path.IsEmpty);
+
+        var fullPath = Path.GetFullPath(path, sourceDir);
+        if (fullPath.StartsWith(SourceFolder)
+            && Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(fullPath.AsSpan()))) is { IsEmpty: false } targetBookDirContainer)
+        {
+            var targetFile = WebUtility.UrlDecode(fullPath[(targetBookDirContainer.Length + 1)..].Replace('\\', '/'));
+
+            if (PageLinks.TryGetValue(targetFile, out var link)
+                || (MovedPages.TryGetValue(targetFile, out var movedToFile) && PageLinks.TryGetValue(movedToFile, out link)))
+            {
+                if (Language == "en")
+                {
+                    result = '/'.TrySurroundEach(link.book, link.url);
+                }
+                else
+                {
+                    result = '/'.TrySurroundEach(link.book, link.url, Language);
+                }
+
+                if (!parts.Query.IsEmpty || !parts.Hash.IsEmpty)
+                {
+                    result = $"{result}{parts.Query}{parts.Hash}";
+                }
+
+                titleEn = link.titleEn;
+                return true;
+            }
+        }
+
+        result = "Unknown href mapping";
         return false;
     }
 
@@ -163,93 +169,106 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
 
     protected internal override bool TryResolveSrc(string src, string sourceDir, out string result, out (string src, string dst)? copy)
     {
-        if (src.StartsWith("../images/"))
+        var parts = new UrlParts(src);
+
+        if (parts.IsAbosolute || src.StartsWith('/'))
         {
-            var srcImg = new FileInfo(Path.GetFullPath(src, sourceDir));
-            var needsCopy = true;
-
-            var fileName = Path.GetFileName(src);
-            if (SharedImages.TryGetValue(fileName, out result!))
-            {
-                needsCopy = false;
-            }
-            else if (srcImg.Exists)
-            {
-                result = '/'.TryPrefixEach(BookUrlName, Language, src["../".Length..]);
-
-                if (Language == "en")
-                {
-                    if (!EnglishImages.TryGetValue(src, out var visited))
-                    {
-                        var size = srcImg.Length;
-                        var hash = FileHash.UInt64FromFile(srcImg.FullName);
-
-                        EnglishImages.Add(src, (size, hash, result));
-                    }
-                    else
-                    {
-                        result = visited.url;
-                        needsCopy = false;
-                    }
-                }
-                else
-                {
-                    if (VisitedImages.TryGetValue(src, out var prevUrl))
-                    {
-                        result = prevUrl;
-                        needsCopy = false;
-                    }
-                    else
-                    {
-                        VisitedImages.Add(src, result);
-
-                        if (EnglishImages.TryGetValue(src, out var visited) && srcImg.Length == visited.size && FileHash.UInt64FromFile(srcImg.FullName) == visited.hash)
-                        {
-                            result = VisitedImages[src] = visited.url;
-                            needsCopy = false;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                var srcImgEn = $"{SourceFolderEn}{srcImg.FullName.AsSpan(SourceFolderEn.Length)}";
-
-                if (!File.Exists(srcImgEn))
-                {
-                    result = "Image src not found";
-                    copy = null;
-                    return false;
-                }
-
-                result = '/'.TryPrefixEach(BookUrlName, "en", src["../".Length..]);
-                needsCopy = false;
-            }
-
-            if (UseWebp)
-            {
-                var resultDir = Path.GetDirectoryName(result.AsSpan());
-                var resultFileName = Path.GetFileNameWithoutExtension(result.AsSpan());
-
-                result = $"{resultDir}/{resultFileName}.webp";
-            }
-
-            if (!needsCopy)
-            {
-                copy = null;
-            }
-            else
-            {
-                var dstImg = Path.Combine(OutputFolder, Language, src["../".Length..]);
-                copy = (srcImg.FullName, dstImg);
-            }
-
+            result = src;
+            copy = null;
             return true;
         }
 
-        result = "Unrecognized src";
-        copy = null;
-        return false;
+        var path = parts is { Query.Length: 0, Hash.Length: 0 } ? src : parts.Path.ToString();
+        Debug.Assert(!path.IsEmpty);
+
+        var indexOfImages = path.IndexOf("images/");
+        Debug.Assert(indexOfImages > -1);
+
+        var srcImg = new FileInfo(Path.GetFullPath(path, sourceDir));
+        var needsCopy = true;
+
+        var fileName = Path.GetFileName(path);
+        if (SharedImages.TryGetValue(fileName, out result!))
+        {
+            needsCopy = false;
+        }
+        else if (srcImg.Exists)
+        {
+            result = '/'.TryPrefixEach(BookUrlName, Language, path[indexOfImages..]);
+
+            if (Language == "en")
+            {
+                if (!EnglishImages.TryGetValue(path, out var visited))
+                {
+                    var size = srcImg.Length;
+                    var hash = FileHash.UInt64FromFile(srcImg.FullName);
+
+                    EnglishImages.Add(path, (size, hash, result));
+                }
+                else
+                {
+                    result = visited.url;
+                    needsCopy = false;
+                }
+            }
+            else
+            {
+                if (VisitedImages.TryGetValue(path, out var prevUrl))
+                {
+                    result = prevUrl;
+                    needsCopy = false;
+                }
+                else
+                {
+                    VisitedImages.Add(path, result);
+
+                    if (EnglishImages.TryGetValue(path, out var visited) && srcImg.Length == visited.size && FileHash.UInt64FromFile(srcImg.FullName) == visited.hash)
+                    {
+                        result = VisitedImages[path] = visited.url;
+                        needsCopy = false;
+                    }
+                }
+            }
+        }
+        else
+        {
+            var srcImgEn = $"{SourceFolderEn}{srcImg.FullName.AsSpan(SourceFolderEn.Length)}";
+
+            if (!File.Exists(srcImgEn))
+            {
+                result = "Image src not found";
+                copy = null;
+                return false;
+            }
+
+            result = '/'.TryPrefixEach(BookUrlName, "en", path[indexOfImages..]);
+            needsCopy = false;
+        }
+
+        if (UseWebp)
+        {
+            var resultDir = Path.GetDirectoryName(result.AsSpan());
+            var resultFileName = Path.GetFileNameWithoutExtension(result.AsSpan());
+
+            result = $"{resultDir}/{resultFileName}.webp";
+        }
+
+        if (!needsCopy)
+        {
+            copy = null;
+        }
+        else
+        {
+            var dstImg = Path.Combine(OutputFolder, Language, path[indexOfImages..]);
+            copy = (srcImg.FullName, dstImg);
+        }
+
+        if (!parts.Query.IsEmpty)
+        {
+            result = $"{result}{parts.Query}";
+        }
+
+        return true;
     }
 
     protected override IHtmlElement? TransformImage(IHtmlDocument document, IHtmlImageElement img, string sourceFile, string sourceDir)
