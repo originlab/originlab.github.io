@@ -152,6 +152,9 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
         return false;
     }
 
+    protected override string GetSharedImageSrc(string path, string fileName)
+        => $"/books/images/{fileName}?v={FileHash.StringFromFile(path)}";
+
     protected internal override bool TryResolveSrc(string src, string sourceDir, out string result, out (string src, string dst)? copy)
     {
         if (src.StartsWith("../images/"))

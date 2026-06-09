@@ -24,7 +24,7 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     protected Dictionary<string, string> MovedPages => field ??= GetMovedPages();
 
-    protected static Dictionary<string, string> SharedImages => field ??= GetSharedImages();
+    protected Dictionary<string, string> SharedImages => field ??= GetSharedImages();
 
     private readonly ProblemRecorder Problems;
 
@@ -76,18 +76,20 @@ internal abstract partial class DocTransformer : IDocTransformer
         ?.ToDictionary(StringComparer.OrdinalIgnoreCase) ?? [];
     }
 
-    private static Dictionary<string, string> GetSharedImages()
+    private Dictionary<string, string> GetSharedImages()
     {
         var images = new Dictionary<string, string>();
 
         foreach (var imgFile in Directory.EnumerateFiles(Path.Combine(Template.WebRootPath, "books/images")))
         {
             var fileName = Path.GetFileName(imgFile);
-            images.Add(fileName, $"/books/images/{fileName}?v={FileHash.StringFromFile(imgFile)}");
+            images.Add(fileName, GetSharedImageSrc(imgFile, fileName));
         }
 
         return images;
     }
+
+    protected abstract string GetSharedImageSrc(string path, string fileName);
 
     public virtual async Task TransformAsync()
     {
