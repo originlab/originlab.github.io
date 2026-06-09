@@ -12,7 +12,7 @@ using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration;
 
-internal abstract partial class DocTransformer
+internal abstract partial class DocTransformer : IDocTransformer
 {
     protected string SourceFolder { get; }
     protected string SourceFolderEn { get; }
@@ -110,6 +110,14 @@ internal abstract partial class DocTransformer
         }
 
         return images;
+    }
+
+    public virtual async Task TransformAsync()
+    {
+        foreach (var language in AvailableLanguages)
+        {
+            await TransformAsync(language);
+        }
     }
 
     protected abstract Task TransformAsync(string language);

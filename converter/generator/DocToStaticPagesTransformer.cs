@@ -7,7 +7,7 @@ using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration;
 
-internal abstract partial class DocToStaticPagesTransformer : DocTransformer, IDocTransformer
+internal abstract partial class DocToStaticPagesTransformer : DocTransformer
 {
     public const int MaxSiblingNodes = 10 * 2;
 
@@ -28,19 +28,19 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer, ID
         UseWebp = args.UseWebp;
     }
 
-    public async Task TransformAsync()
+    public override async Task TransformAsync()
     {
-        foreach (var language in AvailableLanguages)
-        {
-            var html = await InitializeLanguageLayoutAsync(language);
-
-            var langDir = Directory.CreateDirectory(Path.Combine(OutputFolder, language));
-            await File.WriteAllTextAsync(Path.Combine(langDir.FullName, "layout.html"), html);
-
-            await TransformAsync(language);
-        }
+        await base.TransformAsync();
 
         File.WriteAllText(Path.Combine(OutputFolder, "404.html"), await Template.Render404PageAsync());
+    }
+
+    protected override async Task TransformAsync(string language)
+    {
+        var html = await InitializeLanguageLayoutAsync(language);
+
+        var langDir = Directory.CreateDirectory(Path.Combine(OutputFolder, language));
+        await File.WriteAllTextAsync(Path.Combine(langDir.FullName, "layout.html"), html);
     }
 
     internal async Task<string> InitializeLanguageLayoutAsync(string language)

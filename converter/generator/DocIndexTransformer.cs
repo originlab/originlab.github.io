@@ -10,6 +10,8 @@ internal class DocIndexTransformer : DocToStaticPagesTransformer
 
     protected override async Task TransformAsync(string language)
     {
+        await base.TransformAsync(language);
+
         foreach (var sourceFile in Directory.EnumerateFiles(SourceFolder, "index.html", SearchOption.AllDirectories))
         {
             var relativePath = Path.GetRelativePath(SourceFolder, sourceFile);

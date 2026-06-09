@@ -69,6 +69,8 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
 
     protected override async Task TransformAsync(string language)
     {
+        await base.TransformAsync(language);
+
         var srcDir = Path.Combine(SourceFolder, language, BookDirName);
         var srcEnDir = Path.Combine(SourceFolderEn, BookDirName);
         string? fallbackBanner = null;
