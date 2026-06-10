@@ -12,7 +12,7 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
     private readonly string BookDirName;
     private readonly (string url, string file, string titleEn, NavFiles navFiles)[] Pages;
 
-    public DocBookTransformer(DocToStaticPagesTransformerArgs args, ProblemRecorder problems) : base(args, problems)
+    public DocBookTransformer(DocToStaticPagesTransformerArgs args, IDocResourceResolver resourceResolver, ProblemRecorder problems) : base(args, resourceResolver, problems)
     {
         AvailableLanguagesExpression = String.Join(',', AvailableLanguages);
         BookDirName = Path.GetFileName(Directory.EnumerateDirectories(Path.Combine(SourceFolder, "en")).Single());
@@ -151,7 +151,7 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
 
         if (!files.Parent.IsEmpty)
         {
-            if (TryResolveHref("../" + files.Parent, sourceDir, out var url, out var _))
+            if (ResourceResolver.TryResolveHref("../" + files.Parent, sourceDir, out var url, out var _))
             {
                 navDataDiv.SetAttribute("data-parent-link", url);
             }

@@ -1,6 +1,6 @@
 ﻿namespace OriginLab.DocumentGeneration.Tests;
 
-public class DocToStaticPagesTransformerTests
+public class ResourceResolverTests
 {
     [Theory]
     [InlineData("./A/Category/App(App).html", "app", "en", "/app/", "Apps")]
@@ -11,7 +11,7 @@ public class DocToStaticPagesTransformerTests
     [InlineData("/link.aspx?a=b#h", "app", "de", "/link.aspx?a=b#h", null)]
     [InlineData("http://localhost/link.aspx?a=b", "app", "de", "http://localhost/link.aspx?a=b", null)]
     [InlineData("mailto:a@b.lan", "app", "de", "mailto:a@b.lan", null)]
-    public async Task HrefShouldResolveCorrectly(string href, string book, string language, string expectedUrl, string? expectedTitle)
+    public void HrefShouldResolveCorrectly(string href, string book, string language, string expectedUrl, string? expectedTitle)
     {
         var bookDir = Path.GetFullPath("../../../../converter/tests/books/" + book, AppContext.BaseDirectory);
         var args = new DocToStaticPagesTransformerArgs
@@ -21,11 +21,13 @@ public class DocToStaticPagesTransformerTests
             SourceFolder = bookDir,
             OutputFolder = Path.GetFullPath("../../../../artifacts/tests/public_html" + book, AppContext.BaseDirectory),
         };
-        var transformer = new FakeDocToStaticPagesTransformer(args, new ProblemRecorder(args));
 
-        await transformer.InitializeLanguageLayoutAsync(language);
+        var resolver = new DocToStaticPagesResourceResolver(args)
+        {
+            Language = language
+        };
 
-        Assert.True(transformer.TryResolveHref(href, Path.GetFullPath(language, bookDir), out var result, out var title));
+        Assert.True(resolver.TryResolveHref(href, Path.GetFullPath(language, bookDir), out var result, out var title));
         Assert.Equal(expectedUrl, result);
         Assert.Equal(expectedTitle, title);
     }

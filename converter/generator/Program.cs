@@ -46,6 +46,8 @@ class Program
 
         var services = new ServiceCollection();
 
+        services.AddTransient<IDocResourceResolver, DocToStaticPagesResourceResolver>();
+
         if (isBuildingIndex)
         {
             services.AddSingleton(sp => new DocToStaticPagesTransformerArgs()

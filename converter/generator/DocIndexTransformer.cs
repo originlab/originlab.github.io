@@ -4,7 +4,7 @@ namespace OriginLab.DocumentGeneration;
 
 internal class DocIndexTransformer : DocToStaticPagesTransformer
 {
-    public DocIndexTransformer(DocToStaticPagesTransformerArgs args, ProblemRecorder problems) : base(args, problems)
+    public DocIndexTransformer(DocToStaticPagesTransformerArgs args, IDocResourceResolver resourceResolver, ProblemRecorder problems) : base(args, resourceResolver, problems)
     {
     }
 

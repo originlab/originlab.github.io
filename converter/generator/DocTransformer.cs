@@ -1,14 +1,11 @@
 ﻿using System.Buffers;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using AngleSharp.Common;
 using AngleSharp.Dom;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using AngleSharp.Text;
-using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration;
 
@@ -21,13 +18,17 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     protected string[] AvailableLanguages { get; }
 
-    protected Dictionary<string, string> MovedPages => field ??= GetMovedPages();
+    protected string Language
+    {
+        get => ResourceResolver.Language;
+        set => ResourceResolver.Language = value;
+    }
 
-    protected Dictionary<string, string> SharedImages => field ??= GetSharedImages();
+    protected IDocResourceResolver ResourceResolver { get; }
 
     private readonly ProblemRecorder Problems;
 
-    protected DocTransformer(DocTransformerArgs args, ProblemRecorder problems)
+    protected DocTransformer(DocTransformerArgs args, IDocResourceResolver resourceResolver, ProblemRecorder problems)
     {
         var sourceFolder = args.SourceFolder;
         SourceFolder = sourceFolder;
@@ -37,7 +38,6 @@ internal abstract partial class DocTransformer : IDocTransformer
         BooksXmlFolder = booksXmlFolder;
 
         OutputFolder = args.OutputFolder;
-
         Problems = problems;
 
         var languages = (from subPath in Directory.EnumerateDirectories(sourceFolder)
@@ -57,37 +57,8 @@ internal abstract partial class DocTransformer : IDocTransformer
         }
 
         AvailableLanguages = languages;
+        ResourceResolver = resourceResolver;
     }
-
-    private Dictionary<string, string> GetMovedPages()
-    {
-        using var movedJson = File.OpenRead(Path.Combine(BooksXmlFolder, "Moved.json"));
-#pragma warning disable CA1869 // Cache and reuse 'JsonSerializerOptions' instances
-        return JsonSerializer.Deserialize<Dictionary<string, string>>(movedJson, new JsonSerializerOptions
-#pragma warning restore CA1869 // Cache and reuse 'JsonSerializerOptions' instances
-        {
-            AllowTrailingCommas = true,
-            ReadCommentHandling = JsonCommentHandling.Skip,
-            PropertyNameCaseInsensitive = true,
-            AllowDuplicateProperties = true,
-        })
-        ?.ToDictionary(StringComparer.OrdinalIgnoreCase) ?? [];
-    }
-
-    private Dictionary<string, string> GetSharedImages()
-    {
-        var images = new Dictionary<string, string>();
-
-        foreach (var imgFile in Directory.EnumerateFiles(Path.Combine(Template.WebRootPath, "books/images")))
-        {
-            var fileName = Path.GetFileName(imgFile);
-            images.Add(fileName, GetSharedImageSrc(imgFile, fileName));
-        }
-
-        return images;
-    }
-
-    protected abstract string GetSharedImageSrc(string path, string fileName);
 
     public virtual async Task TransformAsync()
     {
@@ -130,8 +101,6 @@ internal abstract partial class DocTransformer : IDocTransformer
         }
     }
 
-    protected internal abstract bool TryResolveHref(string href, string sourceDir, out string result, out string? titleEn);
-
     protected virtual IHtmlElement? TransformAnchor(IHtmlDocument document, IHtmlAnchorElement a, string sourceFile, string sourceDir)
     {
         if (a.GetAttribute("href") is not string href || href.IsBlank)
@@ -139,7 +108,7 @@ internal abstract partial class DocTransformer : IDocTransformer
             return null;
         }
 
-        if (TryResolveHref(href, sourceDir, out var result, out var title))
+        if (ResourceResolver.TryResolveHref(href, sourceDir, out var result, out var title))
         {
             a.SetAttribute("href", result);
 
@@ -159,8 +128,6 @@ internal abstract partial class DocTransformer : IDocTransformer
         return null;
     }
 
-    protected internal abstract bool TryResolveSrc(string src, string sourceDir, out string result, out (string src, string dst)? copy);
-
     protected virtual IHtmlElement? TransformImage(IHtmlDocument document, IHtmlImageElement img, string sourceFile, string sourceDir)
     {
         if (img.GetAttribute("src") is not string src || src.IsBlank)
@@ -168,7 +135,7 @@ internal abstract partial class DocTransformer : IDocTransformer
             return null;
         }
 
-        if (TryResolveSrc(src, sourceDir, out var result, out var copy))
+        if (ResourceResolver.TryResolveSrc(src, sourceDir, out var result, out var copy))
         {
             img.SetAttribute("src", result);
 
