@@ -12,7 +12,6 @@ namespace OriginLab.DocumentGeneration;
 internal abstract partial class DocTransformer : IDocTransformer
 {
     protected string SourceFolder { get; }
-    protected string SourceFolderEn { get; }
     protected string OutputFolder { get; }
     protected string BooksXmlFolder { get; }
 
@@ -32,7 +31,6 @@ internal abstract partial class DocTransformer : IDocTransformer
     {
         var sourceFolder = args.SourceFolder;
         SourceFolder = sourceFolder;
-        SourceFolderEn = Path.Combine(sourceFolder, "en");
 
         var booksXmlFolder = args.BooksXmlFolder;
         BooksXmlFolder = booksXmlFolder;

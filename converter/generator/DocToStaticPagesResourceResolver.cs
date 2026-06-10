@@ -11,8 +11,6 @@ internal class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResou
     private string BookUrlName => Args.BookUrlName;
     private bool UseWebp => Args.UseWebp;
 
-    private readonly string SourceFolderEn;
-
     public string Language
     {
         get;
@@ -33,7 +31,6 @@ internal class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResou
 
     public DocToStaticPagesResourceResolver(DocToStaticPagesTransformerArgs args) : base(args)
     {
-        SourceFolderEn = Path.Combine(args.SourceFolder, "en");
         Args = args;
 
         var pages = new List<(string file, string book, string url, string title)>();
@@ -171,7 +168,7 @@ internal class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResou
         }
         else
         {
-            var srcImgEn = $"{SourceFolderEn}{srcImg.FullName.AsSpan(SourceFolderEn.Length)}";
+            var srcImgEn = $"{SourceFolder}/en/{srcImg.FullName.AsSpan(SourceFolder.Length + 4)}";
 
             if (!File.Exists(srcImgEn))
             {

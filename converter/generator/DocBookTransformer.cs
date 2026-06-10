@@ -71,7 +71,7 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
         await base.TransformAsync(language);
 
         var srcDir = Path.Combine(SourceFolder, language, BookDirName);
-        var srcEnDir = Path.Combine(SourceFolderEn, BookDirName);
+        var srcEnDir = Path.Combine(SourceFolder, "en", BookDirName);
         string? fallbackBanner = null;
 
         var titles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
