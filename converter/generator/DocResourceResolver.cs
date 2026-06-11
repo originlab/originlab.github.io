@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration;
 
@@ -9,8 +8,9 @@ internal abstract class DocResourceResolver
     protected string SourceFolder => Args.SourceFolder;
     protected string OutputFolder => Args.OutputFolder;
     protected string BooksXmlFolder => Args.BooksXmlFolder;
+    protected string SharedImagesFolder => Args.SharedImagesFolder;
 
-    protected Dictionary<string, string> SharedImages => field ??= GetSharedImages();
+    protected Dictionary<string, (string url, ulong hash)> SharedImages => field ??= GetSharedImages();
 
     protected Dictionary<string, string> MovedPages => field ??= GetMovedPages();
 
@@ -19,13 +19,13 @@ internal abstract class DocResourceResolver
         Args = args;
     }
 
-    protected abstract string GetSharedImageSrc(string path, string fileName);
+    protected abstract (string url, ulong hash) GetSharedImageSrc(string path, string fileName);
 
-    private Dictionary<string, string> GetSharedImages()
+    private Dictionary<string, (string url, ulong hash)> GetSharedImages()
     {
-        var images = new Dictionary<string, string>();
+        var images = new Dictionary<string, (string url, ulong hash)>();
 
-        foreach (var path in Directory.EnumerateFiles(Path.Combine(Template.WebRootPath, "books/images")))
+        foreach (var path in Directory.EnumerateFiles(SharedImagesFolder))
         {
             var fileName = Path.GetFileName(path);
             images.Add(fileName, GetSharedImageSrc(path, fileName));

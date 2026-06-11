@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace OriginLab.DocumentGeneration;
 
-internal class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResourceResolver
+internal partial class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResourceResolver
 {
     private readonly DocToStaticPagesTransformerArgs Args;
 
@@ -27,7 +27,7 @@ internal class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResou
 
     private readonly Dictionary<string, (long size, ulong hash, string url)> EnglishImages = new(StringComparer.OrdinalIgnoreCase);
 
-    private readonly Dictionary<string, string> VisitedImages = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, (string url, ulong hash)> VisitedImages = new(StringComparer.OrdinalIgnoreCase);
 
     public DocToStaticPagesResourceResolver(DocToStaticPagesTransformerArgs args) : base(args)
     {
@@ -53,8 +53,8 @@ internal class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResou
         PageLinks = pages.ToDictionary(p => p.file, p => (p.book.ToLowerInvariant(), p.url.ToLowerInvariant(), p.title), StringComparer.OrdinalIgnoreCase);
     }
 
-    protected override string GetSharedImageSrc(string path, string fileName)
-        => $"/books/images/{fileName}?v={FileHash.StringFromFile(path)}";
+    protected override (string url, ulong hash) GetSharedImageSrc(string path, string fileName)
+        => ($"/books/images/{fileName}", FileHash.UInt64FromFile(path));
 
     public bool TryResolveHref(string href, string sourceDir, out string result, out string? titleEn)
     {
@@ -121,64 +121,91 @@ internal class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResou
         Debug.Assert(indexOfImages > -1);
 
         var srcImg = new FileInfo(Path.GetFullPath(path, sourceDir));
+        var hash = 0UL;
         var needsCopy = true;
 
-        var fileName = Path.GetFileName(path);
-        if (SharedImages.TryGetValue(fileName, out result!))
+        bool TryResolveEnglishImage(out string result)
         {
-            needsCopy = false;
-        }
-        else if (srcImg.Exists)
-        {
-            result = '/'.TryPrefixEach(BookUrlName, Language, path[indexOfImages..]);
-
-            if (Language == "en")
-            {
-                if (!EnglishImages.TryGetValue(path, out var visited))
-                {
-                    var size = srcImg.Length;
-                    var hash = FileHash.UInt64FromFile(srcImg.FullName);
-
-                    EnglishImages.Add(path, (size, hash, result));
-                }
-                else
-                {
-                    result = visited.url;
-                    needsCopy = false;
-                }
-            }
-            else
-            {
-                if (VisitedImages.TryGetValue(path, out var prevUrl))
-                {
-                    result = prevUrl;
-                    needsCopy = false;
-                }
-                else
-                {
-                    VisitedImages.Add(path, result);
-
-                    if (EnglishImages.TryGetValue(path, out var visited) && srcImg.Length == visited.size && FileHash.UInt64FromFile(srcImg.FullName) == visited.hash)
-                    {
-                        result = VisitedImages[path] = visited.url;
-                        needsCopy = false;
-                    }
-                }
-            }
-        }
-        else
-        {
-            var srcImgEn = $"{SourceFolder}/en/{srcImg.FullName.AsSpan(SourceFolder.Length + 4)}";
-
-            if (!File.Exists(srcImgEn))
+            if (!srcImg.Exists)
             {
                 result = "Image src not found";
-                copy = null;
                 return false;
             }
 
             result = '/'.TryPrefixEach(BookUrlName, "en", path[indexOfImages..]);
+
+            if (EnglishImages.TryGetValue(path, out var enImage))
+            {
+                result = enImage.url;
+                hash = enImage.hash;
+                needsCopy = false;
+            }
+            else
+            {
+                var size = srcImg.Length;
+                hash = FileHash.UInt64FromFile(srcImg.FullName);
+
+                EnglishImages.Add(path, (size, hash, result));
+            }
+
+            return true;
+        }
+
+        if (SharedImages.TryGetValue(Path.GetFileName(path), out var sharedImage))
+        {
+            result = sharedImage.url;
+            hash = sharedImage.hash;
             needsCopy = false;
+        }
+        else if (Language == "en")
+        {
+            if (!TryResolveEnglishImage(out result))
+            {
+                copy = null;
+                return false;
+            }
+        }
+        else
+        {
+            if (!srcImg.Exists)
+            {
+                srcImg = new FileInfo($"{SourceFolder}/en/{srcImg.FullName.AsSpan(SourceFolder.Length + 4)}");
+
+                if (!TryResolveEnglishImage(out result))
+                {
+                    copy = null;
+                    return false;
+                }
+            }
+            else
+            {
+                if (VisitedImages.TryGetValue(path, out var visitedImage))
+                {
+                    result = visitedImage.url;
+                    hash = visitedImage.hash;
+                    needsCopy = false;
+                }
+                else
+                {
+                    result = '/'.TryPrefixEach(BookUrlName, Language, path[indexOfImages..]);
+
+                    if (EnglishImages.TryGetValue(path, out var enImage)
+                        && srcImg.Length == enImage.size
+                        && FileHash.UInt64FromFile(srcImg.FullName) == enImage.hash)
+                    {
+                        result = enImage.url;
+                        hash = enImage.hash;
+                        needsCopy = false;
+                    }
+
+                    if (hash == 0)
+                    {
+                        hash = FileHash.UInt64FromFile(srcImg.FullName);
+                    }
+
+                    VisitedImages.Add(path, (result, hash));
+                }
+            }
         }
 
         if (UseWebp)
@@ -189,20 +216,8 @@ internal class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResou
             result = $"{resultDir}/{resultFileName}.webp";
         }
 
-        if (!needsCopy)
-        {
-            copy = null;
-        }
-        else
-        {
-            var dstImg = Path.Combine(OutputFolder, Language, path[indexOfImages..]);
-            copy = (srcImg.FullName, dstImg);
-        }
-
-        if (!parts.Query.IsEmpty)
-        {
-            result = $"{result}{parts.Query}";
-        }
+        result = $"{result}?v={hash:x}";
+        copy = !needsCopy ? null : (srcImg.FullName, Path.Combine(OutputFolder, Language, path[indexOfImages..]));
 
         return true;
     }

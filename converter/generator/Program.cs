@@ -55,6 +55,7 @@ class Program
                 SourceFolder = srcBookPath,
                 OutputFolder = outputPath,
                 BooksXmlFolder = booksXmlPath,
+                SharedImagesFolder = Path.Combine(Template.WebRootPath, "books/images"),
                 BookUrlName = "",
                 UseWebp = args.Webp
             });
@@ -67,6 +68,7 @@ class Program
                 SourceFolder = srcBookPath,
                 OutputFolder = outputPath,
                 BooksXmlFolder = booksXmlPath,
+                SharedImagesFolder = Path.Combine(Template.WebRootPath, "books/images"),
                 BookUrlName = Path.GetFileName(srcBookPath),
                 UseWebp = args.Webp
             });
