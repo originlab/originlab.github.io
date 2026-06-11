@@ -8,9 +8,11 @@ public class ResourceResolverTests
     [InlineData("./A/App/A.html", "en", "/app/a/", "App A")]
     [InlineData("./A/App/B.html", "de", "/app/b/de/", "App B")]
     [InlineData("./A/App/B_Script.html", "de", "/build/b-scripts/de/", "B Scripts (Moved from App)")]
+    [InlineData("./A/App/B_Script.html#section", "de", "/build/b-scripts/de/#section", "B Scripts (Moved from App)")]
     [InlineData("/link.aspx?a=b#h", "de", "/link.aspx?a=b#h", null)]
     [InlineData("http://localhost/link.aspx?a=b", "de", "http://localhost/link.aspx?a=b", null)]
     [InlineData("mailto:a@b.lan", "de", "mailto:a@b.lan", null)]
+    [InlineData("#section", "de", "#section", null)]
     public void HrefShouldResolveCorrectly(string href, string language, string expectedUrl, string? expectedTitle)
     {
         var resolver = CreateResolver("app", false, out var args);
