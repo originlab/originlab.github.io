@@ -36,6 +36,7 @@ public class ResourceResolverTests
     [InlineData("../images/A/a.jpg", "app", "en", "A/App", false, "/app/en/images/A/a.jpg")]
     [InlineData("../images/A/a.jpg?v=123", "app", "en", "A/App", false, "/app/en/images/A/a.jpg?v=123")]
     [InlineData("../images/A/a.jpg?v=123", "app", "en", "A/App", true, "/app/en/images/A/a.webp?v=123")]
+    [InlineData("../images/A/a.jpg?v=123", "app", "de", "A/App", true, "/app/en/images/A/a.webp?v=123")]
     public void SrcShouldResolveCorrectly(string src, string book, string language, string sourceDir, bool useWebp, string expectedUrl)
     {
         var bookDir = Path.GetFullPath("../../../../converter/tests/books/" + book, AppContext.BaseDirectory);
