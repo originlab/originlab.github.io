@@ -3,16 +3,17 @@
 public class ResourceResolverTests
 {
     [Theory]
-    [InlineData("./A/Category/App(App).html", "app", "en", "/app/", "Apps")]
-    [InlineData("./A/Category/App(App).html", "app", "de", "/app/de/", "Apps")]
-    [InlineData("./A/App/A.html", "app", "en", "/app/a/", "App A")]
-    [InlineData("./A/App/B.html", "app", "de", "/app/b/de/", "App B")]
-    [InlineData("./A/App/B_Script.html", "app", "de", "/build/b-scripts/de/", "B Scripts (Moved from App)")]
-    [InlineData("/link.aspx?a=b#h", "app", "de", "/link.aspx?a=b#h", null)]
-    [InlineData("http://localhost/link.aspx?a=b", "app", "de", "http://localhost/link.aspx?a=b", null)]
-    [InlineData("mailto:a@b.lan", "app", "de", "mailto:a@b.lan", null)]
-    public void HrefShouldResolveCorrectly(string href, string book, string language, string expectedUrl, string? expectedTitle)
+    [InlineData("./A/Category/App(App).html", "en", "/app/", "Apps")]
+    [InlineData("./A/Category/App(App).html", "de", "/app/de/", "Apps")]
+    [InlineData("./A/App/A.html", "en", "/app/a/", "App A")]
+    [InlineData("./A/App/B.html", "de", "/app/b/de/", "App B")]
+    [InlineData("./A/App/B_Script.html", "de", "/build/b-scripts/de/", "B Scripts (Moved from App)")]
+    [InlineData("/link.aspx?a=b#h", "de", "/link.aspx?a=b#h", null)]
+    [InlineData("http://localhost/link.aspx?a=b", "de", "http://localhost/link.aspx?a=b", null)]
+    [InlineData("mailto:a@b.lan", "de", "mailto:a@b.lan", null)]
+    public void HrefShouldResolveCorrectly(string href, string language, string expectedUrl, string? expectedTitle)
     {
+        var book = "app";
         var bookDir = Path.GetFullPath("../../../../converter/tests/books/" + book, AppContext.BaseDirectory);
         var args = new DocToStaticPagesTransformerArgs
         {
