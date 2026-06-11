@@ -19,7 +19,7 @@ public class ResourceResolverTests
             BookUrlName = book,
             BooksXmlFolder = Path.GetFullPath("../xml", bookDir),
             SourceFolder = bookDir,
-            OutputFolder = Path.GetFullPath("../../../../artifacts/tests/public_html" + book, AppContext.BaseDirectory),
+            OutputFolder = Path.GetFullPath("../../../../artifacts/tests/public_html/" + book, AppContext.BaseDirectory),
         };
 
         var resolver = new DocToStaticPagesResourceResolver(args)
@@ -30,5 +30,30 @@ public class ResourceResolverTests
         Assert.True(resolver.TryResolveHref(href, Path.GetFullPath(language, bookDir), out var result, out var title));
         Assert.Equal(expectedUrl, result);
         Assert.Equal(expectedTitle, title);
+    }
+
+    [Theory]
+    [InlineData("../images/A/a.jpg", "app", "en", "A/App", false, "/app/en/images/A/a.jpg")]
+    [InlineData("../images/A/a.jpg?v=123", "app", "en", "A/App", false, "/app/en/images/A/a.jpg?v=123")]
+    [InlineData("../images/A/a.jpg?v=123", "app", "en", "A/App", true, "/app/en/images/A/a.webp?v=123")]
+    public void SrcShouldResolveCorrectly(string src, string book, string language, string sourceDir, bool useWebp, string expectedUrl)
+    {
+        var bookDir = Path.GetFullPath("../../../../converter/tests/books/" + book, AppContext.BaseDirectory);
+        var args = new DocToStaticPagesTransformerArgs
+        {
+            BookUrlName = book,
+            BooksXmlFolder = Path.GetFullPath("../xml", bookDir),
+            SourceFolder = bookDir,
+            OutputFolder = Path.GetFullPath("../../../../artifacts/tests/public_html/" + book, AppContext.BaseDirectory),
+            UseWebp = useWebp,
+        };
+
+        var resolver = new DocToStaticPagesResourceResolver(args)
+        {
+            Language = language
+        };
+
+        Assert.True(resolver.TryResolveSrc(src, Path.Combine(bookDir, language, sourceDir), out var result, out _));
+        Assert.Equal(expectedUrl, result);
     }
 }
