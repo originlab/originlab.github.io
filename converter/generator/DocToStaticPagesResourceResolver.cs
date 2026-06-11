@@ -132,8 +132,6 @@ internal partial class DocToStaticPagesResourceResolver : DocResourceResolver, I
                 return false;
             }
 
-            result = '/'.TryPrefixEach(BookUrlName, "en", path[indexOfImages..]);
-
             if (EnglishImages.TryGetValue(path, out var enImage))
             {
                 result = enImage.url;
@@ -142,6 +140,8 @@ internal partial class DocToStaticPagesResourceResolver : DocResourceResolver, I
             }
             else
             {
+                result = '/'.TryPrefixEach(BookUrlName, "en", path[indexOfImages..]);
+
                 var size = srcImg.Length;
                 hash = FileHash.UInt64FromFile(srcImg.FullName);
 
