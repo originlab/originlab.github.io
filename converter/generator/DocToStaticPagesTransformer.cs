@@ -83,9 +83,16 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
         if (img.ClassList.Contains("tex"))
         {
             var span = document.CreateElement<IHtmlSpanElement>();
-
             span.ClassName = "tex";
-            span.TextContent = $@"\({img.AlternativeText}\)";
+
+            if (img.IsOnlyChild() && img.Parent!.ChildNodes.OfType<IText>().All(t => t.Text.IsBlank))
+            {
+                span.TextContent = $@"\[{img.AlternativeText}\]";
+            }
+            else
+            {
+                span.TextContent = $@"\({img.AlternativeText}\)";
+            }
 
             return span;
         }

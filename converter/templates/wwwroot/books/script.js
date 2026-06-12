@@ -97,5 +97,8 @@ window.MathJax = {
     options: {
         processHtmlClass: 'tex',
         ignoreHtmlClass: '.*'
+    },
+    chtml: {
+        scale: 1.2 // Boosts font size globally
     }
 };
