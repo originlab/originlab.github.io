@@ -80,7 +80,16 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
 
     protected override IHtmlElement? TransformImage(IHtmlDocument document, IHtmlImageElement img, string sourceFile, string sourceDir)
     {
-        if (base.TransformImage(document, img, sourceFile, sourceDir) is IHtmlElement transformed)
+        if (img.ClassList.Contains("tex"))
+        {
+            var span = document.CreateElement<IHtmlSpanElement>();
+
+            span.ClassName = "tex";
+            span.TextContent = $"\\({img.AlternativeText}\\)";
+
+            return span;
+        }
+        else if (base.TransformImage(document, img, sourceFile, sourceDir) is IHtmlElement transformed)
         {
             transformed.SetAttribute("loading", "lazy");
 

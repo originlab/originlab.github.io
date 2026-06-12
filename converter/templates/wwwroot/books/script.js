@@ -39,21 +39,6 @@ function searchDoc(lang, inputId, selectId) {
     document.location.replace(searchUrl);
 }
 
-function applyNavMenuData(dataId, groupId, minItems) {
-    let dataElement = document.getElementById(dataId);
-    if (!dataElement || dataElement.children.length < minItems) {
-        document.getElementById(groupId)?.querySelector('button')?.classList.add('disabled');
-    } else {
-        let ul = document.getElementById(groupId)?.querySelector('ul');
-        if (ul) {
-            ul.replaceChildren(...dataElement.childNodes);
-            if (ul.childNodes.length > 20) {
-                ul.classList.add('pre-scrollable');
-            }
-        }
-    }
-}
-
 (function () {
     let nav = document.getElementById('doc-nav-data');
 
@@ -89,6 +74,28 @@ function applyNavMenuData(dataId, groupId, minItems) {
         nav.appendChild(data);
     }
 
+    function applyNavMenuData(dataId, groupId, minItems) {
+        let dataElement = document.getElementById(dataId);
+        if (!dataElement || dataElement.children.length < minItems) {
+            document.getElementById(groupId)?.querySelector('button')?.classList.add('disabled');
+        } else {
+            let ul = document.getElementById(groupId)?.querySelector('ul');
+            if (ul) {
+                ul.replaceChildren(...dataElement.childNodes);
+                if (ul.childNodes.length > 20) {
+                    ul.classList.add('pre-scrollable');
+                }
+            }
+        }
+    }
+
     applyNavMenuData('doc-siblings-data', 'doc-nav-siblings', 2);
     applyNavMenuData('doc-children-data', 'doc-nav-children', 1);
 })();
+
+window.MathJax = {
+    options: {
+        processHtmlClass: 'tex',
+        ignoreHtmlClass: '.*'
+    }
+};

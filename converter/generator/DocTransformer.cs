@@ -93,12 +93,18 @@ internal abstract partial class DocTransformer : IDocTransformer
 
         foreach (var a in document.Descendants<IHtmlAnchorElement>())
         {
-            TransformAnchor(document, a, sourceFile, sourceDir);
+            if (TransformAnchor(document, a, sourceFile, sourceDir) is IHtmlElement transformed && transformed != a)
+            {
+                a.Replace(transformed);
+            }
         }
 
         foreach (var img in document.Descendants<IHtmlImageElement>())
         {
-            TransformImage(document, img, sourceFile, sourceDir);
+            if (TransformImage(document, img, sourceFile, sourceDir) is IHtmlElement transformed && transformed != img)
+            {
+                img.Replace(transformed);
+            }
         }
     }
 
