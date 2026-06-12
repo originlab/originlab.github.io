@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace OriginLab.DocumentGeneration;
 
-internal partial class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResourceResolver
+internal sealed partial class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResourceResolver
 {
     private readonly DocToStaticPagesTransformerArgs Args;
 
