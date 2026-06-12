@@ -14,7 +14,8 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
 
     private INode[] LayoutNodes = null!;
 
-    protected DocToStaticPagesTransformer(DocToStaticPagesTransformerArgs args, IDocResourceResolver resourceResolver, ProblemRecorder problems) : base(args, resourceResolver, problems)
+    protected DocToStaticPagesTransformer(DocToStaticPagesTransformerArgs args, IDocResourceResolver resourceResolver, IOutputOperations output, ProblemRecorder problems)
+        : base(args, resourceResolver, output, problems)
     {
         BookUrlName = args.BookUrlName;
     }
@@ -23,7 +24,7 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
     {
         await base.TransformAsync();
 
-        File.WriteAllText(Path.Combine(OutputFolder, "404.html"), await Template.Render404PageAsync());
+        Output.WriteAllText(Path.Combine(OutputFolder, "404.html"), await Template.Render404PageAsync());
     }
 
     protected override async Task TransformAsync(string language)
@@ -31,9 +32,8 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
         var html = await InitializeLanguageLayoutAsync(language);
         var dir = Path.Combine(OutputFolder, language);
 
-        Directory.CreateDirectory(dir);
-
-        await File.WriteAllTextAsync(Path.Combine(dir, "layout.html"), html);
+        Output.CreateDirectory(dir);
+        Output.WriteAllText(Path.Combine(dir, "layout.html"), html);
     }
 
     internal async Task<string> InitializeLanguageLayoutAsync(string language)

@@ -76,6 +76,7 @@ class Program
         }
 
         services.AddSingleton<DocTransformerArgs>(sp => sp.GetRequiredService<DocToStaticPagesTransformerArgs>());
+        services.AddSingleton<IOutputOperations, SystemOutputOperations>();
         services.AddSingleton<ProblemRecorder>();
 
         var serviceProvider = services.BuildServiceProvider();

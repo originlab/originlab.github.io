@@ -25,9 +25,11 @@ internal abstract partial class DocTransformer : IDocTransformer
 
     protected IDocResourceResolver ResourceResolver { get; }
 
+    protected IOutputOperations Output { get; }
+
     private readonly ProblemRecorder Problems;
 
-    protected DocTransformer(DocTransformerArgs args, IDocResourceResolver resourceResolver, ProblemRecorder problems)
+    protected DocTransformer(DocTransformerArgs args, IDocResourceResolver resourceResolver, IOutputOperations output, ProblemRecorder problems)
     {
         var sourceFolder = args.SourceFolder;
         SourceFolder = sourceFolder;
@@ -56,6 +58,7 @@ internal abstract partial class DocTransformer : IDocTransformer
 
         AvailableLanguages = languages;
         ResourceResolver = resourceResolver;
+        Output = output;
     }
 
     public virtual async Task TransformAsync()
@@ -80,7 +83,7 @@ internal abstract partial class DocTransformer : IDocTransformer
         beforeTransform?.Invoke(document, head, body, sourceFile);
         Transform(document, head, body, sourceFile);
 
-        using var sw = new StreamWriter(destinationFile);
+        using var sw = Output.CreateStreamWriter(destinationFile);
         document.ToHtml(sw, HtmlMarkupFormatter.Instance);
     }
 
@@ -139,8 +142,8 @@ internal abstract partial class DocTransformer : IDocTransformer
 
             if (copy is (string srcImg, string dstImg))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(dstImg)!);
-                File.Copy(srcImg, dstImg, overwrite: true);
+                Output.CreateDirectory(Path.GetDirectoryName(dstImg)!);
+                Output.CopyFile(srcImg, dstImg, overwrite: true);
             }
 
             return img;

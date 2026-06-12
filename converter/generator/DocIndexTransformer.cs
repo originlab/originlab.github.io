@@ -4,7 +4,8 @@ namespace OriginLab.DocumentGeneration;
 
 internal class DocIndexTransformer : DocToStaticPagesTransformer
 {
-    public DocIndexTransformer(DocToStaticPagesTransformerArgs args, IDocResourceResolver resourceResolver, ProblemRecorder problems) : base(args, resourceResolver, problems)
+    public DocIndexTransformer(DocToStaticPagesTransformerArgs args, IDocResourceResolver resourceResolver, IOutputOperations output, ProblemRecorder problems)
+        : base(args, resourceResolver, output, problems)
     {
     }
 
@@ -25,11 +26,11 @@ internal class DocIndexTransformer : DocToStaticPagesTransformer
                                                    : Path.GetFullPath(Path.Combine(OutputFolder, Path.GetDirectoryName(relativePath)!, "..", Path.GetFileName(relativePath)))
                                                    ;
             var destinationDir = Path.GetDirectoryName(destinationFile)!;
-            Directory.CreateDirectory(destinationDir);
+            Output.CreateDirectory(destinationDir);
 
             Transform(sourceFile, destinationFile);
         }
 
-        File.WriteAllText(Path.Combine(OutputFolder, language, "404.html"), await Template.Render404PageAsync(language));
+        Output.WriteAllText(Path.Combine(OutputFolder, language, "404.html"), await Template.Render404PageAsync(language));
     }
 }

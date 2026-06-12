@@ -12,7 +12,8 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
     private readonly string BookDirName;
     private readonly (string url, string file, string titleEn, NavFiles navFiles)[] Pages;
 
-    public DocBookTransformer(DocToStaticPagesTransformerArgs args, IDocResourceResolver resourceResolver, ProblemRecorder problems) : base(args, resourceResolver, problems)
+    public DocBookTransformer(DocToStaticPagesTransformerArgs args, IDocResourceResolver resourceResolver, IOutputOperations output, ProblemRecorder problems)
+        : base(args, resourceResolver, output, problems)
     {
         AvailableLanguagesExpression = String.Join(',', AvailableLanguages);
         BookDirName = Path.GetFileName(Directory.EnumerateDirectories(Path.Combine(SourceFolder, "en")).Single());
@@ -98,7 +99,7 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
             var dstDir = Path.Combine(OutputFolder, url, language != "en" ? language : "");
             var nav = new Nav(navFiles, titles, i == 0);
 
-            Directory.CreateDirectory(dstDir);
+            Output.CreateDirectory(dstDir);
 
             var srcFile = Path.Combine(srcDir, file);
             var dstFile = Path.Combine(dstDir, "index.html");
