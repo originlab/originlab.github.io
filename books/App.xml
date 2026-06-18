@@ -4,7 +4,7 @@
     <page title="Graphing" file="Category/Graphing(APP).html" url="App/app-graphing" src="Category:Graphing(APP)">
       <page title="3D Polar Plot for Antenna Radiation Pattern" file="App/3D_Polar_Plot_for_Antenna_Radiation_Pattern.html" url="App/3D-Polar-Plot-for-Antenna-Radiation-Pattern" src="App:3D_Polar_Plot_for_Antenna_Radiation_Pattern"/>
       <page title="LaTeX" file="App/LaTeX.html" url="App/LaTeX" src="App:LaTeX"/>
-      <page title="Heat Map with Dendrogram(Pro)" file="Category/Heat_Map_with_Dendrogram(App).html" url="App/Heat-Map-Dendrogram" src="Category:Heat_Map_with_Dendrogram(App)">
+      <page title="Heat Map with Dendrogram(Pro)" file="Category/Heat_Map_with_Dendrogram(App).html" url="App/Heat-Map-Dendrogram-Intro" src="Category:Heat_Map_with_Dendrogram(App)">
         <page title="Tutorial for Heat Map with Dendrogram" file="App/Heat_Map_with_Dendrogram.html" url="App/Heat-Map-Dendrogram" src="App:Heat_Map_with_Dendrogram"/>
       </page>
       <page title="Tangent" file="App/Tangent.html" url="App/Tangent" src="App:Tangent"/>
@@ -119,10 +119,16 @@
           <page title="Tutorial for Parametric Distribution Analysis (Right Censoring)" file="App/SA_Parametric_Dist_Right_Censoring_Tutorial.html" url="App/Tutorial-Parametric-Distribution-Analysis-Right-Censoring" src="App:SA_Parametric_Dist_Right_Censoring_Tutorial"/>
           <page title="Algorithm: Parametric Distribution Analysis (Right Censoring)" file="App/SA_Parametric_Dist_Algorithm.html" url="App/SA-Parametric-Dist-Algorithm" src="App:SA_Parametric_Dist_Algorithm"/>
         </page>
-        <page title="Nonparametric Distribution Analysis (Arbitrary Censoring) (Pro)" file="Category/Nonparametric_Distribution_Analysis(App).html" url="App/SA-Nonparametric-Dist" src="Category:Nonparametric_Distribution_Analysis(App)">
-          <page title="Tutorial for Nonparametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Nonparametric_Dist_Tutorial.html" url="App/Tutorial-Nonparametric-Distribution-Analysis-Arbitrary-Censoring" src="App:SA_Nonparametric_Dist_Tutorial"/>
-          <page title="Algorithm: Nonparametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Nonparametric_Dist_Algorithm.html" url="App/SA-Nonparametric-Dist-Algorithm" src="App:SA_Nonparametric_Dist_Algorithm"/>
+        <page title="Nonparametric Distribution Analysis (Right Censoring) (Pro)" file="Category/NPDA_Right_Censoring(App).html" url="App/NPDA-RC" src="Category:NPDA_Right_Censoring(App)">
+          <page title="Tutorial: Non-Parametric Distribution Analysis (Right Censoring)" file="App/NPDA_Right_Censoring_Tutorial.html" url="App/SA-NPDA-Right-Censoring-Tutorial" src="App:NPDA_Right_Censoring_Tutorial"/>
+          <page title="Algorithm: Non-Parametric Distribution Analysis (Right Censoring)" file="App/NPDA_Right_Censoring_Algorithm.html" url="App/SA-NPDA-Right-Censoring-Algorithm" src="App:NPDA_Right_Censoring_Algorithm"/>
         </page>
+        <page title="Regression with Life Data" file="Category/Regression_with_Life_Data(App).html" url="App/SA-RLD" src="Category:Regression_with_Life_Data(App)">
+          <page title="Tutorial for Regression with Life Data" file="App/SA_RLD_Tutorial.html" url="App/Tutorial-SA-RLD" src="App:SA_RLD_Tutorial"/>
+          <page title="Algorithm: Regression with Life Data" file="App/SA_RLD_Algorithm.html" url="App/SA-RLD-Algorithm" src="App:SA_RLD_Algorithm"/>
+        </page>
+        <page title="Identify Distribution for Right Censoring(Pro)" file="Category/Identify_Distribution_for_Right_Censoring(APP).html" url="App/ID-RC" src="Category:Identify_Distribution_for_Right_Censoring(APP)"/>
+        <page title="Transform Warranty Data" file="Category/Transform_Warranty_Data(App).html" url="App/SA-Transform-Warranty" src="Category:Transform_Warranty_Data(App)"/>
         <page title="Warranty Analysis" file="Category/Warranty_Analysis(App).html" url="App/SA-Warranty" src="Category:Warranty_Analysis(App)">
           <page title="Tutorial for Warranty Analysis" file="App/Warranty_Analysis_Tutorial.html" url="App/Tutorial-Warranty-Analysis" src="App:Warranty_Analysis_Tutorial"/>
           <page title="Algorithm: Warranty Analysis" file="App/SA_Warranty_Analysis_Algorithm.html" url="App/SA-Warranty-Analysis-Algorithm" src="App:SA_Warranty_Analysis_Algorithm"/>
@@ -130,6 +136,19 @@
         <page title="Accelerated Life Testing" file="Category/Accelerated_Life_Testing(App).html" url="App/SA-Accelerated-Life-Testing" src="Category:Accelerated_Life_Testing(App)">
           <page title="Tutorial for Accelerated Life Testing" file="App/SA_Accelerated_Life_Testingt_Tutorial.html" url="App/Tutorial-Accelerated-Life-Testing" src="App:SA_Accelerated_Life_Testingt_Tutorial"/>
           <page title="Algorithm: Accelerated Life Testing" file="App/SA_Accelerated_Life_Testingt_Algorithm.html" url="App/SA-Accelerated-Life-Testing-Algorithm" src="App:SA_Accelerated_Life_Testingt_Algorithm"/>
+        </page>
+        <page title="Distribution Overview for Right Censoring (Pro)" file="Category/Distribution_Overview_for_Right_Censoring(APP).html" url="App/RC-Dist-Overview" src="Category:Distribution_Overview_for_Right_Censoring(APP)"/>
+        <page title="Nonparametric Distribution Analysis (Arbitrary Censoring) (Pro)" file="Category/Nonparametric_Distribution_Analysis(App).html" url="App/SA-Nonparametric-Dist" src="Category:Nonparametric_Distribution_Analysis(App)">
+          <page title="Tutorial for Nonparametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Nonparametric_Dist_Tutorial.html" url="App/Tutorial-Nonparametric-Distribution-Analysis-Arbitrary-Censoring" src="App:SA_Nonparametric_Dist_Tutorial"/>
+          <page title="Algorithm: Nonparametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Nonparametric_Dist_Algorithm.html" url="App/SA-Nonparametric-Dist-Algorithm" src="App:SA_Nonparametric_Dist_Algorithm"/>
+        </page>
+        <page title="Parametric Distribution Analysis (Arbitrary Censoring)" file="Category/Parametric_Distribution_Analysis_AC(App).html" url="App/SA-Parametric-Dist-Arbitrary-Censoring" src="Category:Parametric_Distribution_Analysis_AC(App)">
+          <page title="Tutorial for Parametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Parametric_Dist_Arbitrary_Censoring_Tutorial.html" url="App/Tutorial-Parametric-Distribution-Analysis-Arbitrary-Censoring" src="App:SA_Parametric_Dist_Arbitrary_Censoring_Tutorial"/>
+          <page title="Algorithm: Parametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Parametric_Dist_AC_Algorithm.html" url="App/SA-Parametric-Dist-AC-Algorithm" src="App:SA_Parametric_Dist_AC_Algorithm"/>
+        </page>
+        <page title="Life Test Plans" file="Category/Life_Test_Plans(App).html" url="App/RSA-LTP" src="Category:Life_Test_Plans(App)">
+          <page title="Tutorial for Life Test Plans" file="App/Tutorial_Life_Test_Plans.html" url="App/RSA-LTP-Tutorial" src="App:Tutorial_Life_Test_Plans"/>
+          <page title="Algorithm for Life Test Plans" file="App/Algorithm_Life_Test_Plans.html" url="App/RSA-LTP-Algorithm" src="App:Algorithm_Life_Test_Plans"/>
         </page>
       </page>
       <page title="Plant Physiology Fitting Functions" file="App/Plant_Physiology_Fitting_Functions.html" url="App/Plant-Physiology-Fitting-Functions" src="App:Plant_Physiology_Fitting_Functions"/>
@@ -228,6 +247,10 @@
       </page>
       <page title="Generalized Linear Mixed Model(Pro)" file="App/Generalized_Linear_Mixed_Model.html" url="App/GLMM" src="App:Generalized_Linear_Mixed_Model"/>
       <page title="Sparse Principal Components Analysis(Pro)" file="App/Sparse_Principal_Components_Analysis.html" url="App/Sparse-PCA" src="App:Sparse_Principal_Components_Analysis"/>
+      <page title="Acceptance Sampling Analysis" file="Category/Acceptance_Sampling_Analysis(App).html" url="App/ASA" src="Category:Acceptance_Sampling_Analysis(App)">
+        <page title="Tutorial for Acceptance Sampling Analysis" file="App/Tutorial_Acceptance_Sampling_Analysis.html" url="App/ASA-Tutorial" src="App:Tutorial_Acceptance_Sampling_Analysis"/>
+        <page title="Algorithm for Acceptance Sampling Analysis" file="App/Algorithm_Acceptance_Sampling_Analysis.html" url="App/ASA-Algorithm" src="App:Algorithm_Acceptance_Sampling_Analysis"/>
+      </page>
     </page>
     <page title="Data Handling" file="Category/Data_Handling(App).html" url="App/app-data-handling" src="Category:Data_Handling(App)">
       <page title="Tafel Extrapolation" file="App/Tafel_Extrapolation.html" url="App/Tafel-Extrapolation" src="App:Tafel_Extrapolation"/>

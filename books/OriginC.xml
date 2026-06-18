@@ -766,6 +766,7 @@
             <page title="atan2" file="OriginC/Atan2_(global_function).html" url="OriginC/ref/atan2" src="OriginC:Atan2_(global_function)"/>
             <page title="cos" file="OriginC/Cos_(global_function).html" url="OriginC/ref/cos" src="OriginC:Cos_(global_function)"/>
             <page title="cosh" file="OriginC/Cosh_(global_function).html" url="OriginC/ref/cosh" src="OriginC:Cosh_(global_function)"/>
+            <page title="coth" file="OriginC/Coth_(global_function).html" url="OriginC/ref/coth" src="OriginC:Coth_(global_function)"/>
             <page title="sin" file="OriginC/Sin_(global_function).html" url="OriginC/ref/sin" src="OriginC:Sin_(global_function)"/>
             <page title="sinh" file="OriginC/Sinh_(global_function).html" url="OriginC/ref/sinh" src="OriginC:Sinh_(global_function)"/>
             <page title="tan" file="OriginC/Tan_(global_function).html" url="OriginC/ref/tan" src="OriginC:Tan_(global_function)"/>
@@ -1726,6 +1727,8 @@
             <page title="matrixbase::Shrink" file="OriginC/Matrixbase-Shrink.html" url="OriginC/ref/matrixbase-Shrink" src="OriginC:Matrixbase-Shrink"/>
             <page title="matrixbase::Sort" file="OriginC/Matrixbase-Sort.html" url="OriginC/ref/matrixbase-Sort" src="OriginC:Matrixbase-Sort"/>
             <page title="matrixbase::SumColumns" file="OriginC/Matrixbase-SumColumns.html" url="OriginC/ref/matrixbase-SumColumns" src="OriginC:Matrixbase-SumColumns"/>
+            <page title="matrixbase::SumDiagonals" file="OriginC/Matrixbase-SumDiagonals.html" url="OriginC/ref/matrixbase-SumDiagonals" src="OriginC:Matrixbase-SumDiagonals"/>
+            <page title="matrixbase::SumRows" file="OriginC/Matrixbase-SumRows.html" url="OriginC/ref/matrixbase-SumRows" src="OriginC:Matrixbase-SumRows"/>
             <page title="matrixbase::Transpose" file="OriginC/Matrixbase-Transpose.html" url="OriginC/ref/matrixbase-Transpose" src="OriginC:Matrixbase-Transpose"/>
             <page title="matrixbase::Wrap" file="OriginC/Matrixbase-Wrap.html" url="OriginC/ref/matrixbase-Wrap" src="OriginC:Matrixbase-Wrap"/>
           </page>
@@ -1917,6 +1920,7 @@
             <page title="vectorbase::RemoveAll" file="OriginC/Vectorbase-RemoveAll.html" url="OriginC/ref/vectorbase-RemoveAll" src="OriginC:Vectorbase-RemoveAll"/>
             <page title="vectorbase::Reorder" file="OriginC/Vectorbase-Reorder.html" url="OriginC/ref/vectorbase-Reorder" src="OriginC:Vectorbase-Reorder"/>
             <page title="vectorbase::Replace" file="OriginC/Vectorbase-Replace.html" url="OriginC/ref/vectorbase-Replace" src="OriginC:Vectorbase-Replace"/>
+            <page title="vectorbase::Reverse" file="OriginC/Vectorbase-Reverse.html" url="OriginC/ref/vectorbase-Reverse" src="OriginC:Vectorbase-Reverse"/>
             <page title="vectorbase::SetBytes" file="OriginC/Vectorbase-SetBytes.html" url="OriginC/ref/vectorbase-SetBytes" src="OriginC:Vectorbase-SetBytes"/>
             <page title="vectorbase::SetLabTalkVectorValue" file="OriginC/Vectorbase-SetLabTalkVectorValue.html" url="OriginC/ref/vectorbase-SetLabTalkVectorValue" src="OriginC:Vectorbase-SetLabTalkVectorValue"/>
             <page title="vectorbase::SetOutputComment" file="OriginC/Vectorbase-SetOutputComment.html" url="OriginC/ref/vectorbase-SetOutputComment" src="OriginC:Vectorbase-SetOutputComment"/>

@@ -676,6 +676,7 @@
           <page title="Search" file="LabTalk/Search_(function).html" url="LabTalk/ref/Search-func" src="LabTalk:Search_(function)"/>
           <page title="SpanExcluding" file="LabTalk/SpanExcluding_(function).html" url="LabTalk/ref/SpanExcluding-func" src="LabTalk:SpanExcluding_(function)"/>
           <page title="SpanIncluding" file="LabTalk/SpanIncluding_(function).html" url="LabTalk/ref/SpanIncluding-func" src="LabTalk:SpanIncluding_(function)"/>
+          <page title="StripLeading" file="LabTalk/StripLeading_(function).html" url="LabTalk/ref/StripLeading-func" src="LabTalk:StripLeading_(function)"/>
           <page title="Substitute" file="LabTalk/Substitute_(function).html" url="LabTalk/ref/Substitute-func" src="LabTalk:Substitute_(function)"/>
           <page title="TextJoin" file="LabTalk/TextJoin_(function).html" url="LabTalk/ref/TextJoin-func" src="LabTalk:TextJoin_(function)"/>
           <page title="Token" file="LabTalk/Token_(function).html" url="LabTalk/ref/Token-func" src="LabTalk:Token_(function)"/>
@@ -740,6 +741,7 @@
           <page title="BitOR" file="LabTalk/BitOR_(function).html" url="LabTalk/ref/BitOR-func" src="LabTalk:BitOR_(function)"/>
           <page title="BitXOR" file="LabTalk/BitXOR_(function).html" url="LabTalk/ref/BitXOR-func" src="LabTalk:BitXOR_(function)"/>
           <page title="If" file="LabTalk/If_(function).html" url="LabTalk/ref/If-func" src="LabTalk:If_(function)"/>
+          <page title="Iferror" file="LabTalk/Iferror_(function).html" url="LabTalk/ref/Iferror-func" src="LabTalk:Iferror_(function)"/>
           <page title="IfNA" file="LabTalk/IfNA_(function).html" url="LabTalk/ref/IfNA-func" src="LabTalk:IfNA_(function)"/>
           <page title="Ifs" file="LabTalk/Ifs_(function).html" url="LabTalk/ref/Ifs-func" src="LabTalk:Ifs_(function)"/>
           <page title="Switch" file="LabTalk/Switch_(function).html" url="LabTalk/ref/Switch-func" src="LabTalk:Switch_(function)"/>
@@ -1085,6 +1087,7 @@
     </page>
     <page title="Tutorials" file="Category/Tutorials.html" url="LabTalk/Tutorials" src="Category:Tutorials">
       <page title="Get Started with LabTalk" file="LabTalk/Tutorial_Get_Started.html" url="LabTalk/Tutorials/Tutorial-Get-Started" src="LabTalk:Tutorial_Get_Started"/>
+      <page title="Introduction to LabTalk" file="LabTalk/Introduction_to_LabTalk.html" url="LabTalk/Tutorials/Tutorial-LT-intro" src="LabTalk:Introduction_to_LabTalk"/>
       <page title="LabTalk Language Fundamentals" file="LabTalk/Tutorial_Language_Fundamental.html" url="LabTalk/Tutorials/Tutorial-Language-Fundamental" src="LabTalk:Tutorial_Language_Fundamental"/>
       <page title="Range Notation in LabTalk" file="LabTalk/Tutorial_Range_Notation.html" url="LabTalk/Tutorials/Tutorial-Range-Notation" src="LabTalk:Tutorial_Range_Notation"/>
       <page title="Objects in LabTalk" file="LabTalk/Tutorial_Objects.html" url="LabTalk/Tutorials/Tutorial-objs" src="LabTalk:Tutorial_Objects"/>

@@ -117,6 +117,7 @@
         <page title="Reduce Columns" file="UserGuide/Reduce_Columns.html" url="Origin-Help/Reduce-Columns" src="UserGuide:Reduce_Columns"/>
         <page title="Reduce Duplicated Rows" file="UserGuide/Reduce_Duplicated_Rows.html" url="Origin-Help/reduce-duplicate-rows" src="UserGuide:Reduce_Duplicated_Rows"/>
         <page title="Reduce Rows" file="UserGuide/Reduce_Rows.html" url="Origin-Help/reduce-rows" src="UserGuide:Reduce_Rows"/>
+        <page title="Mirror Columns" file="UserGuide/Mirror_Column.html" url="Origin-Help/Mirror-Columns" src="UserGuide:Mirror_Column"/>
         <page title="Transposing Worksheets" file="UserGuide/Transpose_Worksheet.html" url="Origin-Help/transpose-wks" src="UserGuide:Transpose_Worksheet"/>
         <page title="Generating Simple Worksheet Datasets" file="UserGuide/Generating_Simple_Worksheet_Datasets.html" url="Origin-Help/Wks-GenerateDataset" src="UserGuide:Generating_Simple_Worksheet_Datasets"/>
         <page title="Using Formulae to Set or Transform Worksheet Column Values" file="Category/Using_Formulae_to_Set_or_Transform_Worksheet_Column_Values.html" url="Origin-Help/Wks-Set-Column-Values" src="Category:Using_Formulae_to_Set_or_Transform_Worksheet_Column_Values">
@@ -129,6 +130,7 @@
         </page>
         <page title="Using a Formula to Set Cell Values" file="UserGuide/Using_Formulae_to_Set_Cell_Values.html" url="Origin-Help/Using-Formulae-to-Set-Cell-Values" src="UserGuide:Using_Formulae_to_Set_Cell_Values"/>
         <page title="Named Range" file="UserGuide/Named_Range.html" url="Origin-Help/Named-Range" src="UserGuide:Named_Range"/>
+        <page title="Add/Insert to Other Sheets" file="UserGuide/Add_to_Other_Sheets.html" url="Origin-Help/Add-to-Other-Sheets" src="UserGuide:Add_to_Other_Sheets"/>
       </page>
       <page title="Inserting Graphs Images and Other Objects into Worksheet Cells" file="Category/Inserting_Graphs_Images_and_Other_Objects_into_Worksheet_Cells.html" url="Origin-Help/InsObject-to-WksCell" src="Category:Inserting_Graphs_Images_and_Other_Objects_into_Worksheet_Cells">
         <page title="Inserting Links into Worksheet Cells" file="UserGuide/Inserting_Links_into_Worksheet_Cells.html" url="Origin-Help/InsLink-to-WksCell" src="UserGuide:Inserting_Links_into_Worksheet_Cells"/>
@@ -402,6 +404,7 @@
           <page title="Plot Setup: Available Data (Top) Panel" file="UserGuide/The_Top_Panel_of_the_Plot_Setup_Dialog.html" url="Origin-Help/PS-Dialog-Top" src="UserGuide:The_Top_Panel_of_the_Plot_Setup_Dialog"/>
           <page title="Plot Setup: Plot Designations (Middle) Panel" file="UserGuide/The_Middle_Panel_of_the_Plot_Setup_Dialog.html" url="Origin-Help/PS-Dialog-Middle" src="UserGuide:The_Middle_Panel_of_the_Plot_Setup_Dialog"/>
           <page title="Plot Setup: Plot List (Bottom) Panel" file="UserGuide/The_Bottom_Panel_of_the_Plot_Setup_Dialog.html" url="Origin-Help/PS-Dialog-Bottom" src="UserGuide:The_Bottom_Panel_of_the_Plot_Setup_Dialog"/>
+          <page title="Plot Setup Quick Start" file="UserGuide/Plot_Setup_Quick_Start.html" url="Origin-Help/Plot-Setup" src="UserGuide:Plot_Setup_Quick_Start"/>
         </page>
         <page title="The Insert Variable Dialog Box (Used with Text Labels)" file="UserGuide/The_Insert_Info_Variables_Dialog_Box.html" url="Origin-Help/GraphRef-InsInfoVar-Dialog" src="UserGuide:The_Insert_Info_Variables_Dialog_Box"/>
         <page title="The Lighting Control Dialog" file="UserGuide/The_Lighting_Control_Dialog.html" url="Origin-Help/GraphRef-LightControl-Dialog" src="UserGuide:The_Lighting_Control_Dialog"/>
@@ -467,6 +470,9 @@
           <page title="The (Plot Details) Shape List Tab" file="UserGuide/The_(Plot_Details)_Shape_List_Tab.html" url="Origin-Help/PD-dlg-shape-list-tab" src="UserGuide:The_(Plot_Details)_Shape_List_Tab"/>
           <page title="The (Plot Details) Interior List Tab" file="UserGuide/The_(Plot_Details)_Interior_List_Tab.html" url="Origin-Help/PD-dlg-interior-list-tab" src="UserGuide:The_(Plot_Details)_Interior_List_Tab"/>
           <page title="The (Plot Details) Pattern Tab" file="UserGuide/The_(Plot_Details)_Pattern_Tab.html" url="Origin-Help/PD-Dialog-Pattern-Tab" src="UserGuide:The_(Plot_Details)_Pattern_Tab"/>
+          <page title="The (Plot Details) Contour Fill Tab" file="UserGuide/The_(Plot_Details)_Contour_Fill_Tab.html" url="Origin-Help/PD-Dialog-ContourFill-Tab" src="UserGuide:The_(Plot_Details)_Contour_Fill_Tab"/>
+          <page title="The (Plot Details) Contour Lines Tab" file="UserGuide/The_(Plot_Details)_Contour_Lines_Tab.html" url="Origin-Help/PD-Dialog-ContourLines-Tab" src="UserGuide:The_(Plot_Details)_Contour_Lines_Tab"/>
+          <page title="The (Plot Details) Contour Levels Tab" file="UserGuide/The_(Plot_Details)_Contour_Levels_Tab.html" url="Origin-Help/PD-Dialog-ContourLevels-Tab" src="UserGuide:The_(Plot_Details)_Contour_Levels_Tab"/>
           <page title="The (Plot Details) Function Tab" file="UserGuide/The_(Plot_Details)_Function_Tab.html" url="Origin-Help/PD-Dialog-Function-Tab" src="UserGuide:The_(Plot_Details)_Function_Tab"/>
           <page title="The (Plot Details) Outline Tab" file="UserGuide/The_(Plot_Details)_Outline_Tab.html" url="Origin-Help/PD-Dialog-Outline-Tab" src="UserGuide:The_(Plot_Details)_Outline_Tab"/>
           <page title="The (Plot Details) Panel Tab" file="UserGuide/The_(Plot_Details)_Panel_Tab.html" url="Origin-Help/PD-Dialog-Panel-Tab" src="UserGuide:The_(Plot_Details)_Panel_Tab"/>
@@ -711,6 +717,7 @@
       <page title="Custom Filter" file="UserGuide/Custom_Filter.html" url="Origin-Help/Math-CustomFilter" src="UserGuide:Custom_Filter"/>
       <page title="Median Filter" file="UserGuide/Median_Filter.html" url="Origin-Help/Math-MedianFilter" src="UserGuide:Median_Filter"/>
       <page title="Special Filter" file="UserGuide/Special_Filter.html" url="Origin-Help/Math-SpecialFilter" src="UserGuide:Special_Filter"/>
+      <page title="Subtract Straight Line" file="UserGuide/Subtract_Straight_Line.html" url="Origin-Help/Subtract-Straight-Line" src="UserGuide:Subtract_Straight_Line"/>
     </page>
     <page title="Statistics" file="Category/Statistics.html" url="Origin-Help/Statistics" src="Category:Statistics">
       <page title="Descriptive Statistics" file="Category/Descriptive_Statistics.html" url="Origin-Help/Descriptive-Statistics" src="Category:Descriptive_Statistics">
@@ -811,6 +818,15 @@
         <page title="Two-Sample Proportion Test (Pro Only)" file="Category/Two_Sample_Proportion_Test(Pro_Only).html" url="Origin-Help/Two-Sample-Prop-Test" src="Category:Two_Sample_Proportion_Test(Pro_Only)">
           <page title="The Two-Sample Proportion Test Dialog Box" file="UserGuide/The_Two_Sample_Proportion_Dialog_Box.html" url="Origin-Help/Two-Prop-Dialog" src="UserGuide:The_Two_Sample_Proportion_Dialog_Box"/>
           <page title="Algorithms (Two sample proportion test)" file="UserGuide/Algorithm_(Two_sample_proportion_test).html" url="Origin-Help/Algorithms-Two-sample-proportion-test" src="UserGuide:Algorithm_(Two_sample_proportion_test)"/>
+        </page>
+        <page title="Test for Homogeneity of Proportions (Pro Only)" file="Category/Test_for_Homogeneity_of_Proportions_(Pro_Only).html" url="Origin-Help/Test-Homogeneity-Proportions" src="Category:Test_for_Homogeneity_of_Proportions_(Pro_Only)">
+          <page title="Test for Homogeneity of Proportions Dialog Box" file="UserGuide/Test_for_Homogeneity_of_Proportions_Dialog_Box.html" url="Origin-Help/Test-Homogeneity-Prop-Dialog" src="UserGuide:Test_for_Homogeneity_of_Proportions_Dialog_Box"/>
+        </page>
+        <page title="One-Sample Poisson Rate Test (Pro Only)" file="Category/One_Sample_Poisson_Rate_(Pro_Only).html" url="Origin-Help/One-Sample-Poisson-Rate" src="Category:One_Sample_Poisson_Rate_(Pro_Only)">
+          <page title="One-Sample Poisson Rate Test Dialog Box" file="UserGuide/One_Sample_Poisson_Rate_Dialog_Box.html" url="Origin-Help/One-Poisson-Rate-Dialog" src="UserGuide:One_Sample_Poisson_Rate_Dialog_Box"/>
+        </page>
+        <page title="Two-Sample Poisson Rate (Pro Only)" file="Category/Two_Sample_Poisson_Rate_(Pro_Only).html" url="Origin-Help/Two-Sample-Poisson-Rate" src="Category:Two_Sample_Poisson_Rate_(Pro_Only)">
+          <page title="Two-Sample Poisson Rate Test Dialog Box" file="UserGuide/Two_Sample_Poisson_Rate_Dialog_Box.html" url="Origin-Help/Two-Poisson-Rate-Dialog" src="UserGuide:Two_Sample_Poisson_Rate_Dialog_Box"/>
         </page>
       </page>
       <page title="ANOVA" file="Category/ANOVA.html" url="Origin-Help/ANOVA" src="Category:ANOVA">
@@ -944,6 +960,17 @@
         <page title="(PSS) Two-Variance Test" file="Category/(PSS)_Two-Variance_Test.html" url="Origin-Help/PSS-TwoVarianceTest" src="Category:(PSS)_Two-Variance_Test">
           <page title="The (PSS) Two-Variance Test Dialog Box" file="UserGuide/The_Two-Variance_Test_Dialog_Box.html" url="Origin-Help/PSS-Two-Var-Dialog" src="UserGuide:The_Two-Variance_Test_Dialog_Box"/>
           <page title="Algorithms (PSS: Two-Variance Test)" file="UserGuide/Algorithms(PSS_Two_Variances_Test).html" url="Origin-Help/PSS-Two-Var-Algorithm" src="UserGuide:Algorithms(PSS_Two_Variances_Test)"/>
+        </page>
+        <page title="Sample Size for Estimation" file="Category/Sample_Size_for_Estimation.html" url="Origin-Help/Sample-Size-Estimation" src="Category:Sample_Size_for_Estimation">
+          <page title="Sample Size for Estimation Dialog Box" file="UserGuide/Sample_Size_for_Estimation_Dialog.html" url="Origin-Help/Sample-Size-Estimation-Dialog" src="UserGuide:Sample_Size_for_Estimation_Dialog"/>
+        </page>
+        <page title="(PSS) One-Sample Poisson Rate Test" file="Category/(PSS)_One-Sample_Poisson_Rate_Test.html" url="Origin-Help/PSS-OneSample-Poisson-Rate" src="Category:(PSS)_One-Sample_Poisson_Rate_Test">
+          <page title="The (PSS) One-Sample Poisson Rate Test Dialog Box" file="UserGuide/The_One-Sample_Poisson_Rate_Test_Dialog_Box.html" url="Origin-Help/PSS-One-PoissonRate-Dialog" src="UserGuide:The_One-Sample_Poisson_Rate_Test_Dialog_Box"/>
+          <page title="Algorithms (PSS: One-Sample Poisson Rate Test)" file="UserGuide/Algorithms_(PSS_One-Sample_Poisson_Rate_Test).html" url="Origin-Help/PSS-One-PoissonRate-Algorithm" src="UserGuide:Algorithms_(PSS_One-Sample_Poisson_Rate_Test)"/>
+        </page>
+        <page title="(PSS) Two-Sample Poisson Rate Test" file="Category/(PSS)_Two-Sample_Poisson_Rate_Test.html" url="Origin-Help/PSS-TwoSample-Poisson-Rate" src="Category:(PSS)_Two-Sample_Poisson_Rate_Test">
+          <page title="The (PSS) Two-Sample Poisson Rate Test Dialog Box" file="UserGuide/The_Two-Sample_Poisson_Rate_Test_Dialog_Box.html" url="Origin-Help/PSS-Two-PoissonRate-Dialog" src="UserGuide:The_Two-Sample_Poisson_Rate_Test_Dialog_Box"/>
+          <page title="Algorithms (PSS: Two-Sample Poisson Rate Test)" file="UserGuide/Algorithms_(PSS_Two-Sample_Poisson_Rate_Test).html" url="Origin-Help/PSS-Two-PoissonRate-Algorithm" src="UserGuide:Algorithms_(PSS_Two-Sample_Poisson_Rate_Test)"/>
         </page>
       </page>
       <page title="ROC Curve (Pro Only)" file="Category/ROC_Curve_(OriginPro_only).html" url="Origin-Help/ROC-Curve" src="Category:ROC_Curve_(OriginPro_only)">
@@ -1321,6 +1348,11 @@
         <page title="Customizing Graph Size in Report Sheet" file="UserGuide/Customizing_Graph_Size_in_Report_Sheet.html" url="Origin-Help/Report-Graph-Size" src="UserGuide:Customizing_Graph_Size_in_Report_Sheet"/>
       </page>
     </page>
+    <page title="Life Science Mode" file="Category/Life_Science_Mode.html" url="Origin-Help/Life-Science-Mode" src="Category:Life_Science_Mode">
+      <page title="Data Table" file="UserGuide/Data_Table.html" url="Origin-Help/Data-Table" src="UserGuide:Data_Table"/>
+      <page title="Statistics and Analysis in Data Table" file="UserGuide/Statistics_and_Analysis_in_Data_Table.html" url="Origin-Help/Data-Table-Stats-Analysis" src="UserGuide:Statistics_and_Analysis_in_Data_Table"/>
+      <page title="Plotting in Data Table" file="UserGuide/Plotting_in_Data_Table.html" url="Origin-Help/Data-Table-Plotting" src="UserGuide:Plotting_in_Data_Table"/>
+    </page>
     <page title="Appendix 1 - Toolbars and Buttons" file="Category/Appendix_1_-_Toolbars.html" url="Origin-Help/Toolbar" src="Category:Appendix_1_-_Toolbars">
       <page title="Origin Toolbars" file="Category/Origin_Toolbars.html" url="Origin-Help/Origin-Toolbar-List" src="Category:Origin_Toolbars">
         <page title="The Standard Toolbar" file="UserGuide/The_Standard_Toolbar.html" url="Origin-Help/Standard-Toolbar" src="UserGuide:The_Standard_Toolbar"/>
@@ -1537,7 +1569,7 @@
         <page title="Window-view Browser Graph" file="UserGuide/Browser_Graph.html" url="Origin-Help/Browser-Graph" src="UserGuide:Browser_Graph"/>
         <page title="Bullet Chart" file="UserGuide/Bullet_Chart.html" url="Origin-Help/Bullet-Chart" src="UserGuide:Bullet_Chart"/>
         <page title="Polar Contour + Gradient Vector" file="UserGuide/Polar_Contour_Gradient_Vector.html" url="Origin-Help/Polar-Contour-Gradient-Vector" src="UserGuide:Polar_Contour_Gradient_Vector"/>
-        <page title="Contour Line + Gradient Vector" file="UserGuide/Contour_Line_Gradient_Vector.html" url="Origin-Help/Contour+GradientVector" src="UserGuide:Contour_Line_Gradient_Vector"/>
+        <page title="Contour Line + Gradient Vector" file="UserGuide/Contour_Line_Gradient_Vector.html" url="Origin-Help/Contour-GradientVector" src="UserGuide:Contour_Line_Gradient_Vector"/>
         <page title="Contour + Streamline" file="UserGuide/Contour_Streamline.html" url="Origin-Help/Contour-Streamline" src="UserGuide:Contour_Streamline"/>
         <page title="Piper/Trilinear Diagram" file="UserGuide/Piper_Diagram.html" url="Origin-Help/Piper-Diagram" src="UserGuide:Piper_Diagram"/>
         <page title="Durov Diagram" file="UserGuide/Durov_Diagram.html" url="Origin-Help/Durov-Diagram" src="UserGuide:Durov_Diagram"/>
@@ -1623,6 +1655,7 @@
         <page title="Polar Contour from XYZ Data" file="UserGuide/Polar_Contour.html" url="Origin-Help/XYZ-Polar-Contour" src="UserGuide:Polar_Contour"/>
         <page title="Polar Contour from Matrix Data" file="UserGuide/Polar_Contour_from_Matrix.html" url="Origin-Help/Matrix-Polar-Contour" src="UserGuide:Polar_Contour_from_Matrix"/>
         <page title="Ternary Contour" file="UserGuide/Ternary_Contour.html" url="Origin-Help/Ternary-Contour" src="UserGuide:Ternary_Contour"/>
+        <page title="Overlaid Contour Plot" file="UserGuide/Overlaid_Contour_Plot.html" url="Origin-Help/Overlaid-Contour-Plot" src="UserGuide:Overlaid_Contour_Plot"/>
       </page>
       <page title="Image and Profiles" file="Category/Images.html" url="Origin-Help/Image-Graph" src="Category:Images">
         <page title="Contour Profiles" file="UserGuide/Profile2.html" url="Origin-Help/Contour-Profile" src="UserGuide:Profile2"/>
@@ -1638,6 +1671,8 @@
         <page title="Asym2Sig" file="UserGuide/Asym2Sig.html" url="Origin-Help/Asym2Sig-FitFunc" src="UserGuide:Asym2Sig"/>
         <page title="Asymptotic1" file="UserGuide/Asymptotic1.html" url="Origin-Help/Asymptotic1-FitFunc" src="UserGuide:Asymptotic1"/>
         <page title="Belehradek" file="UserGuide/Belehradek.html" url="Origin-Help/Belehradek-FitFunc" src="UserGuide:Belehradek"/>
+        <page title="BellPlateau" file="UserGuide/BellPlateau.html" url="Origin-Help/BellPlateau-FitFunc" src="UserGuide:BellPlateau"/>
+        <page title="BellShaped" file="UserGuide/BellShaped.html" url="Origin-Help/BellShaped-FitFunc" src="UserGuide:BellShaped"/>
         <page title="BET" file="UserGuide/BET.html" url="Origin-Help/BET-FitFunc" src="UserGuide:BET"/>
         <page title="Beta" file="UserGuide/Beta.html" url="Origin-Help/Beta-FitFunc" src="UserGuide:Beta"/>
         <page title="BETMod" file="UserGuide/BETMod.html" url="Origin-Help/BETMod-FitFunc" src="UserGuide:BETMod"/>
@@ -1654,8 +1689,17 @@
         <page title="BoxLucas2" file="UserGuide/BoxLucas2.html" url="Origin-Help/BoxLucas2-FitFunc" src="UserGuide:BoxLucas2"/>
         <page title="Bradley" file="UserGuide/Bradley.html" url="Origin-Help/Bradley-FitFunc" src="UserGuide:Bradley"/>
         <page title="Carreau" file="UserGuide/Carreau.html" url="Origin-Help/Carreau-FitFunc" src="UserGuide:Carreau"/>
+        <page title="Catalytic" file="UserGuide/Catalytic.html" url="Origin-Help/Catalytic-FitFunc" src="UserGuide:Catalytic"/>
+        <page title="Catalytic2" file="UserGuide/Catalytic2.html" url="Origin-Help/Catalytic2-FitFunc" src="UserGuide:Catalytic2"/>
         <page title="CCE" file="UserGuide/CCE.html" url="Origin-Help/CCE-FitFunc" src="UserGuide:CCE"/>
         <page title="Chapman" file="UserGuide/Chapman.html" url="Origin-Help/Chapman-FitFunc" src="UserGuide:Chapman"/>
+        <page title="ChemDena" file="UserGuide/ChemDena.html" url="Origin-Help/ChemDena-FitFunc" src="UserGuide:ChemDena"/>
+        <page title="CompetitiveFull" file="UserGuide/CompetitiveFull.html" url="Origin-Help/CompetitiveFull-FitFunc" src="UserGuide:CompetitiveFull"/>
+        <page title="CompetitiveFull2" file="UserGuide/CompetitiveFull2.html" url="Origin-Help/CompetitiveFull2-FitFunc" src="UserGuide:CompetitiveFull2"/>
+        <page title="CompetitiveInhibition" file="UserGuide/CompetitiveInhibition.html" url="Origin-Help/CompetitiveInhibition-FitFunc" src="UserGuide:CompetitiveInhibition"/>
+        <page title="CompetitiveInhibition2" file="UserGuide/CompetitiveInhibition2.html" url="Origin-Help/CompetitiveInhibition2-FitFunc" src="UserGuide:CompetitiveInhibition2"/>
+        <page title="CompetitivePartial" file="UserGuide/CompetitivePartial.html" url="Origin-Help/CompetitivePartial-FitFunc" src="UserGuide:CompetitivePartial"/>
+        <page title="CompetitivePartial2" file="UserGuide/CompetitivePartial2.html" url="Origin-Help/CompetitivePartial2-FitFunc" src="UserGuide:CompetitivePartial2"/>
         <page title="CompInhib" file="UserGuide/CompInhib.html" url="Origin-Help/CompInhib-FitFunc" src="UserGuide:CompInhib"/>
         <page title="Constant" file="UserGuide/Constant.html" url="Origin-Help/Constant-FitFunc" src="UserGuide:Constant"/>
         <page title="Cross" file="UserGuide/Cross.html" url="Origin-Help/Cross-FitFunc" src="UserGuide:Cross"/>
@@ -1663,6 +1707,8 @@
         <page title="Dhyperbl" file="UserGuide/Dhyperbl.html" url="Origin-Help/Dhyperbl-FitFunc" src="UserGuide:Dhyperbl"/>
         <page title="DoseResp" file="UserGuide/DoseResp.html" url="Origin-Help/DoseResp-FitFunc" src="UserGuide:DoseResp"/>
         <page title="DoubleBoltzmann" file="UserGuide/DoubleBoltzmann.html" url="Origin-Help/DoubleBoltzmann-FitFunc" src="UserGuide:DoubleBoltzmann"/>
+        <page title="DoubleExp" file="UserGuide/DoubleExp.html" url="Origin-Help/DoubleExp-FitFunc" src="UserGuide:DoubleExp"/>
+        <page title="DoubleExpOffset" file="UserGuide/DoubleExpOffset.html" url="Origin-Help/DoubleExpOffset-FitFunc" src="UserGuide:DoubleExpOffset"/>
         <page title="ECS" file="UserGuide/ECS.html" url="Origin-Help/ECS-FitFunc" src="UserGuide:ECS"/>
         <page title="Exp1P1" file="UserGuide/Exp1P1.html" url="Origin-Help/Exp1P1-FitFunc" src="UserGuide:Exp1P1"/>
         <page title="Exp1p2" file="UserGuide/Exp1p2.html" url="Origin-Help/Exp1p2-FitFunc" src="UserGuide:Exp1p2"/>
@@ -1700,6 +1746,8 @@
         <page title="ExponentialCDF" file="UserGuide/ExponentialCDF.html" url="Origin-Help/Exponentialcdf-FitFunc" src="UserGuide:ExponentialCDF"/>
         <page title="Extreme" file="UserGuide/Extreme.html" url="Origin-Help/Extreme-FitFunc" src="UserGuide:Extreme"/>
         <page title="FarazdaghiHarris" file="UserGuide/FarazdaghiHarris.html" url="Origin-Help/FarazdaghiHarris-FitFunc" src="UserGuide:FarazdaghiHarris"/>
+        <page title="FirstOrder" file="UserGuide/FirstOrder.html" url="Origin-Help/FirstOrder-FitFunc" src="UserGuide:FirstOrder"/>
+        <page title="FirstOrderOffset" file="UserGuide/FirstOrderOffset.html" url="Origin-Help/FirstOrderOffset-FitFunc" src="UserGuide:FirstOrderOffset"/>
         <page title="FreundlichEXT" file="UserGuide/FreundlichEXT.html" url="Origin-Help/FreundlichEXT-FitFunc" src="UserGuide:FreundlichEXT"/>
         <page title="GammaCDF" file="UserGuide/GammaCDF.html" url="Origin-Help/Gamma-FitFunc" src="UserGuide:GammaCDF"/>
         <page title="Gauss" file="UserGuide/Gauss.html" url="Origin-Help/Gauss-FitFunc" src="UserGuide:Gauss"/>
@@ -1723,6 +1771,7 @@
         <page title="HyperbolaGen" file="UserGuide/HyperbolaGen.html" url="Origin-Help/HyperbolaGen-FitFunc" src="UserGuide:HyperbolaGen"/>
         <page title="HyperbolaMod" file="UserGuide/HyperbolaMod.html" url="Origin-Help/HyperbolaMod-FitFunc" src="UserGuide:HyperbolaMod"/>
         <page title="InvsPoly" file="UserGuide/InvsPoly.html" url="Origin-Help/InvsPoly-FitFunc" src="UserGuide:InvsPoly"/>
+        <page title="Isoenzyme" file="UserGuide/Isoenzyme.html" url="Origin-Help/Isoenzyme-FitFunc" src="UserGuide:Isoenzyme"/>
         <page title="Langevin" file="UserGuide/Langevin.html" url="Origin-Help/Langevin-FitFunc" src="UserGuide:Langevin"/>
         <page title="LangevinMod" file="UserGuide/LangevinMod.html" url="Origin-Help/LangevinMod-FitFunc" src="UserGuide:LangevinMod"/>
         <page title="LangmuirEXT1" file="UserGuide/LangmuirEXT1.html" url="Origin-Help/LangmuirEXT1-FitFunc" src="UserGuide:LangmuirEXT1"/>
@@ -1743,23 +1792,44 @@
         <page title="LognormalCDF" file="UserGuide/LognormalCDF.html" url="Origin-Help/LognormalCDF-FitFunc" src="UserGuide:LognormalCDF"/>
         <page title="Lorentz" file="UserGuide/Lorentz.html" url="Origin-Help/Lorentz-FitFunc" src="UserGuide:Lorentz"/>
         <page title="MichaelisMenten" file="UserGuide/MichaelisMenten.html" url="Origin-Help/MichaelisMenten-FitFunc" src="UserGuide:MichaelisMenten"/>
+        <page title="Mixed" file="UserGuide/Mixed.html" url="Origin-Help/Mixed-FitFunc" src="UserGuide:Mixed"/>
+        <page title="Mixed2" file="UserGuide/Mixed2.html" url="Origin-Help/Mixed2-FitFunc" src="UserGuide:Mixed2"/>
+        <page title="MixedFull" file="UserGuide/MixedFull.html" url="Origin-Help/MixedFull-FitFunc" src="UserGuide:MixedFull"/>
+        <page title="MixedFull2" file="UserGuide/MixedFull2.html" url="Origin-Help/MixedFull2-FitFunc" src="UserGuide:MixedFull2"/>
+        <page title="MixedInhibition" file="UserGuide/MixedInhibition.html" url="Origin-Help/MixedInhibition-FitFunc" src="UserGuide:MixedInhibition"/>
+        <page title="MixedInhibition2" file="UserGuide/MixedInhibition2.html" url="Origin-Help/MixedInhibition2-FitFunc" src="UserGuide:MixedInhibition2"/>
         <page title="MixedModelInhib" file="UserGuide/MixedModelInhib.html" url="Origin-Help/MixedModelInhib-FitFunc" src="UserGuide:MixedModelInhib"/>
+        <page title="MixedPartial" file="UserGuide/MixedPartial.html" url="Origin-Help/MixedPartial-FitFunc" src="UserGuide:MixedPartial"/>
+        <page title="MixedPartial2" file="UserGuide/MixedPartial2.html" url="Origin-Help/MixedPartial2-FitFunc" src="UserGuide:MixedPartial2"/>
         <page title="MnMolecular" file="UserGuide/MnMolecular.html" url="Origin-Help/MnMolecular-FitFunc" src="UserGuide:MnMolecular"/>
         <page title="MnMolecular1" file="UserGuide/MnMolecular1.html" url="Origin-Help/MnMolecular1-FitFunc" src="UserGuide:MnMolecular1"/>
         <page title="MYEGA" file="UserGuide/MYEGA.html" url="Origin-Help/MYEGA-FitFunc" src="UserGuide:MYEGA"/>
         <page title="Nelder" file="UserGuide/Nelder.html" url="Origin-Help/Nelder-FitFunc" src="UserGuide:Nelder"/>
+        <page title="NoncompetitiveFull" file="UserGuide/NoncompetitiveFull.html" url="Origin-Help/NoncompetitiveFull-FitFunc" src="UserGuide:NoncompetitiveFull"/>
+        <page title="NoncompetitiveFull2" file="UserGuide/NoncompetitiveFull2.html" url="Origin-Help/NoncompetitiveFull2-FitFunc" src="UserGuide:NoncompetitiveFull2"/>
+        <page title="NoncompetitiveInhibition" file="UserGuide/NoncompetitiveInhibition.html" url="Origin-Help/NoncompetitiveInhibition-FitFunc" src="UserGuide:NoncompetitiveInhibition"/>
+        <page title="NoncompetitiveInhibition2" file="UserGuide/NoncompetitiveInhibition2.html" url="Origin-Help/NoncompetitiveInhibition2-FitFunc" src="UserGuide:NoncompetitiveInhibition2"/>
+        <page title="NoncompetitivePartial" file="UserGuide/NoncompetitivePartial.html" url="Origin-Help/NoncompetitivePartial-FitFunc" src="UserGuide:NoncompetitivePartial"/>
+        <page title="NoncompetitivePartial2" file="UserGuide/NoncompetitivePartial2.html" url="Origin-Help/NoncompetitivePartial2-FitFunc" src="UserGuide:NoncompetitivePartial2"/>
         <page title="NoncompInhib" file="UserGuide/NoncompInhib.html" url="Origin-Help/NoncompInhib-FitFunc" src="UserGuide:NoncompInhib"/>
+        <page title="Nonessencial" file="UserGuide/Nonessencial.html" url="Origin-Help/Nonessencial-FitFunc" src="UserGuide:Nonessencial"/>
+        <page title="Nonessencial2" file="UserGuide/Nonessencial2.html" url="Origin-Help/Nonessencial2-FitFunc" src="UserGuide:Nonessencial2"/>
         <page title="NormalCDF" file="UserGuide/NormalCDF.html" url="Origin-Help/NormalCDF-FitFunc" src="UserGuide:NormalCDF"/>
         <page title="OneSiteBind" file="UserGuide/OneSiteBind.html" url="Origin-Help/OneSiteBind-FitFunc" src="UserGuide:OneSiteBind"/>
         <page title="OneSiteComp" file="UserGuide/OneSiteComp.html" url="Origin-Help/OneSiteComp-FitFunc" src="UserGuide:OneSiteComp"/>
+        <page title="OrderedBiBiSequential" file="UserGuide/OrderedBiBiSequential.html" url="Origin-Help/OrderedBiBiSequential-FitFunc" src="UserGuide:OrderedBiBiSequential"/>
+        <page title="OrderedBiBiSequential2" file="UserGuide/OrderedBiBiSequential2.html" url="Origin-Help/OrderedBiBiSequential2-FitFunc" src="UserGuide:OrderedBiBiSequential2"/>
         <page title="Parabola" file="UserGuide/Parabola.html" url="Origin-Help/Parabola-FitFunc" src="UserGuide:Parabola"/>
         <page title="Pareto" file="UserGuide/Pareto.html" url="Origin-Help/Pareto-FitFunc" src="UserGuide:Pareto"/>
         <page title="Pareto2" file="UserGuide/Pareto2.html" url="Origin-Help/Pareto2-FitFunc" src="UserGuide:Pareto2"/>
         <page title="PearsonIV" file="UserGuide/PearsonIV.html" url="Origin-Help/PearsonIV-FitFunc" src="UserGuide:PearsonIV"/>
         <page title="PearsonVII" file="UserGuide/PearsonVII.html" url="Origin-Help/PearsonVII-FitFunc" src="UserGuide:PearsonVII"/>
+        <page title="PingPongBiBiSequential" file="UserGuide/PingPongBiBiSequential.html" url="Origin-Help/PingPongBiBiSequential-FitFunc" src="UserGuide:PingPongBiBiSequential"/>
+        <page title="PingPongBiBiSequential2" file="UserGuide/PingPongBiBiSequential2.html" url="Origin-Help/PingPongBiBiSequential2-FitFunc" src="UserGuide:PingPongBiBiSequential2"/>
         <page title="PIPlatt" file="UserGuide/PIPlatt.html" url="Origin-Help/PIPlatt-FitFunc" src="UserGuide:PIPlatt"/>
         <page title="PIPlatt2" file="UserGuide/PIPlatt2.html" url="Origin-Help/PIPlatt2-FitFunc" src="UserGuide:PIPlatt2"/>
         <page title="PIWebb" file="UserGuide/PIWebb.html" url="Origin-Help/PIWebb-FitFunc" src="UserGuide:PIWebb"/>
+        <page title="PlateauShaped" file="UserGuide/PlateauShaped.html" url="Origin-Help/PlateauShaped-FitFunc" src="UserGuide:PlateauShaped"/>
         <page title="Poisson" file="UserGuide/Poisson.html" url="Origin-Help/Poisson-FitFunc" src="UserGuide:Poisson"/>
         <page title="Poly" file="UserGuide/Poly.html" url="Origin-Help/Poly-FitFunc" src="UserGuide:Poly"/>
         <page title="Poly4" file="UserGuide/Poly4.html" url="Origin-Help/Poly4-FitFunc" src="UserGuide:Poly4"/>
@@ -1776,6 +1846,8 @@
         <page title="Pulse" file="UserGuide/Pulse.html" url="Origin-Help/Pulse-FitFunc" src="UserGuide:Pulse"/>
         <page title="PWL2" file="UserGuide/PWL2.html" url="Origin-Help/PWL2" src="UserGuide:PWL2"/>
         <page title="PWL3" file="UserGuide/PWL3.html" url="Origin-Help/PWL3" src="UserGuide:PWL3"/>
+        <page title="RandomBiBiSequential" file="UserGuide/RandomBiBiSequential.html" url="Origin-Help/RandomBiBiSequential-FitFunc" src="UserGuide:RandomBiBiSequential"/>
+        <page title="RandomBiBiSequential2" file="UserGuide/RandomBiBiSequential2.html" url="Origin-Help/RandomBiBiSequential2-FitFunc" src="UserGuide:RandomBiBiSequential2"/>
         <page title="Rational0" file="UserGuide/Rational0.html" url="Origin-Help/Rational0-FitFunc" src="UserGuide:Rational0"/>
         <page title="Rational1" file="UserGuide/Rational1.html" url="Origin-Help/Rational1-FitFunc" src="UserGuide:Rational1"/>
         <page title="Rational2" file="UserGuide/Rational2.html" url="Origin-Help/Rational2-FitFunc" src="UserGuide:Rational2"/>
@@ -1795,20 +1867,36 @@
         <page title="Sine" file="UserGuide/Sine.html" url="Origin-Help/Sine-FitFunc" src="UserGuide:Sine"/>
         <page title="SineDamp" file="UserGuide/SineDamp.html" url="Origin-Help/SineDamp-FitFunc" src="UserGuide:SineDamp"/>
         <page title="SineSqr" file="UserGuide/SineSqr.html" url="Origin-Help/SineSqr-FitFunc" src="UserGuide:SineSqr"/>
+        <page title="SingleExp" file="UserGuide/SingleExp.html" url="Origin-Help/SingleExp-FitFunc" src="UserGuide:SingleExp"/>
+        <page title="SingleExpOffset" file="UserGuide/SingleExpOffset.html" url="Origin-Help/SingleExpOffset-FitFunc" src="UserGuide:SingleExpOffset"/>
+        <page title="SinglepKaFalling" file="UserGuide/SinglepKaFalling.html" url="Origin-Help/SinglepKaFalling-FitFunc" src="UserGuide:SinglepKaFalling"/>
+        <page title="SinglepKaOffset" file="UserGuide/SinglepKaOffset.html" url="Origin-Help/SinglepKaOffset-FitFunc" src="UserGuide:SinglepKaOffset"/>
+        <page title="SinglepKaRising" file="UserGuide/SinglepKaRising.html" url="Origin-Help/SinglepKaRising-FitFunc" src="UserGuide:SinglepKaRising"/>
         <page title="SLogistic1" file="UserGuide/SLogistic1.html" url="Origin-Help/SLogistic1-FitFunc" src="UserGuide:SLogistic1"/>
         <page title="SLogistic2" file="UserGuide/SLogistic2.html" url="Origin-Help/SLogistic2-FitFunc" src="UserGuide:SLogistic2"/>
         <page title="SLogistic3" file="UserGuide/SLogistic3.html" url="Origin-Help/SLogistic3-FitFunc" src="UserGuide:SLogistic3"/>
+        <page title="Specific" file="UserGuide/Specific.html" url="Origin-Help/Specific-FitFunc" src="UserGuide:Specific"/>
+        <page title="Specific2" file="UserGuide/Specific2.html" url="Origin-Help/Specific2-FitFunc" src="UserGuide:Specific2"/>
         <page title="SquareWave" file="UserGuide/SquareWave.html" url="Origin-Help/SquareWave-FitFunc" src="UserGuide:SquareWave"/>
         <page title="SquareWaveMod" file="UserGuide/SquareWaveMod.html" url="Origin-Help/SqWaveMod-FitFunc" src="UserGuide:SquareWaveMod"/>
         <page title="SRichards1" file="UserGuide/SRichards1.html" url="Origin-Help/SRichards1-FitFunc" src="UserGuide:SRichards1"/>
         <page title="SRichards2" file="UserGuide/SRichards2.html" url="Origin-Help/SRichards2-FitFunc" src="UserGuide:SRichards2"/>
         <page title="Step" file="UserGuide/Step.html" url="Origin-Help/Step-FitFunc" src="UserGuide:Step"/>
         <page title="Stirling" file="UserGuide/Stirling.html" url="Origin-Help/Stirling-FitFunc" src="UserGuide:Stirling"/>
+        <page title="SubstrateActivationOrdered" file="UserGuide/SubstrateActivationOrdered.html" url="Origin-Help/SubstrateActivationOrdered-FitFunc" src="UserGuide:SubstrateActivationOrdered"/>
+        <page title="SubstrateActivationRandom" file="UserGuide/SubstrateActivationRandom.html" url="Origin-Help/SubstrateActivationRandom-FitFunc" src="UserGuide:SubstrateActivationRandom"/>
         <page title="SubstrateInhib" file="UserGuide/SubstrateInhib.html" url="Origin-Help/SubstrateInhib-FitFunc" src="UserGuide:SubstrateInhib"/>
         <page title="SWeibull1" file="UserGuide/SWeibull1.html" url="Origin-Help/SWeibull1-FitFunc" src="UserGuide:SWeibull1"/>
         <page title="SWeibull2" file="UserGuide/SWeibull2.html" url="Origin-Help/SWeibull2-FitFunc" src="UserGuide:SWeibull2"/>
+        <page title="ThermDena" file="UserGuide/ThermDena.html" url="Origin-Help/ThermDena-FitFunc" src="UserGuide:ThermDena"/>
         <page title="TwoSiteBind" file="UserGuide/TwoSiteBind.html" url="Origin-Help/TwoSiteBind-FitFunc" src="UserGuide:TwoSiteBind"/>
         <page title="TwoSiteComp" file="UserGuide/TwoSiteComp.html" url="Origin-Help/TwoSiteComp-FitFunc" src="UserGuide:TwoSiteComp"/>
+        <page title="UncompetitiveFull" file="UserGuide/UncompetitiveFull.html" url="Origin-Help/UncompetitiveFull-FitFunc" src="UserGuide:UncompetitiveFull"/>
+        <page title="UncompetitiveFull2" file="UserGuide/UncompetitiveFull2.html" url="Origin-Help/UncompetitiveFull2-FitFunc" src="UserGuide:UncompetitiveFull2"/>
+        <page title="UncompetitiveInhibition" file="UserGuide/UncompetitiveInhibition.html" url="Origin-Help/UncompetitiveInhibition-FitFunc" src="UserGuide:UncompetitiveInhibition"/>
+        <page title="UncompetitiveInhibition2" file="UserGuide/UncompetitiveInhibition2.html" url="Origin-Help/UncompetitiveInhibition2-FitFunc" src="UserGuide:UncompetitiveInhibition2"/>
+        <page title="UncompetitivePartial" file="UserGuide/UncompetitivePartial.html" url="Origin-Help/UncompetitivePartial-FitFunc" src="UserGuide:UncompetitivePartial"/>
+        <page title="UncompetitivePartial2" file="UserGuide/UncompetitivePartial2.html" url="Origin-Help/UncompetitivePartial2-FitFunc" src="UserGuide:UncompetitivePartial2"/>
         <page title="UncompInhib" file="UserGuide/UncompInhib.html" url="Origin-Help/UncompInhib-FitFunc" src="UserGuide:UncompInhib"/>
         <page title="VFT" file="UserGuide/VFT.html" url="Origin-Help/VFT-FitFunc" src="UserGuide:VFT"/>
         <page title="Voigt" file="UserGuide/Voigt.html" url="Origin-Help/Voigt-FitFunc" src="UserGuide:Voigt"/>
