@@ -29,6 +29,17 @@ p {
     transform: rotate(90deg);
 }
 
+.gui-modes-notice {
+    margin-top: 2rem;
+    color: #236e92;
+    border-bottom: 3px solid #3da0d1;
+    padding: 4px;
+}
+
+.gui-modes-notice a {
+    text-decoration: underline;
+}
+
 .DocContent {
     margin-top: 24px;
 }
