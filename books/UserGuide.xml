@@ -40,7 +40,7 @@
       <page title="Origin Template Files (OTW(U), OTP(U), OTM(U))" file="UserGuide/Template_Files.html" url="Origin-Help/OFileType-Template" src="UserGuide:Template_Files"/>
       <page title="Origin Limitations" file="UserGuide/Origin_Limitations.html" url="Origin-Help/Origin-Limitation" src="UserGuide:Origin_Limitations"/>
       <page title="Dark Mode" file="UserGuide/Dark_Mode.html" url="Origin-Help/Dark-Mode" src="UserGuide:Dark_Mode"/>
-      <page title="Stats Mode" file="UserGuide/Stats_Mode.html" url="Origin-Help/Stats-Mode" src="UserGuide:Stats_Mode"/>
+      <page title="Origin GUI Modes" file="UserGuide/Origin_GUI_Modes.html" url="Origin-Help/GUI-Modes" src="UserGuide:Origin_GUI_Modes"/>
     </page>
     <page title="The Origin Project File" file="Category/The_Origin_Project_File.html" url="Origin-Help/Origin-Project-File" src="Category:The_Origin_Project_File">
       <page title="Using Windows File Explorer to Preview Your Projects" file="UserGuide/Using_Windows_File_Explorer_to_Preview_Your_Projects.html" url="Origin-Help/Windows-File-Explorer-Preview" src="UserGuide:Using_Windows_File_Explorer_to_Preview_Your_Projects"/>
@@ -1348,6 +1348,7 @@
         <page title="Customizing Graph Size in Report Sheet" file="UserGuide/Customizing_Graph_Size_in_Report_Sheet.html" url="Origin-Help/Report-Graph-Size" src="UserGuide:Customizing_Graph_Size_in_Report_Sheet"/>
       </page>
     </page>
+    <page title="Stats Mode" file="Category/Stats_Mode.html" url="Origin-Help/Stats-Mode" src="Category:Stats_Mode"/>
     <page title="Life Science Mode" file="Category/Life_Science_Mode.html" url="Origin-Help/Life-Science-Mode" src="Category:Life_Science_Mode">
       <page title="Data Table" file="UserGuide/Data_Table.html" url="Origin-Help/Data-Table" src="UserGuide:Data_Table"/>
       <page title="Statistics and Analysis in Data Table" file="UserGuide/Statistics_and_Analysis_in_Data_Table.html" url="Origin-Help/Data-Table-Stats-Analysis" src="UserGuide:Statistics_and_Analysis_in_Data_Table"/>
