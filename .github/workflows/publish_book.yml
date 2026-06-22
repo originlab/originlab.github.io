@@ -121,7 +121,7 @@ jobs:
             file="{}"
             output="{.}.webp"
 
-            msg=$(cwebp -quiet -lossless -q 100 "$file" -o "$output" 2>&1 >/dev/null)
+            msg=$(cwebp -quiet -mt -lossless -q 100 "$file" -o "$output" 2>&1 >/dev/null)
             status=$?
 
             if [ $status -eq 0 ]; then rm "$file"; fi
@@ -140,7 +140,7 @@ jobs:
             file="{}"
             output="{.}.webp"
 
-            msg=$(gif2webp -quiet -min_size -q 100 "$file" -o "$output" 2>&1 >/dev/null)
+            msg=$(gif2webp -quiet -mt -min_size -q 100 "$file" -o "$output" 2>&1 >/dev/null)
             status=$?
 
             if [ $status -eq 0 ]; then rm "$file"; fi
