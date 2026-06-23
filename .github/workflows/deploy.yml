@@ -101,9 +101,10 @@ jobs:
         run: |
           run_view_json=$(gh run view "$deploy_run_id" -R "originlab/${{ matrix.site }}" --json jobs,headSha)
           echo "$run_view_json" | jq -r '
+            def dur($item): ($item.completedAt | fromdateiso8601) - ($item.startedAt | fromdateiso8601);
+
             (.jobs[] | select(.name | startswith("publish_book / convert"))) as $build
             | (.jobs[] | select(.name == "publish_book / optimize")) as $optimize
-            | def dur($item): ($item.completedAt | fromdateiso8601) - ($item.startedAt | fromdateiso8601);
             | dur($build) as $build_total
             | dur($optimize) as $optimize_total
             | ($build.steps[] | select(.name == "Run the Converter") | dur(.)) as $build_core
