@@ -103,11 +103,20 @@ jobs:
           echo "$run_view_json" | jq -r '
             (.jobs[] | select(.name | startswith("publish_book / convert"))) as $build
             | (.jobs[] | select(.name == "publish_book / optimize")) as $optimize
+            | def dur($item): ($item.completedAt | fromdateiso8601) - ($item.startedAt | fromdateiso8601);
+            | dur($build) as $build_total
+            | dur($optimize) as $optimize_total
+            | ($build.steps[] | select(.name == "Run the Converter") | dur(.)) as $build_core
+            | ([ $optimize.steps[] | select(.name | startswith("Optimize")) | dur(.) ] | add) as $optimize_core
             | "run_sha=\(.headSha)",
               "build_job_id=\($build.databaseId)",
               "optimize_job_id=\($optimize.databaseId)",
-              "build_duration=\(($build.completedAt | fromdateiso8601) - ($build.startedAt | fromdateiso8601))",
-              "optimize_duration=\(($optimize.completedAt | fromdateiso8601) - ($optimize.startedAt | fromdateiso8601))"
+              "build_duration=\($build_total)",
+              "build_duration_core=\($build_core)",
+              "build_duration_overhead=\($build_total - $build_core)",
+              "optimize_duration=\($optimize_total)",
+              "optimize_duration_core=\($optimize_core)",
+              "optimize_duration_overhead=\($optimize_total - $optimize_core)"
           ' >> "$GITHUB_ENV"
           echo 'Done.'
 
@@ -176,7 +185,7 @@ jobs:
         run: |
           source ./helpers.sh
 
-          echo "# Conversion <sub><sup>:stopwatch:$(get_human_time "$build_duration")</sup></sub>" >> "$GITHUB_STEP_SUMMARY"
+          echo "# Conversion <sub><sup>:stopwatch:$(get_human_time "$build_duration") ($(get_human_time "$build_duration_core") with $(get_human_time "$build_duration_overhead") overhead)</sup></sub>" >> "$GITHUB_STEP_SUMMARY"
           gh run view $deploy_run_id -j $build_job_id -R originlab/${{ matrix.site }} --log \
           | awk '/generator\.dll"/ {f=1} /upload-artifact/ {f=0} f' \
           | cut -f3- | cut -d' ' -f2- \
@@ -207,7 +216,7 @@ jobs:
         run: |
           source ./helpers.sh
 
-          echo "# Optimization <sub><sup>:stopwatch:$(get_human_time "$optimize_duration")</sup></sub>" >> "$GITHUB_STEP_SUMMARY"
+          echo "# Optimization <sub><sup>:stopwatch:$(get_human_time "$optimize_duration") ($(get_human_time "$optimize_duration_core") with $(get_human_time "$optimize_duration") overhead)</sup></sub>" >> "$GITHUB_STEP_SUMMARY"
           opt_log=$(gh run view $deploy_run_id -j $optimize_job_id -R originlab/${{ matrix.site }} --log \
                     | awk '/find pages\// {f=1} /upload-artifact/ {f=0} f' \
                     | cut -f3- | cut -d' ' -f2- \
