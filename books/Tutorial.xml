@@ -206,7 +206,6 @@
     </page>
     <page title="Graphing" file="Category/Graphing_(Tutorials).html" url="Tutorials/Graphing" src="Category:Graphing_(Tutorials)">
       <page title="Plotting" file="Category/Basic_Graphing_Operations_(Tutorials).html" url="Tutorials/plotting" src="Category:Basic_Graphing_Operations_(Tutorials)">
-        <page title="3D Bar with Labels" file="Tutorial/3D_Bar_with_Labels.html" url="Tutorials/3D-Bar-with-Labels" src="Tutorial:3D_Bar_with_Labels"/>
         <page title="Creating a Graph" file="Tutorial/Graphing_Data_From_Multiple_Sheets.html" url="Tutorials/Create-Graph" src="Tutorial:Graphing_Data_From_Multiple_Sheets"/>
         <page title="Basic 2D Plotting" file="Tutorial/2D_Plotting.html" url="Tutorials/2DPlotting" src="Tutorial:2D_Plotting"/>
         <page title="Basic 3D Plotting" file="Tutorial/3D_Plotting.html" url="Tutorials/3D-Plotting-Basic" src="Tutorial:3D_Plotting"/>
@@ -305,6 +304,7 @@
         <page title="Multiple Surfaces in Same Layer" file="Tutorial/Multiple_Surfaces_in_Same_Layer.html" url="Tutorials/Multi-3DSurf-in-Layer" src="Tutorial:Multiple_Surfaces_in_Same_Layer"/>
         <page title="3D Scatter with Colormap" file="Tutorial/3D_Scatter_with_Colormap.html" url="Tutorials/3D-Scatter-ColorMap" src="Tutorial:3D_Scatter_with_Colormap"/>
         <page title="3D Bar on Flatten Surface" file="Tutorial/3D_Bar_on_Flatten_Surface.html" url="Tutorials/3D-Bar-FlatSurf" src="Tutorial:3D_Bar_on_Flatten_Surface"/>
+        <page title="3D Bar with Labels" file="Tutorial/3D_Bar_with_Labels.html" url="Tutorials/3D-Bar-with-Labels" src="Tutorial:3D_Bar_with_Labels"/>
         <page title="3D Surface with Point Label" file="Tutorial/3D_Surface_with_Point_Label.html" url="Tutorials/3D-Surface-PointLabel" src="Tutorial:3D_Surface_with_Point_Label"/>
         <page title="3D Scatter Plots with Confidence Ellipsoids" file="Tutorial/Transparent_Parametric_Surfaces_combined_with_Scatter_Plot.html" url="Tutorials/3D-TransParaSurf-Scatter" src="Tutorial:Transparent_Parametric_Surfaces_combined_with_Scatter_Plot"/>
         <page title="Convert Data from Spherical Coordinate to XYZ and Make a 3D Plot" file="Tutorial/Convert_Data_from_Spherical_Coordinate_to_XYZ_and_Make_a_3D_Plot.html" url="Tutorials/Convert-Spherical-to-XYZ" src="Tutorial:Convert_Data_from_Spherical_Coordinate_to_XYZ_and_Make_a_3D_Plot"/>
