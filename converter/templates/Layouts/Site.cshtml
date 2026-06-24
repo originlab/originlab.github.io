@@ -5,20 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    @RenderSection("pre_css", required: false)
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/@@victoryoalli/yamm3@1.1.1/yamm/yamm.css" rel="stylesheet" crossorigin="anonymous" />
+
     <link href="~/global/originlab.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/books/style.css" asp-append-version="true" rel="stylesheet" />
+
+    @RenderSection("post_css", required: false)
+
+    @RenderSection("pre_js", required: false)
 
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.11.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
-    <script src="~/global/originlab.js" asp-append-version="true"></script>
 
-    <link href="~/books/style.css" asp-append-version="true" rel="stylesheet" />
+    <script src="~/global/originlab.js" asp-append-version="true"></script>
     <script src="~/books/script.js" asp-append-version="true"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
 
-    @RenderSection("head", required: false)
+    @RenderSection("post_js", required: false)
 </head>
 <body>
     <div class="container">
