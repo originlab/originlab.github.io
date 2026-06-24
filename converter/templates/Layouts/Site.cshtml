@@ -30,13 +30,13 @@
 <body>
     <div class="container">
         <div class="row" id="header">
-            @Html.Partial($"/Partials/{Model.Language}/Header.cshtml")
+            <partial name="@($"/Partials/{Model.Language}/Header.cshtml")" />
         </div>
         <div class="row" id="contentsBody">
             @RenderBody()
         </div>
         <div class="row" id="footer">
-            @Html.Partial($"/Partials/{Model.Language}/Footer.cshtml")
+            <partial name="@($"/Partials/{Model.Language}/Footer.cshtml")" />
         </div>
     </div>
 </body>
