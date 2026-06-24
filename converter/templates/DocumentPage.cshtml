@@ -9,7 +9,7 @@
 }
 
 <div class="row">
-    @Html.Partial($"/Partials/{Model.Language}/DocHeader.cshtml")
+    <partial name="@($"/Partials/{Model.Language}/DocHeader.cshtml")" />
 </div>
 <div class="DocContent">
     <div id="doc-content-placeholder"></div>
