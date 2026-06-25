@@ -9,10 +9,6 @@ public class ResourceResolverTests
     [InlineData("./A/App/B.html", "de", "/app/b/de/", "App B")]
     [InlineData("./A/App/B_Script.html", "de", "/build/b-scripts/de/", "B Scripts (Moved from App)")]
     [InlineData("./A/App/B_Script.html#section", "de", "/build/b-scripts/de/#section", "B Scripts (Moved from App)")]
-    [InlineData("/link.aspx?a=b#h", "de", "/link.aspx?a=b#h", null)]
-    [InlineData("http://localhost/link.aspx?a=b", "de", "http://localhost/link.aspx?a=b", null)]
-    [InlineData("mailto:a@b.lan", "de", "mailto:a@b.lan", null)]
-    [InlineData("#section", "de", "#section", null)]
     public void HrefShouldResolveCorrectly(string href, string language, string expectedUrl, string? expectedTitle)
     {
         var resolver = CreateResolver("app", false, out var args);
@@ -21,6 +17,25 @@ public class ResourceResolverTests
         Assert.True(resolver.TryResolveHref(href, Path.GetFullPath(language, args.SourceFolder), out var result, out var title));
         Assert.Equal(expectedUrl, result);
         Assert.Equal(expectedTitle, title);
+    }
+
+    [Theory]
+    [InlineData("/link.aspx?a=b#h", "en")]
+    [InlineData("/link.aspx?a=b#h", "de")]
+    [InlineData("http://localhost/link.aspx?a=b", "en")]
+    [InlineData("http://localhost/link.aspx?a=b", "de")]
+    [InlineData("mailto:a@b.lan", "en")]
+    [InlineData("mailto:a@b.lan", "de")]
+    [InlineData("#section", "en")]
+    [InlineData("#section", "de")]
+    public void HrefShouldLeaveAbosoluteUrlsAsTheyAre(string href, string language)
+    {
+        var resolver = CreateResolver("app", false, out var args);
+        resolver.Language = language;
+
+        Assert.True(resolver.TryResolveHref(href, Path.GetFullPath(language, args.SourceFolder), out var result, out var title));
+        Assert.Equal(href, result);
+        Assert.Null(title);
     }
 
     [Theory]
