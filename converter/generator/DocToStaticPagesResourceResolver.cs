@@ -54,7 +54,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
     }
 
     protected override (string url, ulong hash) GetSharedImageSrc(string path, string fileName)
-        => ($"/books/images/{fileName}", FileHash.FromFile(path));
+        => ($"/books/images/{fileName}", FastHash.FromFile(path));
 
     public bool TryResolveHref(string href, string sourceDir, out string result, out string? titleEn)
     {
@@ -143,7 +143,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
                 result = '/'.TryPrefixEach(BookUrlName, "en", path[indexOfImages..]);
 
                 var size = srcImg.Length;
-                hash = FileHash.FromFile(srcImg.FullName);
+                hash = FastHash.FromFile(srcImg.FullName);
 
                 EnglishImages.Add(path, (size, hash, result));
             }
@@ -191,7 +191,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
 
                     if (EnglishImages.TryGetValue(path, out var enImage)
                         && srcImg.Length == enImage.size
-                        && FileHash.FromFile(srcImg.FullName) == enImage.hash)
+                        && FastHash.FromFile(srcImg.FullName) == enImage.hash)
                     {
                         result = enImage.url;
                         hash = enImage.hash;
@@ -200,7 +200,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
 
                     if (hash == 0)
                     {
-                        hash = FileHash.FromFile(srcImg.FullName);
+                        hash = FastHash.FromFile(srcImg.FullName);
                     }
 
                     VisitedImages.Add(path, (result, hash));
@@ -216,7 +216,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
             result = $"{resultDir}/{resultFileName}.webp";
         }
 
-        result = $"{result}?v={FileHash.ToBase64Url(hash)}";
+        result = $"{result}?v={FastHash.ToBase64Url(hash)}";
         copy = !needsCopy ? null : (srcImg.FullName, Path.Combine(OutputFolder, Language, path[indexOfImages..]));
 
         return true;

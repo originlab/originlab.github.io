@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace OriginLab;
 
-public class FileHash
+public class FastHash
 {
     public static ulong FromString(string contents)
     {
