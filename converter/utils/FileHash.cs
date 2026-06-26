@@ -5,15 +5,12 @@ namespace OriginLab;
 
 public class FileHash
 {
-    public static string FromString(string contents)
+    public static ulong FromString(string contents)
     {
-        Span<byte> hash = stackalloc byte[8];
-        XxHash3.Hash(MemoryMarshal.AsBytes(contents.AsSpan()), hash);
-
-        return Convert.ToHexStringLower(hash);
+        return XxHash3.HashToUInt64(MemoryMarshal.AsBytes(contents.AsSpan()));
     }
 
-    public static ulong UInt64FromFile(string path)
+    public static ulong FromFile(string path)
     {
         using var fs = File.OpenRead(path);
         var xx = new XxHash3();
@@ -21,18 +18,5 @@ public class FileHash
         xx.Append(fs);
 
         return xx.GetCurrentHashAsUInt64();
-    }
-
-    public static string StringFromFile(string path)
-    {
-        using var fs = File.OpenRead(path);
-        var xx = new XxHash3();
-
-        xx.Append(fs);
-
-        Span<byte> hash = stackalloc byte[8];
-        xx.GetCurrentHash(hash);
-
-        return Convert.ToHexStringLower(hash);
     }
 }

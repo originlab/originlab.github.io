@@ -50,7 +50,7 @@ internal abstract partial class DocToStaticPagesTransformer : DocTransformer
 
         var scripts = await Template.RenderApplyLayoutScriptsAsync(new ApplyLayoutModel
         {
-            LayoutPageUrl = '/'.TryPrefixEach(BookUrlName, language, $"layout.html?v={FileHash.FromString(html)}"),
+            LayoutPageUrl = '/'.TryPrefixEach(BookUrlName, language, $"layout.html?v={FileHash.FromString(html):x}"),
         });
 
         Language = language;

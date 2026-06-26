@@ -54,7 +54,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
     }
 
     protected override (string url, ulong hash) GetSharedImageSrc(string path, string fileName)
-        => ($"/books/images/{fileName}", FileHash.UInt64FromFile(path));
+        => ($"/books/images/{fileName}", FileHash.FromFile(path));
 
     public bool TryResolveHref(string href, string sourceDir, out string result, out string? titleEn)
     {
@@ -143,7 +143,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
                 result = '/'.TryPrefixEach(BookUrlName, "en", path[indexOfImages..]);
 
                 var size = srcImg.Length;
-                hash = FileHash.UInt64FromFile(srcImg.FullName);
+                hash = FileHash.FromFile(srcImg.FullName);
 
                 EnglishImages.Add(path, (size, hash, result));
             }
@@ -191,7 +191,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
 
                     if (EnglishImages.TryGetValue(path, out var enImage)
                         && srcImg.Length == enImage.size
-                        && FileHash.UInt64FromFile(srcImg.FullName) == enImage.hash)
+                        && FileHash.FromFile(srcImg.FullName) == enImage.hash)
                     {
                         result = enImage.url;
                         hash = enImage.hash;
@@ -200,7 +200,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
 
                     if (hash == 0)
                     {
-                        hash = FileHash.UInt64FromFile(srcImg.FullName);
+                        hash = FileHash.FromFile(srcImg.FullName);
                     }
 
                     VisitedImages.Add(path, (result, hash));
