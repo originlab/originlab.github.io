@@ -40,21 +40,21 @@ public class ResourceResolverTests
 
     [Theory]
     // Image exists in en
-    [InlineData("../images/A/a.jpg", "en", false, "/app/en/images/A/a.jpg?v=2a44c9a534ff6b5c")]
-    [InlineData("../images/A/a.jpg", "en", true, "/app/en/images/A/a.webp?v=2a44c9a534ff6b5c")]
-    [InlineData("../images/A/a.jpg?v=123", "en", false, "/app/en/images/A/a.jpg?v=2a44c9a534ff6b5c")]
-    [InlineData("../images/A/a.jpg?v=123", "en", true, "/app/en/images/A/a.webp?v=2a44c9a534ff6b5c")]
+    [InlineData("../images/A/a.jpg", "en", false, "/app/en/images/A/a.jpg?v=KkTJpTT_a1w")]
+    [InlineData("../images/A/a.jpg", "en", true, "/app/en/images/A/a.webp?v=KkTJpTT_a1w")]
+    [InlineData("../images/A/a.jpg?v=123", "en", false, "/app/en/images/A/a.jpg?v=KkTJpTT_a1w")]
+    [InlineData("../images/A/a.jpg?v=123", "en", true, "/app/en/images/A/a.webp?v=KkTJpTT_a1w")]
     // Image only exists in ja
-    [InlineData("../images/A/b.jpg", "ja", false, "/app/ja/images/A/b.jpg?v=e14a4892ecf11d7a")]
-    [InlineData("../images/A/b.jpg", "ja", true, "/app/ja/images/A/b.webp?v=e14a4892ecf11d7a")]
-    [InlineData("../images/A/b.jpg?v=123", "ja", false, "/app/ja/images/A/b.jpg?v=e14a4892ecf11d7a")]
-    [InlineData("../images/A/b.jpg?v=123", "ja", true, "/app/ja/images/A/b.webp?v=e14a4892ecf11d7a")]
+    [InlineData("../images/A/b.jpg", "ja", false, "/app/ja/images/A/b.jpg?v=4UpIkuzxHXo")]
+    [InlineData("../images/A/b.jpg", "ja", true, "/app/ja/images/A/b.webp?v=4UpIkuzxHXo")]
+    [InlineData("../images/A/b.jpg?v=123", "ja", false, "/app/ja/images/A/b.jpg?v=4UpIkuzxHXo")]
+    [InlineData("../images/A/b.jpg?v=123", "ja", true, "/app/ja/images/A/b.webp?v=4UpIkuzxHXo")]
     // Shared images
-    [InlineData("../images/A/Mini_bulb.png", "en", false, "/books/images/Mini_bulb.png?v=4b448e7cb64a0292", false)]
-    [InlineData("../images/A/Mini_bulb.png", "de", false, "/books/images/Mini_bulb.png?v=4b448e7cb64a0292", false)]
-    [InlineData("../images/A/Mini_bulb.png", "de", true, "/books/images/Mini_bulb.webp?v=4b448e7cb64a0292", false)]
-    [InlineData("../images/A/Mini_bulb.png?v=123", "de", false, "/books/images/Mini_bulb.png?v=4b448e7cb64a0292", false)]
-    [InlineData("../images/A/Mini_bulb.png?v=123", "de", true, "/books/images/Mini_bulb.webp?v=4b448e7cb64a0292", false)]
+    [InlineData("../images/A/Mini_bulb.png", "en", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
+    [InlineData("../images/A/Mini_bulb.png", "de", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
+    [InlineData("../images/A/Mini_bulb.png", "de", true, "/books/images/Mini_bulb.webp?v=S0SOfLZKApI", false)]
+    [InlineData("../images/A/Mini_bulb.png?v=123", "de", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
+    [InlineData("../images/A/Mini_bulb.png?v=123", "de", true, "/books/images/Mini_bulb.webp?v=S0SOfLZKApI", false)]
     public void SrcShouldResolveCorrectly(string src, string language, bool useWebp, string expectedUrl, bool needsCopy = true)
     {
         var resolver = CreateResolver("app", useWebp, out var args);
@@ -79,15 +79,15 @@ public class ResourceResolverTests
 
     [Theory]
     // Image not exist in de but found in en
-    [InlineData("../images/A/a.jpg", "de", false, "/app/en/images/A/a.jpg?v=2a44c9a534ff6b5c")]
-    [InlineData("../images/A/a.jpg", "de", true, "/app/en/images/A/a.webp?v=2a44c9a534ff6b5c")]
-    [InlineData("../images/A/a.jpg?v=123", "de", false, "/app/en/images/A/a.jpg?v=2a44c9a534ff6b5c")]
-    [InlineData("../images/A/a.jpg?v=123", "de", true, "/app/en/images/A/a.webp?v=2a44c9a534ff6b5c")]
+    [InlineData("../images/A/a.jpg", "de", false, "/app/en/images/A/a.jpg?v=KkTJpTT_a1w")]
+    [InlineData("../images/A/a.jpg", "de", true, "/app/en/images/A/a.webp?v=KkTJpTT_a1w")]
+    [InlineData("../images/A/a.jpg?v=123", "de", false, "/app/en/images/A/a.jpg?v=KkTJpTT_a1w")]
+    [InlineData("../images/A/a.jpg?v=123", "de", true, "/app/en/images/A/a.webp?v=KkTJpTT_a1w")]
     // Image exists in ja but found in en
-    [InlineData("../images/A/a.jpg", "ja", false, "/app/en/images/A/a.jpg?v=2a44c9a534ff6b5c")]
-    [InlineData("../images/A/a.jpg", "ja", true, "/app/en/images/A/a.webp?v=2a44c9a534ff6b5c")]
-    [InlineData("../images/A/a.jpg?v=123", "ja", false, "/app/en/images/A/a.jpg?v=2a44c9a534ff6b5c")]
-    [InlineData("../images/A/a.jpg?v=123", "ja", true, "/app/en/images/A/a.webp?v=2a44c9a534ff6b5c")]
+    [InlineData("../images/A/a.jpg", "ja", false, "/app/en/images/A/a.jpg?v=KkTJpTT_a1w")]
+    [InlineData("../images/A/a.jpg", "ja", true, "/app/en/images/A/a.webp?v=KkTJpTT_a1w")]
+    [InlineData("../images/A/a.jpg?v=123", "ja", false, "/app/en/images/A/a.jpg?v=KkTJpTT_a1w")]
+    [InlineData("../images/A/a.jpg?v=123", "ja", true, "/app/en/images/A/a.webp?v=KkTJpTT_a1w")]
     public void SrcShouldNotBeCopiedWhenFoundInEn(string src, string language, bool useWebp, string expectedUrl)
     {
         var resolver = CreateResolver("app", useWebp, out var args);

@@ -216,7 +216,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
             result = $"{resultDir}/{resultFileName}.webp";
         }
 
-        result = $"{result}?v={hash:x}";
+        result = $"{result}?v={FileHash.ToBase64Url(hash)}";
         copy = !needsCopy ? null : (srcImg.FullName, Path.Combine(OutputFolder, Language, path[indexOfImages..]));
 
         return true;

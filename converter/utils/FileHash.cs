@@ -1,3 +1,5 @@
+using System.Buffers.Binary;
+using System.Buffers.Text;
 using System.IO.Hashing;
 using System.Runtime.InteropServices;
 
@@ -18,5 +20,13 @@ public class FileHash
         xx.Append(fs);
 
         return xx.GetCurrentHashAsUInt64();
+    }
+
+    public static string ToBase64Url(ulong hash)
+    {
+        Span<byte> buffer = stackalloc byte[8];
+        BinaryPrimitives.WriteUInt64BigEndian(buffer, hash);
+
+        return Base64Url.EncodeToString(buffer);
     }
 }
