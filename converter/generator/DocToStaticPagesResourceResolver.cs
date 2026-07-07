@@ -105,6 +105,8 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
 
     public bool TryResolveSrc(string src, string sourceDir, out string result, out (string src, string dst)? copy)
     {
+        src = src.Replace('\\', '/');
+
         var parts = new UrlParts(src);
 
         if (parts.IsAbosolute || src.StartsWith('/'))
