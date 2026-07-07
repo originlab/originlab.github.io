@@ -24,7 +24,7 @@ jobs:
     env:
       build_config: Release
       book_folder: ${{ github.event.repository.name }}${{ case(inputs.is_index, '/index', '') }}
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Set $build_config_lower
         run: echo "build_config_lower=${build_config@L}" >> "$GITHUB_ENV"
