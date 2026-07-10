@@ -2,7 +2,7 @@
 
 namespace OriginLab.DocumentGeneration;
 
-internal abstract class DocResourceResolver
+internal abstract class DocsResourceResolver
 {
     private readonly DocsTransformationArgs Args;
     protected string SourceFolder => Args.SourceFolder;
@@ -14,7 +14,7 @@ internal abstract class DocResourceResolver
 
     protected Dictionary<string, string> MovedPages => field ??= GetMovedPages();
 
-    public DocResourceResolver(DocsTransformationArgs args)
+    public DocsResourceResolver(DocsTransformationArgs args)
     {
         Args = args;
     }

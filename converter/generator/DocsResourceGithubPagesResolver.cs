@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace OriginLab.DocumentGeneration;
 
-internal sealed partial class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResourceResolver
+internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceResolver, IDocResourceResolver
 {
     private readonly DocsToStaticPagesTransformationArgs Args;
 
@@ -30,7 +30,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
 
     private readonly Dictionary<string, (string url, ulong hash)> VisitedImages = new(StringComparer.OrdinalIgnoreCase);
 
-    public DocToStaticPagesResourceResolver(DocsToStaticPagesTransformationArgs args) : base(args)
+    public DocsResourceGithubPagesResolver(DocsToStaticPagesTransformationArgs args) : base(args)
     {
         Args = args;
 

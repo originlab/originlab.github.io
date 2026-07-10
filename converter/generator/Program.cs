@@ -48,7 +48,7 @@ class Program
 
         var services = new ServiceCollection();
 
-        services.AddTransient<IDocResourceResolver, DocToStaticPagesResourceResolver>();
+        services.AddTransient<IDocResourceResolver, DocsResourceGithubPagesResolver>();
         services.AddTransient<DocumentToGithubPageTransformer>();
 
         services.AddSingleton(sp => new DocsToStaticPagesTransformationArgs()
