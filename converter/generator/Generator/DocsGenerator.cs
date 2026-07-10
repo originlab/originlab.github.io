@@ -5,10 +5,11 @@ using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using AngleSharp.Text;
+using OriginLab.DocumentGeneration.Transformers;
 
-namespace OriginLab.DocumentGeneration;
+namespace OriginLab.DocumentGeneration.Generator;
 
-abstract partial class DocsTransformationDriver<T> : IDocsTransformationDriver
+abstract partial class DocsGenerator<T> : IDocsGenerator
     where T : DocumentTransformer
 {
     protected string SourceFolder { get; }
@@ -21,7 +22,7 @@ abstract partial class DocsTransformationDriver<T> : IDocsTransformationDriver
 
     private readonly ProblemRecorder Problems;
 
-    protected DocsTransformationDriver(string sourceFolder, string outputFolder, T transformer, ProblemRecorder problems)
+    protected DocsGenerator(string sourceFolder, string outputFolder, T transformer, ProblemRecorder problems)
     {
         var languages = (from subPath in Directory.EnumerateDirectories(sourceFolder)
                          let name = Path.GetFileName(subPath)

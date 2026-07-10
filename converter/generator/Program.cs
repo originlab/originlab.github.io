@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OriginLab.DocumentGeneration.Templates;
+using OriginLab.DocumentGeneration.Transformers.Github;
+using OriginLab.DocumentGeneration.Generator.Github;
+using OriginLab.DocumentGeneration.Generator;
 
 namespace OriginLab.DocumentGeneration;
 
@@ -49,7 +52,7 @@ class Program
         var services = new ServiceCollection();
 
         services.AddTransient<IDocResourceResolver, DocsResourceGithubPagesResolver>();
-        services.AddTransient<DocumentToGithubPageTransformer>();
+        services.AddTransient<DocumentToGithubPage>();
 
         services.AddSingleton(sp => new DocsToStaticPagesTransformationArgs()
         {
@@ -67,15 +70,15 @@ class Program
 
         if (isBuildingIndex)
         {
-            services.AddTransient<IDocsTransformationDriver, DocsIndexTransformationDriver>();
+            services.AddTransient<IDocsGenerator, IndexToGithubPages>();
         }
         else
         {
-            services.AddTransient<IDocsTransformationDriver, DocsBookTransformationDriver>();
+            services.AddTransient<IDocsGenerator, BookToGithubPages>();
         }
 
         var serviceProvider = services.BuildServiceProvider();
-        var driver = serviceProvider.GetRequiredService<IDocsTransformationDriver>();
+        var driver = serviceProvider.GetRequiredService<IDocsGenerator>();
 
         await driver.RunAsync();
 

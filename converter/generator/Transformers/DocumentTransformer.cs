@@ -5,7 +5,7 @@ using AngleSharp.Html.Dom;
 using AngleSharp.Text;
 using OriginLab.DocumentGeneration.Templates;
 
-namespace OriginLab.DocumentGeneration;
+namespace OriginLab.DocumentGeneration.Transformers;
 
 internal class DocumentTransformer
 {

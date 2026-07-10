@@ -1,12 +1,13 @@
 ﻿using OriginLab.DocumentGeneration.Templates;
+using OriginLab.DocumentGeneration.Transformers;
 
-namespace OriginLab.DocumentGeneration;
+namespace OriginLab.DocumentGeneration.Generator.Github;
 
-class DocsToGithubPagesTransformationDriver<T> : DocsTransformationDriver<T> where T : DocumentTransformer
+abstract class DocsToGithubPages<T> : DocsGenerator<T> where T : DocumentTransformer
 {
     protected string BaseUrl { get; }
 
-    public DocsToGithubPagesTransformationDriver(string baseUrl, string sourceFolder, string outputFolder, T transformer, ProblemRecorder problems)
+    protected DocsToGithubPages(string baseUrl, string sourceFolder, string outputFolder, T transformer, ProblemRecorder problems)
         : base(sourceFolder, outputFolder, transformer, problems)
     {
         BaseUrl = baseUrl;

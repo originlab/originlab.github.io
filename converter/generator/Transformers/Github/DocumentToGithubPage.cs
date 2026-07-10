@@ -5,15 +5,15 @@ using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using OriginLab.DocumentGeneration.Templates;
 
-namespace OriginLab.DocumentGeneration;
+namespace OriginLab.DocumentGeneration.Transformers.Github;
 
-internal partial class DocumentToGithubPageTransformer : DocumentTransformer
+internal partial class DocumentToGithubPage : DocumentTransformer
 {
     public const int MaxSiblingNodes = 10 * 2;
 
     protected INode[] LayoutScripts { get; private set; } = null!;
 
-    public DocumentToGithubPageTransformer(IDocResourceResolver resourceResolver, IOutputOperations output, ProblemRecorder problems)
+    public DocumentToGithubPage(IDocResourceResolver resourceResolver, IOutputOperations output, ProblemRecorder problems)
         : base(resourceResolver, output, problems)
     {
     }

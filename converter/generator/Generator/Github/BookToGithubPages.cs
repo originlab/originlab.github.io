@@ -3,10 +3,11 @@ using System.Xml.Linq;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using OriginLab.DocumentGeneration.Templates;
+using OriginLab.DocumentGeneration.Transformers.Github;
 
-namespace OriginLab.DocumentGeneration;
+namespace OriginLab.DocumentGeneration.Generator.Github;
 
-internal sealed class DocsBookTransformationDriver : DocsToGithubPagesTransformationDriver<DocumentToGithubPageTransformer>
+internal sealed class BookToGithubPages : DocsToGithubPages<DocumentToGithubPage>
 {
     private const int MaxSiblingNodes = 10 * 2;
     private readonly string AvailableLanguagesExpression;
@@ -14,7 +15,7 @@ internal sealed class DocsBookTransformationDriver : DocsToGithubPagesTransforma
     private readonly string BookDirName;
     private readonly (string url, string file, string titleEn, NavFiles navFiles)[] Pages;
 
-    public DocsBookTransformationDriver(DocsToStaticPagesTransformationArgs args, DocumentToGithubPageTransformer transformer, ProblemRecorder problems)
+    public BookToGithubPages(DocsToStaticPagesTransformationArgs args, DocumentToGithubPage transformer, ProblemRecorder problems)
         : base(args.BaseUrl, args.SourceFolder, args.OutputFolder, transformer, problems)
     {
         AvailableLanguagesExpression = String.Join(',', AvailableLanguages);
