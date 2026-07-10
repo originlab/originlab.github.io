@@ -4,7 +4,7 @@ namespace OriginLab.DocumentGeneration;
 
 internal abstract class DocResourceResolver
 {
-    private readonly DocTransformerArgs Args;
+    private readonly DocsTransformationArgs Args;
     protected string SourceFolder => Args.SourceFolder;
     protected string OutputFolder => Args.OutputFolder;
     protected string BooksXmlFolder => Args.BooksXmlFolder;
@@ -14,7 +14,7 @@ internal abstract class DocResourceResolver
 
     protected Dictionary<string, string> MovedPages => field ??= GetMovedPages();
 
-    public DocResourceResolver(DocTransformerArgs args)
+    public DocResourceResolver(DocsTransformationArgs args)
     {
         Args = args;
     }

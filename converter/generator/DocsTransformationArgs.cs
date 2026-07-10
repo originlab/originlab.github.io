@@ -1,6 +1,6 @@
 ﻿namespace OriginLab.DocumentGeneration;
 
-public class DocTransformerArgs
+public class DocsTransformationArgs
 {
     public required string SourceFolder { get; init; }
 

@@ -6,9 +6,10 @@ namespace OriginLab.DocumentGeneration;
 
 internal sealed partial class DocToStaticPagesResourceResolver : DocResourceResolver, IDocResourceResolver
 {
-    private readonly DocToStaticPagesTransformerArgs Args;
+    private readonly DocsToStaticPagesTransformationArgs Args;
 
-    private string BookUrlName => Args.BookUrlName;
+    private string BaseUrl => Args.BaseUrl;
+
     private bool UseWebp => Args.UseWebp;
 
     public string Language
@@ -29,7 +30,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
 
     private readonly Dictionary<string, (string url, ulong hash)> VisitedImages = new(StringComparer.OrdinalIgnoreCase);
 
-    public DocToStaticPagesResourceResolver(DocToStaticPagesTransformerArgs args) : base(args)
+    public DocToStaticPagesResourceResolver(DocsToStaticPagesTransformationArgs args) : base(args)
     {
         Args = args;
 
@@ -142,7 +143,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
             }
             else
             {
-                result = '/'.TryPrefixEach(BookUrlName, "en", path[indexOfImages..]);
+                result = '/'.TryPrefixEach(BaseUrl, "en", path[indexOfImages..]);
 
                 var size = srcImg.Length;
                 hash = FastHash.FromFile(srcImg.FullName);
@@ -189,7 +190,7 @@ internal sealed partial class DocToStaticPagesResourceResolver : DocResourceReso
                 }
                 else
                 {
-                    result = '/'.TryPrefixEach(BookUrlName, Language, path[indexOfImages..]);
+                    result = '/'.TryPrefixEach(BaseUrl, Language, path[indexOfImages..]);
 
                     if (EnglishImages.TryGetValue(path, out var enImage)
                         && srcImg.Length == enImage.size

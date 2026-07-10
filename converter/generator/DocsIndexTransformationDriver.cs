@@ -2,22 +2,22 @@
 
 namespace OriginLab.DocumentGeneration;
 
-internal class DocIndexTransformer : DocToStaticPagesTransformer
+internal sealed class DocsIndexTransformationDriver : DocsToGithubPagesTransformationDriver<DocumentToGithubPageTransformer>
 {
-    public DocIndexTransformer(DocToStaticPagesTransformerArgs args, IDocResourceResolver resourceResolver, IOutputOperations output, ProblemRecorder problems)
-        : base(args, resourceResolver, output, problems)
+    public DocsIndexTransformationDriver(DocsToStaticPagesTransformationArgs args, DocumentToGithubPageTransformer transformer, ProblemRecorder problems)
+        : base("", args.SourceFolder, args.OutputFolder, transformer, problems)
     {
     }
 
-    protected override async Task TransformAsync(string language)
+    protected override async Task TransformFilesAsync(string language)
     {
-        await base.TransformAsync(language);
+        await base.TransformFilesAsync(language);
 
         foreach (var sourceFile in Directory.EnumerateFiles(SourceFolder, "index.html", SearchOption.AllDirectories))
         {
             var relativePath = Path.GetRelativePath(SourceFolder, sourceFile);
 
-            if (Path.GetFileName(Path.GetDirectoryName(relativePath)) != Language)
+            if (Path.GetFileName(Path.GetDirectoryName(relativePath)) != language)
             {
                 continue;
             }
@@ -25,12 +25,10 @@ internal class DocIndexTransformer : DocToStaticPagesTransformer
             var destinationFile = language != "en" ? Path.Combine(OutputFolder, relativePath)
                                                    : Path.GetFullPath(Path.Combine(OutputFolder, Path.GetDirectoryName(relativePath)!, "..", Path.GetFileName(relativePath)))
                                                    ;
-            var destinationDir = Path.GetDirectoryName(destinationFile)!;
-            Output.CreateDirectory(destinationDir);
 
             Transform(sourceFile, destinationFile);
         }
 
-        Output.WriteAllText(Path.Combine(OutputFolder, language, "404.html"), await Template.Render404PageAsync(language));
+        File.WriteAllText(Path.Combine(OutputFolder, language, "404.html"), await Template.Render404PageAsync(language));
     }
 }

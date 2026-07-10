@@ -9,7 +9,7 @@ public sealed class ProblemRecorder
 
     public bool Any => Problems.Count > 0;
 
-    public ProblemRecorder(DocTransformerArgs args)
+    public ProblemRecorder(DocsTransformationArgs args)
     {
         SourceFolder = args.SourceFolder;
     }

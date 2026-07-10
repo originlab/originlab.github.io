@@ -180,13 +180,13 @@ public class ResourceResolverTests
         Assert.Null(copy);
     }
 
-    private static DocToStaticPagesResourceResolver CreateResolver(string book, bool useWebp, out DocToStaticPagesTransformerArgs args)
+    private static DocToStaticPagesResourceResolver CreateResolver(string book, bool useWebp, out DocsToStaticPagesTransformationArgs args)
     {
         var bookDir = Path.GetFullPath("../../../../converter/tests/books/" + book, AppContext.BaseDirectory);
 
-        args = new DocToStaticPagesTransformerArgs
+        args = new DocsToStaticPagesTransformationArgs
         {
-            BookUrlName = book,
+            BaseUrl = book,
             BooksXmlFolder = Path.GetFullPath("../xml", bookDir),
             SourceFolder = bookDir,
             OutputFolder = Path.GetFullPath("../../../../artifacts/tests/public_html/" + book, AppContext.BaseDirectory),

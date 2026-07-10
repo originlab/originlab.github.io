@@ -49,42 +49,35 @@ class Program
         var services = new ServiceCollection();
 
         services.AddTransient<IDocResourceResolver, DocToStaticPagesResourceResolver>();
+        services.AddTransient<DocumentToGithubPageTransformer>();
 
-        if (isBuildingIndex)
+        services.AddSingleton(sp => new DocsToStaticPagesTransformationArgs()
         {
-            services.AddSingleton(sp => new DocToStaticPagesTransformerArgs()
-            {
-                SourceFolder = srcBookPath,
-                OutputFolder = outputPath,
-                BooksXmlFolder = booksXmlPath,
-                SharedImagesFolder = Path.Combine(Template.WebRootPath, "books/images"),
-                BookUrlName = "",
-                UseWebp = args.Webp
-            });
-            services.AddTransient<IDocTransformer, DocIndexTransformer>();
-        }
-        else
-        {
-            services.AddSingleton(sp => new DocToStaticPagesTransformerArgs()
-            {
-                SourceFolder = srcBookPath,
-                OutputFolder = outputPath,
-                BooksXmlFolder = booksXmlPath,
-                SharedImagesFolder = Path.Combine(Template.WebRootPath, "books/images"),
-                BookUrlName = Path.GetFileName(srcBookPath),
-                UseWebp = args.Webp
-            });
-            services.AddTransient<IDocTransformer, DocBookTransformer>();
-        }
+            SourceFolder = srcBookPath,
+            OutputFolder = outputPath,
+            BooksXmlFolder = booksXmlPath,
+            SharedImagesFolder = Path.Combine(Template.WebRootPath, "books/images"),
+            BaseUrl = isBuildingIndex ? "" : Path.GetFileName(srcBookPath),
+            UseWebp = args.Webp
+        });
 
-        services.AddSingleton<DocTransformerArgs>(sp => sp.GetRequiredService<DocToStaticPagesTransformerArgs>());
+        services.AddSingleton<DocsTransformationArgs>(sp => sp.GetRequiredService<DocsToStaticPagesTransformationArgs>());
         services.AddSingleton<IOutputOperations, SystemOutputOperations>();
         services.AddSingleton<ProblemRecorder>();
 
-        var serviceProvider = services.BuildServiceProvider();
-        var transformer = serviceProvider.GetRequiredService<IDocTransformer>();
+        if (isBuildingIndex)
+        {
+            services.AddTransient<IDocsTransformationDriver, DocsIndexTransformationDriver>();
+        }
+        else
+        {
+            services.AddTransient<IDocsTransformationDriver, DocsBookTransformationDriver>();
+        }
 
-        await transformer.TransformAsync();
+        var serviceProvider = services.BuildServiceProvider();
+        var driver = serviceProvider.GetRequiredService<IDocsTransformationDriver>();
+
+        await driver.RunAsync();
 
         var problems = serviceProvider.GetRequiredService<ProblemRecorder>();
         ProblemSummarizer summarizer = Environment.GetEnvironmentVariable("GITHUB_ACTIONS") is not null

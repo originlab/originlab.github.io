@@ -1,19 +1,21 @@
-﻿using System.Xml.Linq;
+﻿using System.Diagnostics;
+using System.Xml.Linq;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration;
 
-internal sealed class DocBookTransformer : DocToStaticPagesTransformer
+internal sealed class DocsBookTransformationDriver : DocsToGithubPagesTransformationDriver<DocumentToGithubPageTransformer>
 {
+    private const int MaxSiblingNodes = 10 * 2;
     private readonly string AvailableLanguagesExpression;
 
     private readonly string BookDirName;
     private readonly (string url, string file, string titleEn, NavFiles navFiles)[] Pages;
 
-    public DocBookTransformer(DocToStaticPagesTransformerArgs args, IDocResourceResolver resourceResolver, IOutputOperations output, ProblemRecorder problems)
-        : base(args, resourceResolver, output, problems)
+    public DocsBookTransformationDriver(DocsToStaticPagesTransformationArgs args, DocumentToGithubPageTransformer transformer, ProblemRecorder problems)
+        : base(args.BaseUrl, args.SourceFolder, args.OutputFolder, transformer, problems)
     {
         AvailableLanguagesExpression = String.Join(',', AvailableLanguages);
         BookDirName = Path.GetFileName(Directory.EnumerateDirectories(Path.Combine(SourceFolder, "en")).Single());
@@ -24,7 +26,7 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
         foreach (var p in bookXml.Descendants("page"))
         {
             var url = p.Attribute("url")!.Value;
-            url = url.Length == BookUrlName!.Length ? "" : url[(BookUrlName.Length + 1)..];
+            url = url.Length == BaseUrl!.Length ? "" : url[(BaseUrl.Length + 1)..];
             url = url.ToLowerInvariant();
 
             var file = p.Attribute("file")!.Value;
@@ -67,9 +69,9 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
         }
     }
 
-    protected override async Task TransformAsync(string language)
+    protected override async Task TransformFilesAsync(string language)
     {
-        await base.TransformAsync(language);
+        await base.TransformFilesAsync(language);
 
         var srcDir = Path.Combine(SourceFolder, language, BookDirName);
         var srcEnDir = Path.Combine(SourceFolder, "en", BookDirName);
@@ -99,8 +101,6 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
             var dstDir = Path.Combine(OutputFolder, url, language != "en" ? language : "");
             var nav = new Nav(navFiles, titles, i == 0);
 
-            Output.CreateDirectory(dstDir);
-
             var srcFile = Path.Combine(srcDir, file);
             var dstFile = Path.Combine(dstDir, "index.html");
 
@@ -123,102 +123,20 @@ internal sealed class DocBookTransformer : DocToStaticPagesTransformer
 
     private void Transform(string srcFile, string dstFile, Nav nav, string? bannerHtml = null)
     {
-        Transform(srcFile, dstFile, (document, head, body, file) =>
+        Transform(srcFile, dstFile, (document, file) =>
         {
+            Debug.Assert(document.Body is not null);
+
             if (bannerHtml is string banner)
             {
                 var div = document.CreateElement<IHtmlDivElement>();
                 div.InnerHtml = banner;
 
-                body.PrependNodes(div.ChildNodes.ToArray());
+                document.Body.PrependNodes(div.ChildNodes.ToArray());
             }
 
-            var navDataDiv = CreateNavDataDiv(document, nav, Path.GetDirectoryName(file)!);
-            body.AppendChild(navDataDiv);
+            var navDataDiv = Transformer.CreateNavDataDiv(document, nav, Path.GetDirectoryName(file)!, AvailableLanguagesExpression, BaseUrl);
+            document.Body.AppendChild(navDataDiv);
         });
     }
-
-    private IHtmlDivElement CreateNavDataDiv(IHtmlDocument document, in Nav nav, string sourceDir)
-    {
-        var navDataDiv = document.CreateElement<IHtmlDivElement>();
-
-        navDataDiv.Id = "doc-nav-data";
-        navDataDiv.IsHidden = true;
-
-        navDataDiv.SetAttribute("data-lang", Language);
-        navDataDiv.SetAttribute("data-lang-list", AvailableLanguagesExpression);
-
-        var files = nav.Files;
-
-        if (!files.Parent.IsEmpty)
-        {
-            if (ResourceResolver.TryResolveHref("../" + files.Parent, sourceDir, out var url, out var _))
-            {
-                navDataDiv.SetAttribute("data-parent-link", url);
-            }
-        }
-        else
-        {
-            navDataDiv.SetAttribute("data-parent-link", Language == "en" ? "/" : $"/{Language}");
-        }
-
-        if (nav.IsBookIndex)
-        {
-            navDataDiv.SetAttribute("data-book-index", BookUrlName);
-        }
-
-        if (files.Siblings is not null)
-        {
-            var ul = CreateDataUL("doc-siblings-data", files.Siblings, nav.Titles);
-
-            navDataDiv.AppendChild(ul);
-        }
-
-        if (files.Children is not null)
-        {
-            var ul = CreateDataUL("doc-children-data", files.Children, nav.Titles);
-            navDataDiv.AppendChild(ul);
-        }
-
-        return navDataDiv;
-
-        IHtmlElement CreateDataUL(string id, string[] files, Dictionary<string, string> titles)
-        {
-            var ul = document.CreateElement<IHtmlUnorderedListElement>();
-
-            ul.Id = id;
-
-            for (int i = 0; i < files.Length; i++)
-            {
-                string? path = files[i];
-                var li = document.CreateElement<IHtmlListItemElement>();
-                var a = document.CreateElement<IHtmlAnchorElement>();
-                var pathSpan = path.AsSpan();
-                var isCurrent = false;
-
-                if (path.StartsWith('*'))
-                {
-                    pathSpan = pathSpan[1..];
-                    isCurrent = true;
-                }
-
-                if (isCurrent)
-                {
-                    li.ClassName = "disabled";
-                }
-                else
-                {
-                    a.SetAttribute("href", $"../{pathSpan}");
-                }
-
-                a.TextContent = titles.GetAlternateLookup<ReadOnlySpan<char>>()[pathSpan];
-
-                li.AppendChild(a);
-                ul.AppendChild(li);
-            }
-
-            return ul;
-        }
-    }
-
 }
