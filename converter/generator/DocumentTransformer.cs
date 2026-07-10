@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Diagnostics;
+using System.Xml.Linq;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.Text;
@@ -43,7 +44,9 @@ internal class DocumentTransformer
 
     public virtual void Transform(IHtmlDocument document, string sourceFile)
     {
-        var sourceDir = Path.GetDirectoryName(sourceFile)!;
+        var sourceDir = Path.GetDirectoryName(sourceFile);
+
+        Debug.Assert(!sourceDir.IsEmpty);
 
         foreach (var a in document.Descendants<IHtmlAnchorElement>().ToList())
         {
