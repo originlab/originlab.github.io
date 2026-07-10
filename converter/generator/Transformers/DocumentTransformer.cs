@@ -1,13 +1,16 @@
-﻿using System.Diagnostics;
+﻿using System.Buffers;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
+using AngleSharp.Html.Parser;
 using AngleSharp.Text;
 using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration.Transformers;
 
-internal class DocumentTransformer
+internal partial class DocumentTransformer
 {
     public string Language
     {
@@ -133,6 +136,33 @@ internal class DocumentTransformer
 
         return null;
     }
+
+    public static string? GetPageTitle(string sourceFile)
+    {
+        string? title = null;
+
+        using var reader = new StreamReader(sourceFile);
+        var buffer = ArrayPool<char>.Shared.Rent(1024);
+        var read = reader.ReadBlock(buffer);
+        if (read > 0)
+        {
+            foreach (var match in HeaderRegex.EnumerateMatches(buffer.AsSpan(0, read)))
+            {
+                var parser = new HtmlParser();
+                var doc = parser.ParseDocument(buffer.AsMemory(match.Index, match.Length));
+
+                title = doc.QuerySelector("h1")!.Text();
+                break;
+            }
+        }
+
+        ArrayPool<char>.Shared.Return(buffer);
+
+        return title;
+    }
+
+    [GeneratedRegex(@"<h1[^>]*>.*?</h1>", RegexOptions.Singleline | RegexOptions.IgnoreCase)]
+    private static partial Regex HeaderRegex { get; }
 
     protected void ReportProblem(string sourcePath, string category, string? details = null, TextPosition? position = null)
         => Problems.Record(sourcePath, category, details, position);

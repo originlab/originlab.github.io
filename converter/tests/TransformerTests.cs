@@ -51,4 +51,10 @@ public class TransformerTests
         Assert.NotNull(document.Body);
         Assert.Equal("", document.Body.InnerHtml);
     }
+
+    [Fact]
+    public void GetsPageTitleFromTheFirstH1()
+    {
+        Assert.Equal("App A", DocumentTransformer.GetPageTitle(Path.GetFullPath("../../../../converter/tests/books/app/en/A/App/A.html", AppContext.BaseDirectory)));
+    }
 }

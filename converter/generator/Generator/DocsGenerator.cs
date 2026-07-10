@@ -1,5 +1,4 @@
 ﻿using System.Buffers;
-using System.Text.RegularExpressions;
 using AngleSharp.Dom;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
@@ -9,7 +8,7 @@ using OriginLab.DocumentGeneration.Transformers;
 
 namespace OriginLab.DocumentGeneration.Generator;
 
-abstract partial class DocsGenerator<T> : IDocsGenerator
+abstract class DocsGenerator<T> : IDocsGenerator
     where T : DocumentTransformer
 {
     protected string SourceFolder { get; }
@@ -80,39 +79,6 @@ abstract partial class DocsGenerator<T> : IDocsGenerator
         using var sw = new StreamWriter(destinationFile);
         document.ToHtml(sw, HtmlMarkupFormatter.Instance);
     }
-
-    protected string GetPageTitle(string sourceFile)
-    {
-        string title = null!;
-
-        using var reader = new StreamReader(sourceFile);
-        var buffer = ArrayPool<char>.Shared.Rent(1024);
-        var read = reader.ReadBlock(buffer);
-        if (read > 0)
-        {
-            foreach (var match in HeaderRegex.EnumerateMatches(buffer.AsSpan(0, read)))
-            {
-                var parser = new HtmlParser();
-                var doc = parser.ParseDocument(buffer.AsMemory(match.Index, match.Length));
-
-                title = doc.QuerySelector("h1")!.Text();
-                break;
-            }
-        }
-
-        if (title is null)
-        {
-            title = "";
-            ReportProblem(sourceFile, "Missing h1");
-        }
-
-        ArrayPool<char>.Shared.Return(buffer);
-
-        return title;
-    }
-
-    [GeneratedRegex(@"<h1[^>]*>.*?</h1>", RegexOptions.Singleline | RegexOptions.IgnoreCase)]
-    private static partial Regex HeaderRegex { get; }
 
     protected void ReportProblem(string sourcePath, string category, string? details = null, TextPosition? position = null)
         => Problems.Record(sourcePath, category, details, position);

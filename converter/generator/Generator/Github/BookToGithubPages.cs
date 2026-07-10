@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using OriginLab.DocumentGeneration.Templates;
+using OriginLab.DocumentGeneration.Transformers;
 using OriginLab.DocumentGeneration.Transformers.Github;
 
 namespace OriginLab.DocumentGeneration.Generator.Github;
@@ -86,7 +87,15 @@ internal sealed class BookToGithubPages : DocsToGithubPages<DocumentToGithubPage
 
             if (File.Exists(srcFile) || (language != "en" && File.Exists(srcFile = Path.Combine(srcEnDir, file))))
             {
-                titles.Add(file, GetPageTitle(srcFile));
+                var title = DocumentTransformer.GetPageTitle(srcFile);
+
+                if (title is null)
+                {
+                    ReportProblem(file, "Missing h1");
+                    title = "";
+                }
+
+                titles.Add(file, title);
             }
             else
             {
