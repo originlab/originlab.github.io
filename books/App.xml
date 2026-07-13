@@ -195,6 +195,20 @@
         <page title="Define Custom Designs" file="Category/Custom_Designs(App).html" url="App/Custom-Designs" src="Category:Custom_Designs(App)">
           <page title="The Define Custom Design Dialog Box" file="App/The_Define_Custom_Design_Dialog_Box.html" url="App/Custom-Design-Dialog" src="App:The_Define_Custom_Design_Dialog_Box"/>
         </page>
+        <page title="Create Design" file="Category/Create_Design_DOE(App).html" url="App/Create-Design-DOE" src="Category:Create_Design_DOE(App)">
+          <page title="Definitive Screening Design" file="Category/Definitive_Screening_Design(App).html" url="App/Definitive-Screening-Design" src="Category:Definitive_Screening_Design(App)">
+            <page title="The Definitive Screening Design Dialog Box" file="App/Definitive_Screening_Design_Dialog.html" url="App/Definitive-Screening-Dialog" src="App:Definitive_Screening_Design_Dialog"/>
+          </page>
+          <page title="Factorial Design" file="Category/Factorial_Design(App).html" url="App/Factorial-Design" src="Category:Factorial_Design(App)">
+            <page title="The Factorial Design Dialog Box" file="App/Factorial_Design_Dialog.html" url="App/Factorial-Dialog" src="App:Factorial_Design_Dialog"/>
+          </page>
+          <page title="Response Surface Design" file="Category/Response_Surface_Design(App).html" url="App/Response-Surface-Design" src="Category:Response_Surface_Design(App)">
+            <page title="The Response Surface Design Dialog Box" file="App/Response_Surface_Design_Dialog.html" url="App/response-surface-design-dialog" src="App:Response_Surface_Design_Dialog"/>
+          </page>
+          <page title="Mixture Design" file="Category/Mixture_Design(App).html" url="App/Mixture-Design" src="Category:Mixture_Design(App)">
+            <page title="The Mixture Design Dialog Box" file="App/Mixture_Design_Dialog.html" url="App/mixture-dialog" src="App:Mixture_Design_Dialog"/>
+          </page>
+        </page>
         <page title="Select Optimal Design" file="Category/Select_Optimal_Design(App).html" url="App/Select-Optimal-Design" src="Category:Select_Optimal_Design(App)">
           <page title="The Select Optimal Design Dialog Box" file="App/Select_Optimal_Design_Dialog.html" url="App/Optimal-Design-Dialog" src="App:Select_Optimal_Design_Dialog"/>
         </page>
