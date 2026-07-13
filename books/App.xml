@@ -191,6 +191,14 @@
       <page title="Stats Advisor" file="App/Stats_Advisor.html" url="App/Stats-Advisor" src="App:Stats_Advisor"/>
       <page title="Bubble Image Area (Pro)" file="App/Bubble_Image_Area.html" url="App/Bubble-Image-Area" src="App:Bubble_Image_Area"/>
       <page title="Design of Experiments (Pro)" file="App/Design_of_Experiments.html" url="App/DOE" src="App:Design_of_Experiments"/>
+      <page title="Design of Experiments" file="Category/Design_of_Experiments(App).html" url="App/Design-of-Experiments" src="Category:Design_of_Experiments(App)">
+        <page title="Define Custom Designs" file="Category/Custom_Designs(App).html" url="App/Custom-Designs" src="Category:Custom_Designs(App)">
+          <page title="The Define Custom Design Dialog Box" file="App/The_Define_Custom_Design_Dialog_Box.html" url="App/Custom-Design-Dialog" src="App:The_Define_Custom_Design_Dialog_Box"/>
+        </page>
+        <page title="Select Optimal Design" file="Category/Select_Optimal_Design(App).html" url="App/Select-Optimal-Design" src="Category:Select_Optimal_Design(App)">
+          <page title="The Select Optimal Design Dialog Box" file="App/Select_Optimal_Design_Dialog.html" url="App/Optimal-Design-Dialog" src="App:Select_Optimal_Design_Dialog"/>
+        </page>
+      </page>
       <page title="Correlation Shift" file="App/Correlation_Shift.html" url="App/Correlation-Shift" src="App:Correlation_Shift"/>
       <page title="Gaussian Mixture Models (Pro)" file="App/Gaussian_Mixture_Models.html" url="App/Gaussian-Mixture-Models" src="App:Gaussian_Mixture_Models"/>
       <page title="Align Peaks" file="App/Align_Peaks.html" url="App/Align-Peaks" src="App:Align_Peaks"/>
