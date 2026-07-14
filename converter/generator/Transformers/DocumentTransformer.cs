@@ -69,10 +69,10 @@ internal partial class DocumentTransformer
                 {
                     a.Replace(transformed);
                 }
-                else
-                {
-                    a.Remove();
-                }
+            }
+            else
+            {
+                a.Remove();
             }
         }
 
@@ -84,10 +84,10 @@ internal partial class DocumentTransformer
                 {
                     img.Replace(transformed);
                 }
-                else
-                {
-                    img.Remove();
-                }
+            }
+            else
+            {
+                img.Remove();
             }
         }
     }
@@ -96,7 +96,7 @@ internal partial class DocumentTransformer
     {
         if (a.GetAttribute("href") is not string href || href.IsBlank)
         {
-            return null;
+            return a;
         }
 
         if (ResourceResolver.TryResolveHref(href, sourceDir, out var result, out var title))
@@ -107,8 +107,6 @@ internal partial class DocumentTransformer
             {
                 a.Title = title;
             }
-
-            return a;
         }
         else
         {
@@ -116,14 +114,14 @@ internal partial class DocumentTransformer
             ReportProblem(sourceFile, result, parts.Path.ToString(), a.SourceReference?.Position);
         }
 
-        return null;
+        return a;
     }
 
     protected virtual IHtmlElement? TransformImage(IHtmlDocument document, IHtmlImageElement img, string sourceFile, string sourceDir)
     {
         if (img.GetAttribute("src") is not string src || src.IsBlank)
         {
-            return null;
+            return img;
         }
 
         if (ResourceResolver.TryResolveSrc(src, sourceDir, out var result, out var copy))
@@ -135,8 +133,6 @@ internal partial class DocumentTransformer
                 Output.CreateDirectory(Path.GetDirectoryName(dstImg)!);
                 Output.CopyFile(srcImg, dstImg, overwrite: true);
             }
-
-            return img;
         }
         else
         {
@@ -144,7 +140,7 @@ internal partial class DocumentTransformer
             ReportProblem(sourceFile, result, parts.Path.ToString(), img.SourceReference?.Position);
         }
 
-        return null;
+        return img;
     }
 
     public static string? GetPageTitle(string sourceFile)

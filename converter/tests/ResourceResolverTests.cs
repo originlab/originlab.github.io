@@ -180,7 +180,7 @@ public class ResourceResolverTests
         Assert.Null(copy);
     }
 
-    private static DocsResourceGithubPagesResolver CreateResolver(string book, bool useWebp, out DocsToStaticPagesTransformationArgs args)
+    internal static DocsResourceGithubPagesResolver CreateResolver(string book, bool useWebp, out DocsToStaticPagesTransformationArgs args)
     {
         var bookDir = Path.GetFullPath("../../../../converter/tests/books/" + book, AppContext.BaseDirectory);
 
