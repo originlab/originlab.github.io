@@ -9,7 +9,7 @@ public class TransformerTests
     [Fact]
     public void CleanedDocumentContainsDocType()
     {
-        var document = new HtmlParser().ParseDocument("<html></html>");
+        var document = CreateDocument("<html></html>");
 
         DocumentTransformer.CleanUp(document);
 
@@ -19,7 +19,7 @@ public class TransformerTests
     [Fact]
     public void CleanedDocumentContainsTitle()
     {
-        var document = new HtmlParser().ParseDocument("""
+        var document = CreateDocument("""
             <h1>test</h1>
             """);
 
@@ -31,7 +31,7 @@ public class TransformerTests
     [Fact]
     public void CleanedDocumentRemovesEditLinks()
     {
-        var document = new HtmlParser().ParseDocument("""
+        var document = CreateDocument("""
             <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="..." title="Edit section: Categories">edit</a><span class="mw-editsection-bracket">]</span></span>
             """);
 
@@ -46,7 +46,7 @@ public class TransformerTests
     [InlineData("""<p class="urlname">abc</p>""")]
     public void CleanedDocumentRemovesTagsWithMetadata(string html)
     {
-        var document = new HtmlParser().ParseDocument(html);
+        var document = CreateDocument(html);
         DocumentTransformer.CleanUp(document);
 
         Assert.NotNull(document.Body);
