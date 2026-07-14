@@ -208,6 +208,10 @@
           <page title="Mixture Design" file="Category/Mixture_Design(App).html" url="App/Mixture-Design" src="Category:Mixture_Design(App)">
             <page title="The Mixture Design Dialog Box" file="App/Mixture_Design_Dialog.html" url="App/mixture-dialog" src="App:Mixture_Design_Dialog"/>
           </page>
+          <page title="Taguchi Design" file="Category/Taguchi_Design(App).html" url="App/Taguchi-Design" src="Category:Taguchi_Design(App)">
+            <page title="Key Concepts of Taguchi Design" file="App/Key_Concepts_Taguchi.html" url="App/Key=Concepts-Taguchi" src="App:Key_Concepts_Taguchi"/>
+            <page title="Tutorial of Taguchi Design" file="App/Tutorial_Taguchi.html" url="App/Tutorial-Taguchi-Design" src="App:Tutorial_Taguchi"/>
+          </page>
         </page>
         <page title="Select Optimal Design" file="Category/Select_Optimal_Design(App).html" url="App/Select-Optimal-Design" src="Category:Select_Optimal_Design(App)">
           <page title="The Select Optimal Design Dialog Box" file="App/Select_Optimal_Design_Dialog.html" url="App/Optimal-Design-Dialog" src="App:Select_Optimal_Design_Dialog"/>
