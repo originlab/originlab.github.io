@@ -13,8 +13,8 @@ internal partial class DocumentToGithubPage : DocumentTransformer
 
     protected INode[] LayoutScripts { get; private set; } = null!;
 
-    public DocumentToGithubPage(IDocResourceResolver resourceResolver, IOutputOperations output, ProblemRecorder problems)
-        : base(resourceResolver, output, problems)
+    public DocumentToGithubPage(IDocResourceResolver resourceResolver, ProblemRecorder problems)
+        : base(resourceResolver, problems)
     {
     }
 

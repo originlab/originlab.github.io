@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Diagnostics;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using AngleSharp.Text;
@@ -49,6 +50,14 @@ abstract class DocsGenerator : IDocsGenerator
         {
             await TransformFilesAsync(language);
         }
+
+        var copyResult = Parallel.ForEach(Transformer.FilesToCopy, pair =>
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(pair.dst)!);
+            File.Copy(pair.src, pair.dst, overwrite: true);
+        });
+
+        Debug.Assert(copyResult.IsCompleted);
     }
 
     protected abstract Task TransformFilesAsync(string language);

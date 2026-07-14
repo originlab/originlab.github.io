@@ -63,7 +63,7 @@ public class TransformerTests
     public void ResolveResolvableAnchors()
     {
         var resolver = ResourceResolverTests.CreateResolver("app", false, out var args);
-        var transformer = new DocumentTransformer(resolver, null!, new ProblemRecorder(args));
+        var transformer = new DocumentTransformer(resolver, new ProblemRecorder(args));
         var document = CreateDocument("""
             <a id="remain" href="../App/B.html">haha</a>
             """);
@@ -80,7 +80,7 @@ public class TransformerTests
     public void UnresolvableAnchorsRemain()
     {
         var resolver = ResourceResolverTests.CreateResolver("app", false, out var args);
-        var transformer = new DocumentTransformer(resolver, null!, new ProblemRecorder(args));
+        var transformer = new DocumentTransformer(resolver, new ProblemRecorder(args));
         var document = CreateDocument("""
             <a id="remain" href="../things/never/resolvable.html">haha</a>
             """);
@@ -91,6 +91,46 @@ public class TransformerTests
         var anchor = document.QuerySelector("a#remain");
         Assert.NotNull(anchor);
         Assert.Equal("../things/never/resolvable.html", anchor.GetAttribute("href"));
+    }
+
+    [Fact]
+    public void ResolveResolvableImages()
+    {
+        var resolver = ResourceResolverTests.CreateResolver("app", false, out var args);
+        var transformer = new DocumentTransformer(resolver, new ProblemRecorder(args));
+        var document = CreateDocument("""
+            <img id="remain" src="..\images\A\a.jpg">
+            """);
+
+        resolver.Language = "en";
+        transformer.Transform(document, Path.GetFullPath("en/A/App/A.html", args.SourceFolder));
+
+        var (src, dst) = Assert.Single(transformer.FilesToCopy);
+        Assert.Equal(@"en\A\images\A\a.jpg", Path.GetRelativePath(args.SourceFolder, src));
+        Assert.Equal(@"en\images\A\a.jpg", Path.GetRelativePath(args.OutputFolder, dst));
+
+        var image = document.QuerySelector("img#remain");
+        Assert.NotNull(image);
+        Assert.Equal("/app/en/images/A/a.jpg?v=KkTJpTT_a1w", image.GetAttribute("src"));
+    }
+
+    [Fact]
+    public void UnresolvableImagesRemain()
+    {
+        var resolver = ResourceResolverTests.CreateResolver("app", false, out var args);
+        var transformer = new DocumentTransformer(resolver, new ProblemRecorder(args));
+        var document = CreateDocument("""
+            <img id="remain" src="..\images\A\not_exists.jpg">
+            """);
+
+        resolver.Language = "en";
+        transformer.Transform(document, Path.GetFullPath("en/A/App/A.html", args.SourceFolder));
+
+        Assert.Empty(transformer.FilesToCopy);
+
+        var image = document.QuerySelector("img#remain");
+        Assert.NotNull(image);
+        Assert.Equal(@"..\images\A\not_exists.jpg", image.GetAttribute("src"));
     }
 
     private static IHtmlDocument CreateDocument(string source)

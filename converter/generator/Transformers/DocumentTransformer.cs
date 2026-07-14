@@ -18,16 +18,17 @@ internal partial class DocumentTransformer
         private set => ResourceResolver.Language = value;
     }
 
+    public IReadOnlyList<(string src, string dst)> FilesToCopy => ImagesToCopy;
+
     protected IDocResourceResolver ResourceResolver { get; }
 
-    protected IOutputOperations Output { get; }
+    private readonly List<(string src, string dst)> ImagesToCopy = [];
 
     private readonly ProblemRecorder Problems;
 
-    public DocumentTransformer(IDocResourceResolver resourceResolver, IOutputOperations output, ProblemRecorder problems)
+    public DocumentTransformer(IDocResourceResolver resourceResolver, ProblemRecorder problems)
     {
         ResourceResolver = resourceResolver;
-        Output = output;
         Problems = problems;
     }
 
@@ -130,8 +131,7 @@ internal partial class DocumentTransformer
 
             if (copy is (string srcImg, string dstImg))
             {
-                Output.CreateDirectory(Path.GetDirectoryName(dstImg)!);
-                Output.CopyFile(srcImg, dstImg, overwrite: true);
+                ImagesToCopy.Add((srcImg, dstImg));
             }
         }
         else
