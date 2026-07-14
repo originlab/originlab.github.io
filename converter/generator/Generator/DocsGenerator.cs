@@ -1,8 +1,6 @@
 ﻿using System.Buffers;
-using AngleSharp.Dom;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
-using AngleSharp.Html.Parser;
 using AngleSharp.Text;
 using OriginLab.DocumentGeneration.Transformers;
 
@@ -67,10 +65,7 @@ abstract class DocsGenerator<T> : IDocsGenerator
         Directory.CreateDirectory(dstDir);
 
         using var fs = File.OpenRead(sourceFile);
-        var parser = new HtmlParser(new HtmlParserOptions { IsKeepingSourceReferences = true });
-        var document = parser.ParseDocument(fs);
-
-        DocumentTransformer.CleanUp(document);
+        var document = DocumentTransformer.CreateDocument(fs);
 
         beforeTransform?.Invoke(document, sourceFile);
 

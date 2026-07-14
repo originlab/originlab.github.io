@@ -38,7 +38,17 @@ internal partial class DocumentTransformer
         return "";
     }
 
-    public static void CleanUp(IHtmlDocument document)
+    public static IHtmlDocument CreateDocument(Stream source)
+    {
+        var parser = new HtmlParser(new HtmlParserOptions { IsKeepingSourceReferences = true });
+        var document = parser.ParseDocument(source);
+
+        CleanUp(document);
+
+        return document;
+    }
+
+    internal static void CleanUp(IHtmlDocument document)
     {
         document.Prepend(document.Implementation.CreateDocumentType("html", "", ""));
         document.QuerySelectorAll("span.mw-editsection, p.urlname, p.hierarchy").Remove();
