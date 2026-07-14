@@ -210,6 +210,7 @@
           </page>
           <page title="Taguchi Design" file="Category/Taguchi_Design(App).html" url="App/Taguchi-Design" src="Category:Taguchi_Design(App)">
             <page title="Key Concepts of Taguchi Design" file="App/Key_Concepts_Taguchi.html" url="App/Key=Concepts-Taguchi" src="App:Key_Concepts_Taguchi"/>
+            <page title="The Taguchi Design Dialog Box" file="App/Taguchi_Design_Dialog.html" url="App/taguchi-dialog" src="App:Taguchi_Design_Dialog"/>
             <page title="Tutorial of Taguchi Design" file="App/Tutorial_Taguchi.html" url="App/Tutorial-Taguchi-Design" src="App:Tutorial_Taguchi"/>
           </page>
         </page>
