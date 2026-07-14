@@ -3,11 +3,11 @@ using OriginLab.DocumentGeneration.Transformers;
 
 namespace OriginLab.DocumentGeneration.Generator.Github;
 
-abstract class DocsToGithubPages<T> : DocsGenerator<T> where T : DocumentTransformer
+abstract class DocsToGithubPages : DocsGenerator
 {
     protected string BaseUrl { get; }
 
-    protected DocsToGithubPages(string baseUrl, string sourceFolder, string outputFolder, T transformer, ProblemRecorder problems)
+    protected DocsToGithubPages(string baseUrl, string sourceFolder, string outputFolder, DocumentTransformer transformer, ProblemRecorder problems)
         : base(sourceFolder, outputFolder, transformer, problems)
     {
         BaseUrl = baseUrl;

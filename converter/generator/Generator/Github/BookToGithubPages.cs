@@ -4,17 +4,18 @@ using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using OriginLab.DocumentGeneration.Templates;
 using OriginLab.DocumentGeneration.Transformers;
-using OriginLab.DocumentGeneration.Transformers.Github;
 
 namespace OriginLab.DocumentGeneration.Generator.Github;
 
-internal sealed class BookToGithubPages : DocsToGithubPages<DocumentToGithubPage>
+internal sealed class BookToGithubPages : DocsToGithubPages
 {
     private const int MaxSiblingNodes = 10 * 2;
     private readonly string AvailableLanguagesExpression;
 
     private readonly string BookDirName;
     private readonly (string url, string file, string titleEn, NavFiles navFiles)[] Pages;
+
+    private new DocumentToGithubPage Transformer => (DocumentToGithubPage)base.Transformer;
 
     public BookToGithubPages(DocsToStaticPagesTransformationArgs args, DocumentToGithubPage transformer, ProblemRecorder problems)
         : base(args.BaseUrl, args.SourceFolder, args.OutputFolder, transformer, problems)

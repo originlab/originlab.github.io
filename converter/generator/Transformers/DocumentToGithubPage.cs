@@ -5,7 +5,7 @@ using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using OriginLab.DocumentGeneration.Templates;
 
-namespace OriginLab.DocumentGeneration.Transformers.Github;
+namespace OriginLab.DocumentGeneration.Transformers;
 
 internal partial class DocumentToGithubPage : DocumentTransformer
 {

@@ -1,9 +1,9 @@
 ﻿using OriginLab.DocumentGeneration.Templates;
-using OriginLab.DocumentGeneration.Transformers.Github;
+using OriginLab.DocumentGeneration.Transformers;
 
 namespace OriginLab.DocumentGeneration.Generator.Github;
 
-internal sealed class IndexToGithubPages : DocsToGithubPages<DocumentToGithubPage>
+internal sealed class IndexToGithubPages : DocsToGithubPages
 {
     public IndexToGithubPages(DocsToStaticPagesTransformationArgs args, DocumentToGithubPage transformer, ProblemRecorder problems)
         : base("", args.SourceFolder, args.OutputFolder, transformer, problems)

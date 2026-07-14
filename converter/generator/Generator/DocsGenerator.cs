@@ -6,20 +6,19 @@ using OriginLab.DocumentGeneration.Transformers;
 
 namespace OriginLab.DocumentGeneration.Generator;
 
-abstract class DocsGenerator<T> : IDocsGenerator
-    where T : DocumentTransformer
+abstract class DocsGenerator : IDocsGenerator
 {
     protected string SourceFolder { get; }
 
     protected string OutputFolder { get; }
 
-    protected T Transformer { get; }
+    protected DocumentTransformer Transformer { get; }
 
     protected string[] AvailableLanguages { get; }
 
     private readonly ProblemRecorder Problems;
 
-    protected DocsGenerator(string sourceFolder, string outputFolder, T transformer, ProblemRecorder problems)
+    protected DocsGenerator(string sourceFolder, string outputFolder, DocumentTransformer transformer, ProblemRecorder problems)
     {
         var languages = (from subPath in Directory.EnumerateDirectories(sourceFolder)
                          let name = Path.GetFileName(subPath)
