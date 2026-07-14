@@ -782,3 +782,40 @@ table.objprop td:nth-child(1){
 table.objprop td:nth-child(2){
   white-space:nowrap;
 }
+
+div.tright, div.floatright, table.floatright {
+    clear: right;
+    float: right;
+}
+
+div.tright {
+    margin: 0 1.3em;
+}
+
+div.thumb {
+    margin-bottom: .5em;
+    width: auto;
+    background-color: transparent;
+}
+
+div.thumbinner {
+    border: 1px solid #ccc;
+    padding: 3px;
+    background-color: #f9f9f9;
+    font-size: 94%;
+    text-align: center;
+    overflow: hidden;
+    box-sizing: content-box;
+}
+
+.thumbcaption {
+    border: none;
+    line-height: 1.4em;
+    padding: 3px;
+    font-size: 94%;
+    text-align: left;
+}
+
+.thumbimage {
+    border: 1px solid #ccc;
+}
