@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
-using AngleSharp.Text;
 using OriginLab.DocumentGeneration.Transformers;
 
 namespace OriginLab.DocumentGeneration.Generator;
@@ -88,7 +87,7 @@ abstract class DocsGenerator : IDocsGenerator
         document.ToHtml(sw, HtmlMarkupFormatter.Instance);
     }
 
-    protected void ReportProblem(string sourcePath, string category, string? details = null, TextPosition? position = null)
-        => Problems.Record(sourcePath, category, details, position);
+    protected void ReportProblem(string sourcePath, string category, string? details = null)
+        => Problems.Record(sourcePath, category, details);
 
 }
