@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace OriginLab.DocumentGeneration;
+namespace OriginLab.DocumentGeneration.Resolvers;
 
 internal abstract class DocsResourceResolver
 {

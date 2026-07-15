@@ -111,7 +111,7 @@ public class TransformerTests
 
         var image = document.QuerySelector("img#remain");
         Assert.NotNull(image);
-        Assert.Equal("/app/en/images/A/a.jpg?v=KkTJpTT_a1w", image.GetAttribute("src"));
+        Assert.Equal("images/a.jpg?v=KkTJpTT_a1w", image.GetAttribute("src"));
     }
 
     [Fact]

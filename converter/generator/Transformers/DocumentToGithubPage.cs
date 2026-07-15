@@ -3,6 +3,7 @@ using System.Diagnostics;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
+using OriginLab.DocumentGeneration.Resolvers;
 using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration.Transformers;
@@ -58,7 +59,7 @@ internal partial class DocumentToGithubPage : DocumentTransformer
         document.Body.AppendNodes(loading, mainContent);
     }
 
-    protected override IHtmlElement? TransformImage(IHtmlDocument document, IHtmlImageElement img, string sourceFile, string sourceDir)
+    protected override IHtmlElement? TransformImage(IHtmlDocument document, IHtmlImageElement img, string sourceFile)
     {
         if (img.ClassList.Contains("tex"))
         {
@@ -76,7 +77,7 @@ internal partial class DocumentToGithubPage : DocumentTransformer
 
             return span;
         }
-        else if (base.TransformImage(document, img, sourceFile, sourceDir) is IHtmlElement transformed)
+        else if (base.TransformImage(document, img, sourceFile) is IHtmlElement transformed)
         {
             transformed.SetAttribute("loading", "lazy");
 

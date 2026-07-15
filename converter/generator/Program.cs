@@ -2,6 +2,7 @@
 using OriginLab.DocumentGeneration.Templates;
 using OriginLab.DocumentGeneration.Generator.Github;
 using OriginLab.DocumentGeneration.Generator;
+using OriginLab.DocumentGeneration.Resolvers;
 using OriginLab.DocumentGeneration.Transformers;
 
 namespace OriginLab.DocumentGeneration;

@@ -1,11 +1,11 @@
 ﻿using System.Buffers;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using AngleSharp.Text;
+using OriginLab.DocumentGeneration.Resolvers;
 using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration.Transformers;
@@ -58,13 +58,9 @@ internal partial class DocumentTransformer
 
     public virtual void Transform(IHtmlDocument document, string sourceFile)
     {
-        var sourceDir = Path.GetDirectoryName(sourceFile);
-
-        Debug.Assert(!sourceDir.IsEmpty);
-
         foreach (var a in document.Descendants<IHtmlAnchorElement>().ToList())
         {
-            if (TransformAnchor(document, a, sourceFile, sourceDir) is IHtmlElement transformed)
+            if (TransformAnchor(document, a, sourceFile) is IHtmlElement transformed)
             {
                 if (transformed != a)
                 {
@@ -79,7 +75,7 @@ internal partial class DocumentTransformer
 
         foreach (var img in document.Descendants<IHtmlImageElement>().ToList())
         {
-            if (TransformImage(document, img, sourceFile, sourceDir) is IHtmlElement transformed)
+            if (TransformImage(document, img, sourceFile) is IHtmlElement transformed)
             {
                 if (transformed != img)
                 {
@@ -93,14 +89,14 @@ internal partial class DocumentTransformer
         }
     }
 
-    protected virtual IHtmlElement? TransformAnchor(IHtmlDocument document, IHtmlAnchorElement a, string sourceFile, string sourceDir)
+    protected virtual IHtmlElement? TransformAnchor(IHtmlDocument document, IHtmlAnchorElement a, string sourceFile)
     {
         if (a.GetAttribute("href") is not string href || href.IsBlank)
         {
             return a;
         }
 
-        if (ResourceResolver.TryResolveHref(href, sourceDir, out var result, out var title))
+        if (ResourceResolver.TryResolveHref(href, sourceFile, out var result, out var title))
         {
             a.SetAttribute("href", result);
 
@@ -118,14 +114,14 @@ internal partial class DocumentTransformer
         return a;
     }
 
-    protected virtual IHtmlElement? TransformImage(IHtmlDocument document, IHtmlImageElement img, string sourceFile, string sourceDir)
+    protected virtual IHtmlElement? TransformImage(IHtmlDocument document, IHtmlImageElement img, string sourceFile)
     {
         if (img.GetAttribute("src") is not string src || src.IsBlank)
         {
             return img;
         }
 
-        if (ResourceResolver.TryResolveSrc(src, sourceDir, out var result, out var copy))
+        if (ResourceResolver.TryResolveSrc(src, sourceFile, out var result, out var copy))
         {
             img.SetAttribute("src", result);
 

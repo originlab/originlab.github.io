@@ -2,7 +2,7 @@
 using System.Net;
 using System.Xml.Linq;
 
-namespace OriginLab.DocumentGeneration;
+namespace OriginLab.DocumentGeneration.Resolvers;
 
 internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceResolver, IDocResourceResolver
 {
@@ -26,7 +26,7 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
 
     private readonly Dictionary<string, (string book, string url, string titleEn)> PageLinks;
 
-    private readonly Dictionary<string, (long size, ulong hash, string url)> EnglishImages = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, (long size, ulong hash, string pageUrl)> EnglishImages = new(StringComparer.OrdinalIgnoreCase);
 
     private readonly Dictionary<string, (string url, ulong hash)> VisitedImages = new(StringComparer.OrdinalIgnoreCase);
 
@@ -57,7 +57,7 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
     protected override (string url, ulong hash) GetSharedImageSrc(string path, string fileName)
         => ($"/books/images/{fileName}", FastHash.FromFile(path));
 
-    public bool TryResolveHref(string href, string sourceDir, out string result, out string? titleEn)
+    public bool TryResolveHref(string href, string sourceFile, out string result, out string? titleEn)
     {
         titleEn = null;
 
@@ -72,39 +72,54 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
         var path = parts is { Query.Length: 0, Hash.Length: 0 } ? href : parts.Path.ToString();
         Debug.Assert(!path.IsEmpty);
 
-        var fullPath = Path.GetFullPath(path, sourceDir);
-        if (fullPath.StartsWith(SourceFolder)
-            && Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(fullPath.AsSpan()))) is { IsEmpty: false } targetBookDirContainer)
+        var fullPath = Path.GetFullPath(path, Path.GetDirectoryName(sourceFile)!);
+
+        if (TryGetLink(fullPath, true, out var link))
         {
-            var targetFile = WebUtility.UrlDecode(fullPath[(targetBookDirContainer.Length + 1)..].Replace('\\', '/'));
-
-            if (PageLinks.TryGetValue(targetFile, out var link)
-                || (MovedPages.TryGetValue(targetFile, out var movedToFile) && PageLinks.TryGetValue(movedToFile, out link)))
+            if (Language == "en")
             {
-                if (Language == "en")
-                {
-                    result = '/'.TrySurroundEach(link.book, link.url);
-                }
-                else
-                {
-                    result = '/'.TrySurroundEach(link.book, link.url, Language);
-                }
-
-                if (!parts.Query.IsEmpty || !parts.Hash.IsEmpty)
-                {
-                    result = $"{result}{parts.Query}{parts.Hash}";
-                }
-
-                titleEn = link.titleEn;
-                return true;
+                result = '/'.TrySurroundEach(link.book, link.url);
             }
+            else
+            {
+                result = '/'.TrySurroundEach(link.book, link.url, Language);
+            }
+
+            if (!parts.Query.IsEmpty || !parts.Hash.IsEmpty)
+            {
+                result = $"{result}{parts.Query}{parts.Hash}";
+            }
+
+            titleEn = link.titleEn;
+            return true;
         }
 
         result = "Unknown href mapping";
         return false;
     }
 
-    public bool TryResolveSrc(string src, string sourceDir, out string result, out (string src, string dst)? copy)
+    private bool TryGetLink(string fullPath, bool urlDecode, out (string book, string url, string titleEn) link)
+    {
+        if (!fullPath.StartsWith(SourceFolder)
+            || Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(fullPath.AsSpan()))) is not { IsEmpty: false } targetBookDirContainer)
+        {
+            link = default;
+            return false;
+        }
+
+        var targetFile = fullPath[(targetBookDirContainer.Length + 1)..];
+        if (urlDecode)
+        {
+            targetFile = WebUtility.UrlDecode(targetFile);
+        }
+
+        targetFile = targetFile.Replace('\\', '/');
+
+        return PageLinks.TryGetValue(targetFile, out link)
+            || (MovedPages.TryGetValue(targetFile, out var movedToFile) && PageLinks.TryGetValue(movedToFile, out link));
+    }
+
+    public bool TryResolveSrc(string src, string sourceFile, out string result, out (string src, string dst)? copy)
     {
         src = src.Replace('\\', '/');
 
@@ -123,11 +138,14 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
         var indexOfImages = path.IndexOf("images/");
         Debug.Assert(indexOfImages > -1);
 
-        var srcImg = new FileInfo(Path.GetFullPath(path, sourceDir));
+        var srcImg = new FileInfo(Path.GetFullPath(path, Path.GetDirectoryName(sourceFile)!));
+        var name = Path.GetFileName(path);
         var hash = 0UL;
         var needsCopy = true;
+        var found = TryGetLink(sourceFile, false, out var page);
+        Debug.Assert(found);
 
-        bool TryResolveEnglishImage(out string result)
+        bool TryGetEnglishPageUrl(out string result)
         {
             if (!srcImg.Exists)
             {
@@ -135,20 +153,20 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
                 return false;
             }
 
-            if (EnglishImages.TryGetValue(path, out var enImage))
+            if (EnglishImages.TryGetValue(name, out var enImage))
             {
-                result = enImage.url;
+                result = enImage.pageUrl;
                 hash = enImage.hash;
                 needsCopy = false;
             }
             else
             {
-                result = '/'.TryPrefixEach(BaseUrl, "en", path[indexOfImages..]);
+                result = page.url;
 
                 var size = srcImg.Length;
                 hash = FastHash.FromFile(srcImg.FullName);
 
-                EnglishImages.Add(path, (size, hash, result));
+                EnglishImages.Add(name, (size, hash, page.url));
             }
 
             return true;
@@ -162,53 +180,59 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
         }
         else if (Language == "en")
         {
-            if (!TryResolveEnglishImage(out result))
+            if (TryGetEnglishPageUrl(out result))
+            {
+                result = result == page.url ? $"images/{name}" : $"/{BaseUrl}/{result}/images/{name}";
+            }
+            else
             {
                 copy = null;
                 return false;
             }
         }
-        else
+        else if (!srcImg.Exists)
         {
-            if (!srcImg.Exists)
-            {
-                srcImg = new FileInfo($"{SourceFolder}/en/{srcImg.FullName.AsSpan(SourceFolder.Length + 4)}");
+            srcImg = new FileInfo($"{SourceFolder}/en/{srcImg.FullName.AsSpan(SourceFolder.Length + 4)}");
 
-                if (!TryResolveEnglishImage(out result))
-                {
-                    copy = null;
-                    return false;
-                }
+            if (TryGetEnglishPageUrl(out result))
+            {
+                result = result == page.url ? $"../images/{name}" : $"/{BaseUrl}/{result}/images/{name}";
             }
             else
             {
-                if (VisitedImages.TryGetValue(path, out var visitedImage))
-                {
-                    result = visitedImage.url;
-                    hash = visitedImage.hash;
-                    needsCopy = false;
-                }
-                else
-                {
-                    result = '/'.TryPrefixEach(BaseUrl, Language, path[indexOfImages..]);
-
-                    if (EnglishImages.TryGetValue(path, out var enImage)
-                        && srcImg.Length == enImage.size
-                        && FastHash.FromFile(srcImg.FullName) == enImage.hash)
-                    {
-                        result = enImage.url;
-                        hash = enImage.hash;
-                        needsCopy = false;
-                    }
-
-                    if (hash == 0)
-                    {
-                        hash = FastHash.FromFile(srcImg.FullName);
-                    }
-
-                    VisitedImages.Add(path, (result, hash));
-                }
+                copy = null;
+                return false;
             }
+        }
+        else if (!VisitedImages.TryGetValue(path, out var visitedImage))
+        {
+            result = $"images/{name}";
+
+            if (EnglishImages.TryGetValue(name, out var enImage)
+                && srcImg.Length == enImage.size
+                && FastHash.FromFile(srcImg.FullName) == enImage.hash)
+            {
+                result = enImage.pageUrl == page.url ? $"../images/{name}" : $"/{BaseUrl}/{enImage.pageUrl}/images/{name}";
+                hash = enImage.hash;
+                needsCopy = false;
+            }
+
+            if (hash == 0)
+            {
+                hash = FastHash.FromFile(srcImg.FullName);
+            }
+
+            VisitedImages.Add(path, (result, hash));
+        }
+        else
+        {
+            // Because `path` contains the page file name,
+            // and VisitedImages are cleared when Language changes.
+            // We can reuse the url.
+
+            result = visitedImage.url;
+            hash = visitedImage.hash;
+            needsCopy = false;
         }
 
         if (UseWebp)
