@@ -13,9 +13,9 @@ abstract class DocsToGithubPages : DocsGenerator
         BaseUrl = baseUrl;
     }
 
-    public override async Task RunAsync()
+    protected override async Task TransformFilesAsync()
     {
-        await base.RunAsync();
+        await base.TransformFilesAsync();
 
         File.WriteAllText(Path.Combine(OutputFolder, "404.html"), await Template.Render404PageAsync());
     }

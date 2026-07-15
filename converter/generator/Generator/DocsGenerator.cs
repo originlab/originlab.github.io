@@ -44,12 +44,9 @@ abstract class DocsGenerator : IDocsGenerator
         Problems = problems;
     }
 
-    public virtual async Task RunAsync()
+    public async Task RunAsync()
     {
-        foreach (var language in AvailableLanguages)
-        {
-            await TransformFilesAsync(language);
-        }
+        await TransformFilesAsync();
 
         var copyResult = Parallel.ForEach(Transformer.FilesToCopy, pair =>
         {
@@ -58,6 +55,14 @@ abstract class DocsGenerator : IDocsGenerator
         });
 
         Debug.Assert(copyResult.IsCompleted);
+    }
+
+    protected virtual async Task TransformFilesAsync()
+    {
+        foreach (var language in AvailableLanguages)
+        {
+            await TransformFilesAsync(language);
+        }
     }
 
     protected abstract Task TransformFilesAsync(string language);
