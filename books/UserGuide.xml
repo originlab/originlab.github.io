@@ -1657,6 +1657,7 @@
         <page title="Polar Contour from Matrix Data" file="UserGuide/Polar_Contour_from_Matrix.html" url="Origin-Help/Matrix-Polar-Contour" src="UserGuide:Polar_Contour_from_Matrix"/>
         <page title="Ternary Contour" file="UserGuide/Ternary_Contour.html" url="Origin-Help/Ternary-Contour" src="UserGuide:Ternary_Contour"/>
         <page title="Overlaid Contour Plot" file="UserGuide/Overlaid_Contour_Plot.html" url="Origin-Help/Overlaid-Contour-Plot" src="UserGuide:Overlaid_Contour_Plot"/>
+        <page title="Ternary Overlaid Contour Plot" file="UserGuide/Ternary_Overlaid_Contour_Plot.html" url="Origin-Help/ernary-Overlaid-Contour-Plot" src="UserGuide:Ternary_Overlaid_Contour_Plot"/>
       </page>
       <page title="Image and Profiles" file="Category/Images.html" url="Origin-Help/Image-Graph" src="Category:Images">
         <page title="Contour Profiles" file="UserGuide/Profile2.html" url="Origin-Help/Contour-Profile" src="UserGuide:Profile2"/>
