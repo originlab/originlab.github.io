@@ -103,6 +103,7 @@ public abstract class ProblemSummarizer
             }
             else
             {
+                textWriter.WriteLine();
                 textWriter.WriteLine(":white_check_mark: No problems found.");
             }
         }
