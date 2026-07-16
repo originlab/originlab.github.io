@@ -107,11 +107,32 @@ public class TransformerTests
 
         var (src, dst) = Assert.Single(transformer.FilesToCopy);
         Assert.Equal(@"en\A\images\A\a.jpg", Path.GetRelativePath(args.SourceFolder, src));
-        Assert.Equal(@"en\images\A\a.jpg", Path.GetRelativePath(args.OutputFolder, dst));
+        Assert.Equal(@"a\images\a.jpg", Path.GetRelativePath(args.OutputFolder, dst));
 
         var image = document.QuerySelector("img#remain");
         Assert.NotNull(image);
         Assert.Equal("images/a.jpg?v=KkTJpTT_a1w", image.GetAttribute("src"));
+    }
+
+    [Fact]
+    public void ResolveResolvableImages_ja()
+    {
+        var resolver = ResourceResolverTests.CreateResolver("app", false, out var args);
+        var transformer = new DocumentTransformer(resolver, new ProblemRecorder(args));
+        var document = CreateDocument("""
+            <img id="remain" src="..\images\A\b.jpg">
+            """);
+
+        resolver.Language = "ja";
+        transformer.Transform(document, Path.GetFullPath("ja/A/App/A.html", args.SourceFolder));
+
+        var (src, dst) = Assert.Single(transformer.FilesToCopy);
+        Assert.Equal(@"ja\A\images\A\b.jpg", Path.GetRelativePath(args.SourceFolder, src));
+        Assert.Equal(@"a\ja\images\b.jpg", Path.GetRelativePath(args.OutputFolder, dst));
+
+        var image = document.QuerySelector("img#remain");
+        Assert.NotNull(image);
+        Assert.Equal("images/b.jpg?v=4UpIkuzxHXo", image.GetAttribute("src"));
     }
 
     [Fact]

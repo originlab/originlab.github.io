@@ -135,9 +135,6 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
         var path = parts is { Query.Length: 0, Hash.Length: 0 } ? src : parts.Path.ToString();
         Debug.Assert(!path.IsEmpty);
 
-        var indexOfImages = path.IndexOf("images/");
-        Debug.Assert(indexOfImages > -1);
-
         var srcImg = new FileInfo(Path.GetFullPath(path, Path.GetDirectoryName(sourceFile)!));
         var name = Path.GetFileName(path);
         var hash = 0UL;
@@ -226,9 +223,8 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
         }
         else
         {
-            // Because `path` contains the page file name,
-            // and VisitedImages are cleared when Language changes.
-            // We can reuse the url.
+            // Because `path` contains the page file name, and VisitedImages are cleared when Language changes.
+            // VistedImages will not be asked from another page or another language. We can reuse the url.
 
             result = visitedImage.url;
             hash = visitedImage.hash;
@@ -244,7 +240,19 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
         }
 
         result = $"{result}?v={FastHash.ToBase64Url(hash)}";
-        copy = !needsCopy ? null : (srcImg.FullName, Path.Combine(OutputFolder, Language, path[indexOfImages..]));
+
+        if (!needsCopy)
+        {
+            copy = null;
+        }
+        else
+        {
+            var dst = Language == "en"
+                ? Path.Combine(OutputFolder, page.url, "images", name)
+                : Path.Combine(OutputFolder, page.url, Language, "images", name);
+
+            copy = (srcImg.FullName, dst);
+        }
 
         return true;
     }
