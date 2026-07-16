@@ -77,7 +77,7 @@ public abstract class ProblemSummarizer
 
                         foreach (var ps in details.ToLookup(fp => fp.File, fp => fp.Position).OrderByDescending(p => p.Count()))
                         {
-                            textWriter.WriteLine($"File: {ps.Key}");
+                            textWriter.WriteLine($"File: {ps.Key.Replace('\\', '/')}");
 
                             foreach (var p in ps)
                             {
@@ -95,7 +95,7 @@ public abstract class ProblemSummarizer
 
                     foreach (var file in locations.Select(l => l.filePosition.File).Distinct())
                     {
-                        textWriter.WriteLine($"- {file}");
+                        textWriter.WriteLine($"- {file.Replace('\\', '/')}");
                     }
 
                     textWriter.WriteLine("::endgroup::");
