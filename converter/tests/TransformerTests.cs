@@ -1,4 +1,5 @@
-﻿using AngleSharp.Html.Dom;
+﻿using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using OriginLab.DocumentGeneration.Transformers;
 
@@ -152,6 +153,52 @@ public class TransformerTests
         var image = document.QuerySelector("img#remain");
         Assert.NotNull(image);
         Assert.Equal(@"..\images\A\not_exists.jpg", image.GetAttribute("src"));
+    }
+
+    [Theory]
+    [InlineData("""<p><img class="tex" alt="y=f(x)" src="../images/A/math-123.jpg"></p>""")]
+    public async Task LatexImageToMathJax_Block(string snippet)
+    {
+        var resolver = ResourceResolverTests.CreateResolver("app", false, out var args);
+        var transformer = new DocumentToGithubPage(resolver, new ProblemRecorder(args));
+        var document = CreateDocument(snippet);
+        var latex = document.QuerySelector<IHtmlImageElement>("img.tex")!.AlternativeText;
+
+        await transformer.InitializeLayoutAsync(new Templates.DocumentPageModel
+        {
+            BookUrlName = "app",
+            Language = "en",
+        });
+        transformer.Transform(document, Path.GetFullPath("en/A/App/A.html", args.SourceFolder));
+
+        Assert.Empty(transformer.FilesToCopy);
+
+        var span = document.QuerySelector("span.tex");
+        Assert.NotNull(span);
+        Assert.Equal($@"\[{latex}\]", span.TextContent);
+    }
+
+    [Theory]
+    [InlineData("""<p>where <img class="tex" alt="x" src="../images/A/math-123.jpg"></p>""")]
+    public async Task LatexImageToMathJax_Inline(string snippet)
+    {
+        var resolver = ResourceResolverTests.CreateResolver("app", false, out var args);
+        var transformer = new DocumentToGithubPage(resolver, new ProblemRecorder(args));
+        var document = CreateDocument(snippet);
+        var latex = document.QuerySelector<IHtmlImageElement>("img.tex")!.AlternativeText;
+
+        await transformer.InitializeLayoutAsync(new Templates.DocumentPageModel
+        {
+            BookUrlName = "app",
+            Language = "en",
+        });
+        transformer.Transform(document, Path.GetFullPath("en/A/App/A.html", args.SourceFolder));
+
+        Assert.Empty(transformer.FilesToCopy);
+
+        var span = document.QuerySelector("span.tex");
+        Assert.NotNull(span);
+        Assert.Equal($@"\({latex}\)", span.TextContent);
     }
 
     private static IHtmlDocument CreateDocument(string source)
