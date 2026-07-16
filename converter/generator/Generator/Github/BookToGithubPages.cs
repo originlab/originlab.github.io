@@ -146,7 +146,7 @@ internal sealed class BookToGithubPages : DocsToGithubPages
                 document.Body.PrependNodes(div.ChildNodes.ToArray());
             }
 
-            var navDataDiv = Transformer.CreateNavDataDiv(document, nav, Path.GetDirectoryName(file)!, AvailableLanguagesExpression, BaseUrl);
+            var navDataDiv = Transformer.CreateNavDataDiv(document, nav, file, AvailableLanguagesExpression, BaseUrl);
             document.Body.AppendChild(navDataDiv);
         });
     }

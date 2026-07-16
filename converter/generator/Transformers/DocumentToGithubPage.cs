@@ -87,7 +87,7 @@ internal partial class DocumentToGithubPage : DocumentTransformer
         return null;
     }
 
-    public IHtmlDivElement CreateNavDataDiv(IHtmlDocument document, in Nav nav, string sourceDir, string langList, string baseUrl)
+    public IHtmlDivElement CreateNavDataDiv(IHtmlDocument document, in Nav nav, string sourceFile, string langList, string baseUrl)
     {
         var navDataDiv = document.CreateElement<IHtmlDivElement>();
 
@@ -101,7 +101,7 @@ internal partial class DocumentToGithubPage : DocumentTransformer
 
         if (!files.Parent.IsEmpty)
         {
-            if (ResourceResolver.TryResolveHref("../" + files.Parent, sourceDir, out var url, out var _))
+            if (ResourceResolver.TryResolveHref("../" + files.Parent, sourceFile, out var url, out var _))
             {
                 navDataDiv.SetAttribute("data-parent-link", url);
             }
