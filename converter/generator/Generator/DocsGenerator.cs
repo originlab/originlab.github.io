@@ -1,5 +1,4 @@
 ﻿using System.Buffers;
-using System.Diagnostics;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using OriginLab.DocumentGeneration.Transformers;
@@ -47,13 +46,11 @@ abstract class DocsGenerator : IDocsGenerator
     {
         await TransformFilesAsync();
 
-        var copyResult = Parallel.ForEach(Transformer.FilesToCopy, pair =>
+        await Parallel.ForEachAsync(Transformer.FilesToCopy, async (pair, cancel) =>
         {
             Directory.CreateDirectory(Path.GetDirectoryName(pair.dst)!);
             File.Copy(pair.src, pair.dst, overwrite: true);
         });
-
-        Debug.Assert(copyResult.IsCompleted);
     }
 
     protected virtual async Task TransformFilesAsync()
