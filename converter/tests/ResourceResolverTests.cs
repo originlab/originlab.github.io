@@ -47,10 +47,10 @@ public class ResourceResolverTests
     [InlineData("../images/A/a.jpg?v=123", "en", false, "images/a.jpg?v=KkTJpTT_a1w")]
     [InlineData("../images/A/a.jpg?v=123", "en", true, "images/a.webp?v=KkTJpTT_a1w")]
     // Image only exists in ja
-    [InlineData("../images/A/b.jpg", "ja", false, "images/b.jpg?v=4UpIkuzxHXo")]
-    [InlineData("../images/A/b.jpg", "ja", true, "images/b.webp?v=4UpIkuzxHXo")]
-    [InlineData("../images/A/b.jpg?v=123", "ja", false, "images/b.jpg?v=4UpIkuzxHXo")]
-    [InlineData("../images/A/b.jpg?v=123", "ja", true, "images/b.webp?v=4UpIkuzxHXo")]
+    [InlineData("../images/A/ja_only.jpg", "ja", false, "images/ja_only.jpg?v=4UpIkuzxHXo")]
+    [InlineData("../images/A/ja_only.jpg", "ja", true, "images/ja_only.webp?v=4UpIkuzxHXo")]
+    [InlineData("../images/A/ja_only.jpg?v=123", "ja", false, "images/ja_only.jpg?v=4UpIkuzxHXo")]
+    [InlineData("../images/A/ja_only.jpg?v=123", "ja", true, "images/ja_only.webp?v=4UpIkuzxHXo")]
     // Shared images
     [InlineData("../images/A/Mini_bulb.png", "en", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
     [InlineData("../images/A/Mini_bulb.png", "de", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
@@ -86,10 +86,10 @@ public class ResourceResolverTests
     [InlineData(@"..\images\A\a.jpg?v=123", "en", false, "images/a.jpg?v=KkTJpTT_a1w")]
     [InlineData(@"..\images\A\a.jpg?v=123", "en", true, "images/a.webp?v=KkTJpTT_a1w")]
     // Image only exists in ja
-    [InlineData(@"..\images\A\b.jpg", "ja", false, "images/b.jpg?v=4UpIkuzxHXo")]
-    [InlineData(@"..\images\A\b.jpg", "ja", true, "images/b.webp?v=4UpIkuzxHXo")]
-    [InlineData(@"..\images\A\b.jpg?v=123", "ja", false, "images/b.jpg?v=4UpIkuzxHXo")]
-    [InlineData(@"..\images\A\b.jpg?v=123", "ja", true, "images/b.webp?v=4UpIkuzxHXo")]
+    [InlineData(@"..\images\A\ja_only.jpg", "ja", false, "images/ja_only.jpg?v=4UpIkuzxHXo")]
+    [InlineData(@"..\images\A\ja_only.jpg", "ja", true, "images/ja_only.webp?v=4UpIkuzxHXo")]
+    [InlineData(@"..\images\A\ja_only.jpg?v=123", "ja", false, "images/ja_only.jpg?v=4UpIkuzxHXo")]
+    [InlineData(@"..\images\A\ja_only.jpg?v=123", "ja", true, "images/ja_only.webp?v=4UpIkuzxHXo")]
     // Shared images
     [InlineData(@"..\images\A\Mini_bulb.png", "en", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
     [InlineData(@"..\images\A\Mini_bulb.png", "de", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]

@@ -120,19 +120,19 @@ public class TransformerTests
         var resolver = ResourceResolverTests.CreateResolver("app", false, out var args);
         var transformer = new DocumentTransformer(resolver, new ProblemRecorder(args));
         var document = CreateDocument("""
-            <img id="remain" src="..\images\A\b.jpg">
+            <img id="remain" src="..\images\A\ja_only.jpg">
             """);
 
         resolver.Language = "ja";
         transformer.Transform(document, Path.GetFullPath("ja/A/App/A.html", args.SourceFolder));
 
         var (src, dst) = Assert.Single(transformer.FilesToCopy);
-        Assert.Equal(@"ja\A\images\A\b.jpg", Path.GetRelativePath(args.SourceFolder, src));
-        Assert.Equal(@"a\ja\images\b.jpg", Path.GetRelativePath(args.OutputFolder, dst));
+        Assert.Equal(@"ja\A\images\A\ja_only.jpg", Path.GetRelativePath(args.SourceFolder, src));
+        Assert.Equal(@"a\ja\images\ja_only.jpg", Path.GetRelativePath(args.OutputFolder, dst));
 
         var image = document.QuerySelector("img#remain");
         Assert.NotNull(image);
-        Assert.Equal("images/b.jpg?v=4UpIkuzxHXo", image.GetAttribute("src"));
+        Assert.Equal("images/ja_only.jpg?v=4UpIkuzxHXo", image.GetAttribute("src"));
     }
 
     [Fact]
