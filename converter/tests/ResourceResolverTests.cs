@@ -150,6 +150,119 @@ public class ResourceResolverTests
         Assert.Null(copy);
     }
 
+    [Fact]
+    public void SrcImageSharedByMultipleEnglishPages()
+    {
+        var resolver = CreateResolver("app", false, out var args);
+        resolver.Language = "en";
+
+        Assert.True(resolver.TryResolveSrc("../images/A/a.jpg", Path.Combine(args.SourceFolder, "en/A/App/A.html"), out var result, out var copy));
+        Assert.Equal("images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.NotNull(copy);
+
+        // Now it process another page
+
+        Assert.True(resolver.TryResolveSrc("../images/B/a.jpg", Path.Combine(args.SourceFolder, "en/A/App/B.html"), out result, out copy));
+        Assert.Equal("/app/a/images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.Null(copy);
+    }
+
+    [Fact]
+    public void SrcImageNotExists_ButFoundInEn_DiffPage()
+    {
+        var resolver = CreateResolver("app", false, out var args);
+
+        // The transformer always process en first, so the pic is seen
+
+        resolver.Language = "en";
+
+        Assert.True(resolver.TryResolveSrc("../images/A/a.jpg", Path.Combine(args.SourceFolder, "en/A/App/A.html"), out var result, out var copy));
+        Assert.Equal("images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.NotNull(copy);
+
+        // Now it process the other language
+
+        resolver.Language = "de";
+
+        Assert.True(resolver.TryResolveSrc("../images/B/a.jpg", Path.Combine(args.SourceFolder, "de/A/App/B.html"), out result, out copy));
+        Assert.Equal("/app/a/images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.Null(copy);
+    }
+
+    [Fact]
+    public void SrcImageNotExists_ButFoundInEn_DiffPage2()
+    {
+        var resolver = CreateResolver("app", false, out var args);
+
+        // The transformer always process en first, so the pic is seen
+
+        resolver.Language = "en";
+
+        Assert.True(resolver.TryResolveSrc("../images/A/a.jpg", Path.Combine(args.SourceFolder, "en/A/App/A.html"), out var result, out var copy));
+        Assert.Equal("images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.NotNull(copy);
+
+        // Now it process the other language
+
+        resolver.Language = "de";
+
+        Assert.True(resolver.TryResolveSrc("../images/B/a.jpg", Path.Combine(args.SourceFolder, "de/A/App/B.html"), out result, out copy));
+        Assert.Equal("/app/a/images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.Null(copy);
+
+        // The pic appears the second time
+
+        Assert.True(resolver.TryResolveSrc("../images/B/a.jpg", Path.Combine(args.SourceFolder, "de/A/App/B.html"), out result, out copy));
+        Assert.Equal("/app/a/images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.Null(copy);
+    }
+
+    [Fact]
+    public void SrcImageExists_AlsoFoundInEn_DiffPage2()
+    {
+        var resolver = CreateResolver("app", false, out var args);
+
+        // The transformer always process en first, so the pic is seen
+
+        resolver.Language = "en";
+
+        Assert.True(resolver.TryResolveSrc("../images/A/a.jpg", Path.Combine(args.SourceFolder, "en/A/App/A.html"), out var result, out var copy));
+        Assert.Equal("images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.NotNull(copy);
+
+        // Now it process the other language
+
+        resolver.Language = "ja";
+
+        Assert.True(resolver.TryResolveSrc("../images/B/a.jpg", Path.Combine(args.SourceFolder, "ja/A/App/B.html"), out result, out copy));
+        Assert.Equal("/app/a/images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.Null(copy);
+
+        // The pic appears the second time
+
+        Assert.True(resolver.TryResolveSrc("../images/B/a.jpg", Path.Combine(args.SourceFolder, "ja/A/App/B.html"), out result, out copy));
+        Assert.Equal("/app/a/images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.Null(copy);
+    }
+
+    [Fact]
+    public void SrcImageExists_NotFoundInEn_SamePage()
+    {
+        var resolver = CreateResolver("app", false, out var args);
+
+        // Skip en, so the en pic is not seen
+
+        resolver.Language = "ja";
+
+        Assert.True(resolver.TryResolveSrc("../images/A/a.jpg", Path.Combine(args.SourceFolder, "ja/A/App/A.html"), out var result, out var copy));
+        Assert.Equal("images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.NotNull(copy);
+
+        Assert.True(resolver.TryResolveSrc("../images/A/a.jpg", Path.Combine(args.SourceFolder, "ja/A/App/A.html"), out result, out copy));
+        Assert.Equal("images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.Null(copy);
+    }
+
     [Theory]
     // Image not exist in de but found in en
     [InlineData(@"..\images\A\a.jpg", "de", false, "../images/a.jpg?v=KkTJpTT_a1w")]
