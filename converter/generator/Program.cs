@@ -4,6 +4,7 @@ using OriginLab.DocumentGeneration.Generator.Github;
 using OriginLab.DocumentGeneration.Generator;
 using OriginLab.DocumentGeneration.Resolvers;
 using OriginLab.DocumentGeneration.Transformers;
+using System.Diagnostics;
 
 namespace OriginLab.DocumentGeneration;
 
@@ -79,9 +80,15 @@ class Program
         }
 
         var serviceProvider = services.BuildServiceProvider();
-        var driver = serviceProvider.GetRequiredService<IDocsGenerator>();
+        var generator = serviceProvider.GetRequiredService<IDocsGenerator>();
 
-        await driver.RunAsync();
+        Console.WriteLine("Running the generator..");
+        var stopwatch = Stopwatch.StartNew();
+
+        await generator.RunAsync();
+
+        stopwatch.Stop();
+        Console.WriteLine($"Elapsed: {stopwatch.Elapsed}");
 
         var problems = serviceProvider.GetRequiredService<ProblemRecorder>();
         ProblemSummarizer summarizer = Environment.GetEnvironmentVariable("GITHUB_ACTIONS") is not null
