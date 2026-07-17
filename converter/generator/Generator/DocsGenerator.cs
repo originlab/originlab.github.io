@@ -1,5 +1,4 @@
-﻿using System.Buffers;
-using AngleSharp.Html;
+﻿using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using OriginLab.DocumentGeneration.Transformers;
 
@@ -13,29 +12,10 @@ abstract class DocsGenerator : IDocsGenerator
 
     protected DocumentTransformer Transformer { get; }
 
-    protected string[] AvailableLanguages { get; }
-
     private readonly ProblemRecorder Problems;
 
     protected DocsGenerator(string sourceFolder, string outputFolder, DocumentTransformer transformer, ProblemRecorder problems)
     {
-        var languages = (from subPath in Directory.EnumerateDirectories(sourceFolder)
-                         let name = Path.GetFileName(subPath)
-                         where name.Length == 2
-                         select name).ToArray();
-
-        var enIndex = languages.IndexOf("en");
-        if (enIndex < 0)
-        {
-            throw new ArgumentException("Expect en folder exists within SourceFolder", nameof(sourceFolder));
-        }
-        else if (enIndex > 0)
-        {
-            languages[enIndex] = languages[0];
-            languages[0] = "en";
-        }
-
-        AvailableLanguages = languages;
         SourceFolder = sourceFolder;
         OutputFolder = outputFolder;
         Transformer = transformer;
@@ -55,7 +35,7 @@ abstract class DocsGenerator : IDocsGenerator
 
     protected virtual async Task TransformFilesAsync()
     {
-        foreach (var language in AvailableLanguages)
+        foreach (var language in Transformer.AvailableLanguages)
         {
             await TransformFilesAsync(language);
         }

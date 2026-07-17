@@ -12,6 +12,8 @@ namespace OriginLab.DocumentGeneration.Transformers;
 
 internal partial class DocumentTransformer
 {
+    public string[] AvailableLanguages => ResourceResolver.AvailableLanguages;
+
     public string Language
     {
         get => ResourceResolver.Language;

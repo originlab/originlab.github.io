@@ -25,7 +25,7 @@ abstract class DocsToGithubPages : DocsGenerator
         var html = await Transformer.InitializeLayoutAsync(new DocumentPageModel
         {
             Language = language,
-            AvailableLanguages = AvailableLanguages,
+            AvailableLanguages = Transformer.AvailableLanguages,
             BookUrlName = BaseUrl,
         });
         var dir = Path.Combine(OutputFolder, language);

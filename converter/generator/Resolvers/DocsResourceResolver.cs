@@ -2,7 +2,7 @@
 
 namespace OriginLab.DocumentGeneration.Resolvers;
 
-internal abstract class DocsResourceResolver
+internal abstract class DocsResourceResolver : IDocResourceResolver
 {
     private readonly DocsTransformationArgs Args;
     protected string SourceFolder => Args.SourceFolder;
@@ -14,8 +14,29 @@ internal abstract class DocsResourceResolver
 
     protected Dictionary<string, string> MovedPages => field ??= GetMovedPages();
 
+    public string[] AvailableLanguages { get; }
+
+    public abstract string Language { get; set; }
+
     public DocsResourceResolver(DocsTransformationArgs args)
     {
+        var languages = (from subPath in Directory.EnumerateDirectories(args.SourceFolder)
+                         let name = Path.GetFileName(subPath)
+                         where name.Length == 2
+                         select name).ToArray();
+
+        var enIndex = languages.IndexOf("en");
+        if (enIndex < 0)
+        {
+            throw new ArgumentException("Expect en folder exists within SourceFolder", nameof(args));
+        }
+        else if (enIndex > 0)
+        {
+            languages[enIndex] = languages[0];
+            languages[0] = "en";
+        }
+
+        AvailableLanguages = languages;
         Args = args;
     }
 
@@ -48,4 +69,8 @@ internal abstract class DocsResourceResolver
         })
         ?.ToDictionary(StringComparer.OrdinalIgnoreCase) ?? [];
     }
+
+    public abstract bool TryResolveHref(string href, string sourceFile, out string result, out string? titleEn);
+
+    public abstract bool TryResolveSrc(string src, string sourceFile, out string result, out (string src, string dst)? copy);
 }

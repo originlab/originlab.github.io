@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace OriginLab.DocumentGeneration.Resolvers;
 
-internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceResolver, IDocResourceResolver
+internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceResolver
 {
     private readonly DocsToStaticPagesTransformationArgs Args;
 
@@ -12,7 +12,7 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
 
     private bool UseWebp => Args.UseWebp;
 
-    public string Language
+    public override string Language
     {
         get;
         set
@@ -57,7 +57,7 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
     protected override (string url, ulong hash) GetSharedImageSrc(string path, string fileName)
         => ($"/books/images/{fileName}", FastHash.FromFile(path));
 
-    public bool TryResolveHref(string href, string sourceFile, out string result, out string? titleEn)
+    public override bool TryResolveHref(string href, string sourceFile, out string result, out string? titleEn)
     {
         titleEn = null;
 
@@ -119,7 +119,7 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
             || (MovedPages.TryGetValue(targetFile, out var movedToFile) && PageLinks.TryGetValue(movedToFile, out link));
     }
 
-    public bool TryResolveSrc(string src, string sourceFile, out string result, out (string src, string dst)? copy)
+    public override bool TryResolveSrc(string src, string sourceFile, out string result, out (string src, string dst)? copy)
     {
         src = src.Replace('\\', '/');
 

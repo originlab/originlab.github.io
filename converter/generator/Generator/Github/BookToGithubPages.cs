@@ -20,7 +20,7 @@ internal sealed class BookToGithubPages : DocsToGithubPages
     public BookToGithubPages(DocsToStaticPagesTransformationArgs args, DocumentToGithubPage transformer, ProblemRecorder problems)
         : base(args.BaseUrl, args.SourceFolder, args.OutputFolder, transformer, problems)
     {
-        AvailableLanguagesExpression = String.Join(',', AvailableLanguages);
+        AvailableLanguagesExpression = String.Join(',', Transformer.AvailableLanguages);
         BookDirName = Path.GetFileName(Directory.EnumerateDirectories(Path.Combine(SourceFolder, "en")).Single());
 
         var bookXml = XElement.Load(Path.Combine(SourceFolder, "en", BookDirName, "book.xml"));
