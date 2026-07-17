@@ -50,12 +50,9 @@ internal partial class DocumentToGithubPage : DocumentTransformer
         loading.ClassName = "loading";
 
         var mainContent = document.CreateElement<IHtmlDivElement>();
-        var placeholder = document.CreateElement<IHtmlDivElement>();
-
         mainContent.Id = "main-content";
-        mainContent.AppendChild(placeholder);
+        mainContent.AppendNodes(document.Body.ChildNodes.ToArray());
 
-        placeholder.Replace(document.Body.ChildNodes.ToArray());
         document.Body.AppendNodes(loading, mainContent);
     }
 
