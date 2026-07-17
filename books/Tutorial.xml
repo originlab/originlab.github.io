@@ -164,11 +164,38 @@
         <page title="Tutorial for Data Transformation" file="App/Tutorial_DT.html" url="Tutorials/Tutorial-DT" src="App:Tutorial_DT"/>
         <page title="Tutorial for Control Charts" file="App/Tutorial_Control_Charts.html" url="Tutorials/Tutorial-Control-Charts" src="App:Tutorial_Control_Charts"/>
         <page title="DOE:2-Level Factorial Design" file="Tutorial/DOE_2-Level_Factorial_Design.html" url="Tutorials/Level-Factorial-Design" src="Tutorial:DOE_2-Level_Factorial_Design"/>
-        <page title="Tutorial for Gage R&amp;amp;R Study" file="App/Tutorial_GG.html" url="Tutorials/Tutorial-GG" src="App:Tutorial_GG"/>
+        <page title="Tutorial for Gage Study" file="App/Tutorial_GG.html" url="Tutorials/Tutorial-GG" src="App:Tutorial_GG"/>
         <page title="Tutorial for Attribute Agreement Analysis" file="App/Attribute_Agreement_Analysis.html" url="Tutorials/Tutorial-Attribute-Agreement-Analysis" src="App:Attribute_Agreement_Analysis"/>
         <page title="Tutorial for Tolerance Intervals" file="App/Tolerance_Intervals.html" url="Tutorials/Tutorial-Tolerance-Intervals" src="App:Tolerance_Intervals"/>
         <page title="DOE:Response Surface Design" file="Tutorial/DOE_Response_Surface_Design.html" url="Tutorials/Response-Surface-Design" src="Tutorial:DOE_Response_Surface_Design"/>
         <page title="Design of Experiments (Pro)" file="App/Design_of_Experiments.html" url="Tutorials/DOE" src="App:Design_of_Experiments"/>
+        <page title="Design of Experiments" file="Category/Design_of_Experiments(App).html" url="Tutorials/Design-of-Experiments" src="Category:Design_of_Experiments(App)">
+          <page title="Define Custom Designs" file="Category/Custom_Designs(App).html" url="Tutorials/Custom-Designs" src="Category:Custom_Designs(App)">
+            <page title="The Define Custom Design Dialog Box" file="App/The_Define_Custom_Design_Dialog_Box.html" url="Tutorials/Custom-Design-Dialog" src="App:The_Define_Custom_Design_Dialog_Box"/>
+          </page>
+          <page title="Create Design" file="Category/Create_Design_DOE(App).html" url="Tutorials/Create-Design-DOE" src="Category:Create_Design_DOE(App)">
+            <page title="Definitive Screening Design" file="Category/Definitive_Screening_Design(App).html" url="Tutorials/Definitive-Screening-Design" src="Category:Definitive_Screening_Design(App)">
+              <page title="The Definitive Screening Design Dialog Box" file="App/Definitive_Screening_Design_Dialog.html" url="Tutorials/Definitive-Screening-Dialog" src="App:Definitive_Screening_Design_Dialog"/>
+            </page>
+            <page title="Factorial Design" file="Category/Factorial_Design(App).html" url="Tutorials/Factorial-Design" src="Category:Factorial_Design(App)">
+              <page title="The Factorial Design Dialog Box" file="App/Factorial_Design_Dialog.html" url="Tutorials/Factorial-Dialog" src="App:Factorial_Design_Dialog"/>
+            </page>
+            <page title="Response Surface Design" file="Category/Response_Surface_Design(App).html" url="Tutorials/Response-Surface-Design" src="Category:Response_Surface_Design(App)">
+              <page title="The Response Surface Design Dialog Box" file="App/Response_Surface_Design_Dialog.html" url="Tutorials/response-surface-design-dialog" src="App:Response_Surface_Design_Dialog"/>
+            </page>
+            <page title="Mixture Design" file="Category/Mixture_Design(App).html" url="Tutorials/Mixture-Design" src="Category:Mixture_Design(App)">
+              <page title="The Mixture Design Dialog Box" file="App/Mixture_Design_Dialog.html" url="Tutorials/mixture-dialog" src="App:Mixture_Design_Dialog"/>
+            </page>
+            <page title="Taguchi Design" file="Category/Taguchi_Design(App).html" url="Tutorials/Taguchi-Design" src="Category:Taguchi_Design(App)">
+              <page title="Key Concepts of Taguchi Design" file="App/Key_Concepts_Taguchi.html" url="Tutorials/Key=Concepts-Taguchi" src="App:Key_Concepts_Taguchi"/>
+              <page title="The Taguchi Design Dialog Box" file="App/Taguchi_Design_Dialog.html" url="Tutorials/taguchi-dialog" src="App:Taguchi_Design_Dialog"/>
+              <page title="Tutorial of Taguchi Design" file="App/Tutorial_Taguchi.html" url="Tutorials/Tutorial-Taguchi-Design" src="App:Tutorial_Taguchi"/>
+            </page>
+          </page>
+          <page title="Select Optimal Design" file="Category/Select_Optimal_Design(App).html" url="Tutorials/Select-Optimal-Design" src="Category:Select_Optimal_Design(App)">
+            <page title="The Select Optimal Design Dialog Box" file="App/Select_Optimal_Design_Dialog.html" url="Tutorials/Optimal-Design-Dialog" src="App:Select_Optimal_Design_Dialog"/>
+          </page>
+        </page>
       </page>
       <page title="Time Serie Analysis" file="Category/Time_Serie_Analysis_(Tutorials).html" url="Tutorials/Time-Serie-Analysis" src="Category:Time_Serie_Analysis_(Tutorials)">
         <page title="Autocorrelation and Partial Autocorrelation (ACF &amp;amp; PACF)" file="App/ACF.html" url="Tutorials/ACF" src="App:ACF"/>
