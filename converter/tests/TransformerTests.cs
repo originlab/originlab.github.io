@@ -55,12 +55,6 @@ public class TransformerTests
     }
 
     [Fact]
-    public void GetsPageTitleFromTheFirstH1()
-    {
-        Assert.Equal("App A", DocumentTransformer.GetPageTitle(Path.GetFullPath("../../../../converter/tests/books/app/en/A/App/A.html", AppContext.BaseDirectory)));
-    }
-
-    [Fact]
     public void ResolveResolvableAnchors()
     {
         var resolver = ResourceResolverTests.CreateResolver("app", false, out var args);

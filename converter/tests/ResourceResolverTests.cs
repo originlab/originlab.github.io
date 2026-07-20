@@ -4,40 +4,44 @@ namespace OriginLab.DocumentGeneration.Tests;
 
 public class ResourceResolverTests
 {
+    [Fact]
+    public void GetsPageTitleFromTheFirstH1()
+    {
+        Assert.Equal("App A", DocsResourceResolver.ReadPageTitle(Path.GetFullPath("../../../../converter/tests/books/app/en/A/App/A.html", AppContext.BaseDirectory)));
+    }
+
     [Theory]
-    [InlineData("./A/Category/App(App).html", "en", "/app/", "Apps")]
-    [InlineData("./A/Category/App(App).html", "de", "/app/de/", "Apps")]
-    [InlineData("./A/App/A.html", "en", "/app/a/", "App A")]
-    [InlineData("./A/App/B.html", "de", "/app/b/de/", "App B")]
-    [InlineData("./A/App/B_Script.html", "de", "/build/b-scripts/de/", "B Scripts (Moved from App)")]
-    [InlineData("./A/App/B_Script.html#section", "de", "/build/b-scripts/de/#section", "B Scripts (Moved from App)")]
-    public void HrefShouldResolveCorrectly(string href, string language, string expectedUrl, string? expectedTitle)
+    [InlineData("./A/Category/App(App).html", "en", "/app/")]
+    [InlineData("./A/Category/App(App).html", "ja", "/app/ja/")]
+    [InlineData("./A/App/A.html", "en", "/app/a/")]
+    [InlineData("./A/App/B.html", "ja", "/app/b/ja/")]
+    [InlineData("./A/App/B_Script.html", "ja", "/build/b-scripts/ja/")]
+    [InlineData("./A/App/B_Script.html#section", "ja", "/build/b-scripts/ja/#section")]
+    public void HrefShouldResolveCorrectly(string href, string language, string expectedUrl)
     {
         var resolver = CreateResolver("app", false, out var args);
         resolver.Language = language;
 
-        Assert.True(resolver.TryResolveHref(href, Path.Combine(args.SourceFolder, language, "A/App/A.html"), out var result, out var title));
+        Assert.True(resolver.TryResolveHref(href, Path.Combine(args.SourceFolder, language, "A/App/A.html"), out var result));
         Assert.Equal(expectedUrl, result);
-        Assert.Equal(expectedTitle, title);
     }
 
     [Theory]
     [InlineData("/link.aspx?a=b#h", "en")]
-    [InlineData("/link.aspx?a=b#h", "de")]
+    [InlineData("/link.aspx?a=b#h", "ja")]
     [InlineData("http://localhost/link.aspx?a=b", "en")]
-    [InlineData("http://localhost/link.aspx?a=b", "de")]
+    [InlineData("http://localhost/link.aspx?a=b", "ja")]
     [InlineData("mailto:a@b.lan", "en")]
-    [InlineData("mailto:a@b.lan", "de")]
+    [InlineData("mailto:a@b.lan", "ja")]
     [InlineData("#section", "en")]
-    [InlineData("#section", "de")]
+    [InlineData("#section", "ja")]
     public void HrefShouldLeaveAbosoluteUrlsAsTheyAre(string href, string language)
     {
         var resolver = CreateResolver("app", false, out var args);
         resolver.Language = language;
 
-        Assert.True(resolver.TryResolveHref(href, Path.Combine(args.SourceFolder, language, "A/App/A.html"), out var result, out var title));
+        Assert.True(resolver.TryResolveHref(href, Path.Combine(args.SourceFolder, language, "A/App/A.html"), out var result));
         Assert.Equal(href, result);
-        Assert.Null(title);
     }
 
     [Theory]
@@ -53,10 +57,10 @@ public class ResourceResolverTests
     [InlineData("../images/A/ja_only.jpg?v=123", "ja", true, "images/ja_only.webp?v=4UpIkuzxHXo")]
     // Shared images
     [InlineData("../images/A/Mini_bulb.png", "en", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
-    [InlineData("../images/A/Mini_bulb.png", "de", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
-    [InlineData("../images/A/Mini_bulb.png", "de", true, "/books/images/Mini_bulb.webp?v=S0SOfLZKApI", false)]
-    [InlineData("../images/A/Mini_bulb.png?v=123", "de", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
-    [InlineData("../images/A/Mini_bulb.png?v=123", "de", true, "/books/images/Mini_bulb.webp?v=S0SOfLZKApI", false)]
+    [InlineData("../images/A/Mini_bulb.png", "ja", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
+    [InlineData("../images/A/Mini_bulb.png", "ja", true, "/books/images/Mini_bulb.webp?v=S0SOfLZKApI", false)]
+    [InlineData("../images/A/Mini_bulb.png?v=123", "ja", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
+    [InlineData("../images/A/Mini_bulb.png?v=123", "ja", true, "/books/images/Mini_bulb.webp?v=S0SOfLZKApI", false)]
     public void SrcShouldResolveCorrectly(string src, string language, bool useWebp, string expectedUrl, bool needsCopy = true)
     {
         var resolver = CreateResolver("app", useWebp, out var args);
@@ -92,10 +96,10 @@ public class ResourceResolverTests
     [InlineData(@"..\images\A\ja_only.jpg?v=123", "ja", true, "images/ja_only.webp?v=4UpIkuzxHXo")]
     // Shared images
     [InlineData(@"..\images\A\Mini_bulb.png", "en", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
-    [InlineData(@"..\images\A\Mini_bulb.png", "de", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
-    [InlineData(@"..\images\A\Mini_bulb.png", "de", true, "/books/images/Mini_bulb.webp?v=S0SOfLZKApI", false)]
-    [InlineData(@"..\images\A\Mini_bulb.png?v=123", "de", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
-    [InlineData(@"..\images\A\Mini_bulb.png?v=123", "de", true, "/books/images/Mini_bulb.webp?v=S0SOfLZKApI", false)]
+    [InlineData(@"..\images\A\Mini_bulb.png", "ja", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
+    [InlineData(@"..\images\A\Mini_bulb.png", "ja", true, "/books/images/Mini_bulb.webp?v=S0SOfLZKApI", false)]
+    [InlineData(@"..\images\A\Mini_bulb.png?v=123", "ja", false, "/books/images/Mini_bulb.png?v=S0SOfLZKApI", false)]
+    [InlineData(@"..\images\A\Mini_bulb.png?v=123", "ja", true, "/books/images/Mini_bulb.webp?v=S0SOfLZKApI", false)]
     public void SrcShouldResolveCorrectly_BackSlashes(string src, string language, bool useWebp, string expectedUrl, bool needsCopy = true)
     {
         var resolver = CreateResolver("app", useWebp, out var args);
@@ -119,11 +123,11 @@ public class ResourceResolverTests
     }
 
     [Theory]
-    // Image not exist in de but found in en
-    [InlineData("../images/A/a.jpg", "de", false, "../images/a.jpg?v=KkTJpTT_a1w")]
-    [InlineData("../images/A/a.jpg", "de", true, "../images/a.webp?v=KkTJpTT_a1w")]
-    [InlineData("../images/A/a.jpg?v=123", "de", false, "../images/a.jpg?v=KkTJpTT_a1w")]
-    [InlineData("../images/A/a.jpg?v=123", "de", true, "../images/a.webp?v=KkTJpTT_a1w")]
+    // Image not exist in ja but found in en
+    [InlineData("../images/A/en_only.jpg", "ja", false, "../images/en_only.jpg?v=KkTJpTT_a1w")]
+    [InlineData("../images/A/en_only.jpg", "ja", true, "../images/en_only.webp?v=KkTJpTT_a1w")]
+    [InlineData("../images/A/en_only.jpg?v=123", "ja", false, "../images/en_only.jpg?v=KkTJpTT_a1w")]
+    [InlineData("../images/A/en_only.jpg?v=123", "ja", true, "../images/en_only.webp?v=KkTJpTT_a1w")]
     // Image exists in ja but also found in en
     [InlineData("../images/A/a.jpg", "ja", false, "../images/a.jpg?v=KkTJpTT_a1w")]
     [InlineData("../images/A/a.jpg", "ja", true, "../images/a.webp?v=KkTJpTT_a1w")]
@@ -176,16 +180,16 @@ public class ResourceResolverTests
 
         resolver.Language = "en";
 
-        Assert.True(resolver.TryResolveSrc("../images/A/a.jpg", Path.Combine(args.SourceFolder, "en/A/App/A.html"), out var result, out var copy));
-        Assert.Equal("images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.True(resolver.TryResolveSrc("../images/A/en_only.jpg", Path.Combine(args.SourceFolder, "en/A/App/A.html"), out var result, out var copy));
+        Assert.Equal("images/en_only.jpg?v=KkTJpTT_a1w", result);
         Assert.NotNull(copy);
 
         // Now it process the other language
 
-        resolver.Language = "de";
+        resolver.Language = "ja";
 
-        Assert.True(resolver.TryResolveSrc("../images/B/a.jpg", Path.Combine(args.SourceFolder, "de/A/App/B.html"), out result, out copy));
-        Assert.Equal("/app/a/images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.True(resolver.TryResolveSrc("../images/B/en_only.jpg", Path.Combine(args.SourceFolder, resolver.Language, "A/App/B.html"), out result, out copy));
+        Assert.Equal("/app/a/images/en_only.jpg?v=KkTJpTT_a1w", result);
         Assert.Null(copy);
     }
 
@@ -198,22 +202,22 @@ public class ResourceResolverTests
 
         resolver.Language = "en";
 
-        Assert.True(resolver.TryResolveSrc("../images/A/a.jpg", Path.Combine(args.SourceFolder, "en/A/App/A.html"), out var result, out var copy));
-        Assert.Equal("images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.True(resolver.TryResolveSrc("../images/A/en_only.jpg", Path.Combine(args.SourceFolder, "en/A/App/A.html"), out var result, out var copy));
+        Assert.Equal("images/en_only.jpg?v=KkTJpTT_a1w", result);
         Assert.NotNull(copy);
 
         // Now it process the other language
 
-        resolver.Language = "de";
+        resolver.Language = "ja";
 
-        Assert.True(resolver.TryResolveSrc("../images/B/a.jpg", Path.Combine(args.SourceFolder, "de/A/App/B.html"), out result, out copy));
-        Assert.Equal("/app/a/images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.True(resolver.TryResolveSrc("../images/B/en_only.jpg", Path.Combine(args.SourceFolder, resolver.Language, "A/App/B.html"), out result, out copy));
+        Assert.Equal("/app/a/images/en_only.jpg?v=KkTJpTT_a1w", result);
         Assert.Null(copy);
 
         // The pic appears the second time
 
-        Assert.True(resolver.TryResolveSrc("../images/B/a.jpg", Path.Combine(args.SourceFolder, "de/A/App/B.html"), out result, out copy));
-        Assert.Equal("/app/a/images/a.jpg?v=KkTJpTT_a1w", result);
+        Assert.True(resolver.TryResolveSrc("../images/B/en_only.jpg", Path.Combine(args.SourceFolder, resolver.Language, "A/App/B.html"), out result, out copy));
+        Assert.Equal("/app/a/images/en_only.jpg?v=KkTJpTT_a1w", result);
         Assert.Null(copy);
     }
 
@@ -264,11 +268,11 @@ public class ResourceResolverTests
     }
 
     [Theory]
-    // Image not exist in de but found in en
-    [InlineData(@"..\images\A\a.jpg", "de", false, "../images/a.jpg?v=KkTJpTT_a1w")]
-    [InlineData(@"..\images\A\a.jpg", "de", true, "../images/a.webp?v=KkTJpTT_a1w")]
-    [InlineData(@"..\images\A\a.jpg?v=123", "de", false, "../images/a.jpg?v=KkTJpTT_a1w")]
-    [InlineData(@"..\images\A\a.jpg?v=123", "de", true, "../images/a.webp?v=KkTJpTT_a1w")]
+    // Image not exist in ja but found in en
+    [InlineData(@"..\images\A\en_only.jpg", "ja", false, "../images/en_only.jpg?v=KkTJpTT_a1w")]
+    [InlineData(@"..\images\A\en_only.jpg", "ja", true, "../images/en_only.webp?v=KkTJpTT_a1w")]
+    [InlineData(@"..\images\A\en_only.jpg?v=123", "ja", false, "../images/en_only.jpg?v=KkTJpTT_a1w")]
+    [InlineData(@"..\images\A\en_only.jpg?v=123", "ja", true, "../images/en_only.webp?v=KkTJpTT_a1w")]
     // Image exists in ja but also found in en
     [InlineData(@"..\images\A\a.jpg", "ja", false, "../images/a.jpg?v=KkTJpTT_a1w")]
     [InlineData(@"..\images\A\a.jpg", "ja", true, "../images/a.webp?v=KkTJpTT_a1w")]

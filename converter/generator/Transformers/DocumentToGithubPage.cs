@@ -98,7 +98,7 @@ internal partial class DocumentToGithubPage : DocumentTransformer
 
         if (!files.Parent.IsEmpty)
         {
-            if (ResourceResolver.TryResolveHref("../" + files.Parent, sourceFile, out var url, out var _))
+            if (ResourceResolver.TryResolveHref("../" + files.Parent, sourceFile, out var url))
             {
                 navDataDiv.SetAttribute("data-parent-link", url);
             }

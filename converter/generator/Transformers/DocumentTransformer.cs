@@ -1,6 +1,4 @@
-﻿using System.Buffers;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
@@ -10,7 +8,7 @@ using OriginLab.DocumentGeneration.Templates;
 
 namespace OriginLab.DocumentGeneration.Transformers;
 
-internal partial class DocumentTransformer
+internal class DocumentTransformer
 {
     public string[] AvailableLanguages => ResourceResolver.AvailableLanguages;
 
@@ -98,11 +96,11 @@ internal partial class DocumentTransformer
             return a;
         }
 
-        if (ResourceResolver.TryResolveHref(href, sourceFile, out var result, out var title))
+        if (ResourceResolver.TryResolveHref(href, sourceFile, out var result))
         {
             a.SetAttribute("href", result);
 
-            if ((a.Title.IsBlank || a.Title.Contains(':')) && !title.IsEmpty)
+            if ((a.Title.IsBlank || a.Title.Contains(':')) && ResourceResolver.GetTitle(result) is string title)
             {
                 a.Title = title;
             }
@@ -140,33 +138,6 @@ internal partial class DocumentTransformer
 
         return img;
     }
-
-    public static string? GetPageTitle(string sourceFile)
-    {
-        string? title = null;
-
-        using var reader = new StreamReader(sourceFile);
-        var buffer = ArrayPool<char>.Shared.Rent(1024);
-        var read = reader.ReadBlock(buffer);
-        if (read > 0)
-        {
-            foreach (var match in HeaderRegex.EnumerateMatches(buffer.AsSpan(0, read)))
-            {
-                var parser = new HtmlParser();
-                var doc = parser.ParseDocument(buffer.AsMemory(match.Index, match.Length));
-
-                title = doc.QuerySelector("h1")!.Text();
-                break;
-            }
-        }
-
-        ArrayPool<char>.Shared.Return(buffer);
-
-        return title;
-    }
-
-    [GeneratedRegex(@"<h1[^>]*>.*?</h1>", RegexOptions.Singleline | RegexOptions.IgnoreCase)]
-    private static partial Regex HeaderRegex { get; }
 
     protected void ReportProblem(string sourcePath, string category, string? details = null, TextPosition? position = null)
         => Problems.Record(sourcePath, category, details, position);

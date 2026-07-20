@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Net;
-using System.Xml.Linq;
 
 namespace OriginLab.DocumentGeneration.Resolvers;
 
@@ -14,17 +13,13 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
 
     public override string Language
     {
-        get;
+        get => base.Language;
         set
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(value);
-
-            field = value;
+            base.Language = value;
             VisitedImages.Clear();
         }
-    } = null!;
-
-    private readonly Dictionary<string, (string book, string url, string titleEn)> PageLinks;
+    }
 
     private readonly Dictionary<string, (long size, ulong hash, string pageUrl)> EnglishImages = new(StringComparer.OrdinalIgnoreCase);
 
@@ -33,39 +28,18 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
     public DocsResourceGithubPagesResolver(DocsToStaticPagesTransformationArgs args) : base(args)
     {
         Args = args;
-
-        var pages = new List<(string file, string book, string url, string title)>();
-
-        foreach (var xmlFile in Directory.EnumerateFiles(args.BooksXmlFolder, "*.xml"))
-        {
-            var dirName = Path.GetFileNameWithoutExtension(xmlFile);
-
-            foreach (var p in XElement.Load(xmlFile).Descendants("page"))
-            {
-                var file = $"{dirName}/{p.Attribute("file")!.Value}";
-                var url = p.Attribute("url")!.Value;
-                var sep = url.IndexOf('/');
-                var title = p.Attribute("title")!.Value;
-
-                pages.Add((file, book: sep < 0 ? url : url[..sep], url: sep < 0 ? "" : url[(sep + 1)..], title));
-            }
-        }
-
-        PageLinks = pages.ToDictionary(p => p.file, p => (p.book.ToLowerInvariant(), p.url.ToLowerInvariant(), p.title), StringComparer.OrdinalIgnoreCase);
     }
 
     protected override (string url, ulong hash) GetSharedImageSrc(string path, string fileName)
         => ($"/books/images/{fileName}", FastHash.FromFile(path));
 
-    public override bool TryResolveHref(string href, string sourceFile, out string result, out string? titleEn)
+    public override bool TryResolveHref(string href, string sourceFile, out string uri)
     {
-        titleEn = null;
-
         var parts = new UrlParts(href);
 
         if (parts.IsAbosolute || href.StartsWith('/') || href.StartsWith('#'))
         {
-            result = href;
+            uri = href;
             return true;
         }
 
@@ -78,27 +52,26 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
         {
             if (Language == "en")
             {
-                result = '/'.TrySurroundEach(link.book, link.url);
+                uri = '/'.TrySurroundEach(link.book, link.url);
             }
             else
             {
-                result = '/'.TrySurroundEach(link.book, link.url, Language);
+                uri = '/'.TrySurroundEach(link.book, link.url, Language);
             }
 
             if (!parts.Query.IsEmpty || !parts.Hash.IsEmpty)
             {
-                result = $"{result}{parts.Query}{parts.Hash}";
+                uri = $"{uri}{parts.Query}{parts.Hash}";
             }
 
-            titleEn = link.titleEn;
             return true;
         }
 
-        result = "Unknown href mapping";
+        uri = "Unknown href mapping";
         return false;
     }
 
-    private bool TryGetLink(string fullPath, bool urlDecode, out (string book, string url, string titleEn) link)
+    private bool TryGetLink(string fullPath, bool urlDecode, out (string book, string url) link)
     {
         if (!fullPath.StartsWith(SourceFolder)
             || Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(fullPath.AsSpan()))) is not { IsEmpty: false } targetBookDirContainer)
@@ -119,7 +92,7 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
             || (MovedPages.TryGetValue(targetFile, out var movedToFile) && PageLinks.TryGetValue(movedToFile, out link));
     }
 
-    public override bool TryResolveSrc(string src, string sourceFile, out string result, out (string src, string dst)? copy)
+    public override bool TryResolveSrc(string src, string sourceFile, out string uri, out (string src, string dst)? copy)
     {
         src = src.Replace('\\', '/');
 
@@ -127,7 +100,7 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
 
         if (parts.IsAbosolute || src.StartsWith('/'))
         {
-            result = src;
+            uri = src;
             copy = null;
             return true;
         }
@@ -171,15 +144,15 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
 
         if (SharedImages.TryGetValue(Path.GetFileName(path), out var sharedImage))
         {
-            result = sharedImage.url;
+            uri = sharedImage.url;
             hash = sharedImage.hash;
             needsCopy = false;
         }
         else if (Language == "en")
         {
-            if (TryGetEnglishPageUrl(out result))
+            if (TryGetEnglishPageUrl(out uri))
             {
-                result = result == page.url ? $"images/{name}" : $"/{BaseUrl}/{result}/images/{name}";
+                uri = uri == page.url ? $"images/{name}" : $"/{BaseUrl}/{uri}/images/{name}";
             }
             else
             {
@@ -191,9 +164,9 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
         {
             srcImg = new FileInfo($"{SourceFolder}/en/{srcImg.FullName.AsSpan(SourceFolder.Length + 4)}");
 
-            if (TryGetEnglishPageUrl(out result))
+            if (TryGetEnglishPageUrl(out uri))
             {
-                result = result == page.url ? $"../images/{name}" : $"/{BaseUrl}/{result}/images/{name}";
+                uri = uri == page.url ? $"../images/{name}" : $"/{BaseUrl}/{uri}/images/{name}";
             }
             else
             {
@@ -203,13 +176,13 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
         }
         else if (!VisitedImages.TryGetValue(path, out var visitedImage))
         {
-            result = $"images/{name}";
+            uri = $"images/{name}";
 
             if (EnglishImages.TryGetValue(name, out var enImage)
                 && srcImg.Length == enImage.size
                 && FastHash.FromFile(srcImg.FullName) == enImage.hash)
             {
-                result = enImage.pageUrl == page.url ? $"../images/{name}" : $"/{BaseUrl}/{enImage.pageUrl}/images/{name}";
+                uri = enImage.pageUrl == page.url ? $"../images/{name}" : $"/{BaseUrl}/{enImage.pageUrl}/images/{name}";
                 hash = enImage.hash;
                 needsCopy = false;
             }
@@ -219,27 +192,27 @@ internal sealed partial class DocsResourceGithubPagesResolver : DocsResourceReso
                 hash = FastHash.FromFile(srcImg.FullName);
             }
 
-            VisitedImages.Add(path, (result, hash));
+            VisitedImages.Add(path, (uri, hash));
         }
         else
         {
             // Because `path` contains the page file name, and VisitedImages are cleared when Language changes.
             // VistedImages will not be asked from another page or another language. We can reuse the url.
 
-            result = visitedImage.url;
+            uri = visitedImage.url;
             hash = visitedImage.hash;
             needsCopy = false;
         }
 
         if (UseWebp)
         {
-            var resultDir = Path.GetDirectoryName(result.AsSpan());
-            var resultFileName = Path.GetFileNameWithoutExtension(result.AsSpan());
+            var resultDir = Path.GetDirectoryName(uri.AsSpan());
+            var resultFileName = Path.GetFileNameWithoutExtension(uri.AsSpan());
 
-            result = $"{resultDir}/{resultFileName}.webp";
+            uri = $"{resultDir}/{resultFileName}.webp";
         }
 
-        result = $"{result}?v={FastHash.ToBase64Url(hash)}";
+        uri = $"{uri}?v={FastHash.ToBase64Url(hash)}";
 
         if (!needsCopy)
         {
