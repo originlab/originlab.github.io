@@ -1,7 +1,6 @@
 ﻿
 async function applyLayout(layoutUrl) {
-    var domLoaded = () => new Promise(resolve => window.addEventListener("DOMContentLoaded", event => resolve(event), { once: true }));
-    var domLoadEvent = domLoaded();
+    var domLoadEvent = getPromise(window, 'DOMContentLoaded');
     var response = await fetch(layoutUrl);
     var parser = new DOMParser();
     var layout = parser.parseFromString(await response.text(), 'text/html');
@@ -16,6 +15,14 @@ async function applyLayout(layoutUrl) {
     await domLoadEvent;
 
     var title = document.title;
+
+    if (location.hash) {
+        let hash = location.hash;
+        Promise.all(links.map(link => getPromise(link, 'load'))).then(() => {
+            location.hash = '';
+            location.hash = hash;
+        });
+    }
 
     placeholder.replaceWith(...document.getElementById('main-content').childNodes);
     document.replaceChild(
@@ -38,18 +45,7 @@ async function applyLayout(layoutUrl) {
         document.body.append(script);
     };
 
-    if (location.hash) {
-        let hash = location.hash;
-        let src = links.length > 0 ? links[links.length - 1].href : '/favicon.ico';
-        let img = document.createElement('img');
-        img.src = src;
-        img.onload = img.onerror = () => {
-            document.body.removeChild(img);
-            location.hash = '';
-            location.hash = hash;
-        };
-        document.body.appendChild(img);
-    }
+    function getPromise(obj, ev) { return new Promise(resolve => obj.addEventListener(ev, e => resolve(e), { once: true })); }
 }
 
 function handle404() {
