@@ -7,6 +7,7 @@ async function applyLayout(layoutUrl) {
     var layout = parser.parseFromString(await response.text(), 'text/html');
     var placeholder = layout.getElementById('doc-content-placeholder');
     var scripts = [...layout.scripts];
+    var links = [...layout.querySelectorAll('link[rel=stylesheet]')]
 
     for (var s of scripts) {
         s.remove();
@@ -39,10 +40,15 @@ async function applyLayout(layoutUrl) {
 
     if (location.hash) {
         let hash = location.hash;
-        setTimeout(() => {
+        let src = links.length > 0 ? links[links.length - 1].href : '/favicon.ico';
+        let img = document.createElement('img');
+        img.src = src;
+        img.onload = img.onerror = () => {
+            document.body.removeChild(img);
             location.hash = '';
             location.hash = hash;
-        }, 200);
+        };
+        document.body.appendChild(img);
     }
 }
 
