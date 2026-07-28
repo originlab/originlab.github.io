@@ -36,6 +36,14 @@ async function applyLayout(layoutUrl) {
         }
         document.body.append(script);
     };
+
+    if (location.hash) {
+        let hash = location.hash;
+        setTimeout(() => {
+            location.hash = '';
+            location.hash = hash;
+        }, 200);
+    }
 }
 
 function handle404() {
