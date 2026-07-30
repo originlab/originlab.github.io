@@ -74,11 +74,11 @@ jobs:
               return re.sub(r'[\s-]+', '-', text).strip('-')
 
           def fetch_page_content(page_id):
-              endpoint = f"{URL}/wiki/rest/api/content/{page_id}?expand=body.storage"
+              endpoint = f"{URL}/wiki/rest/api/content/{page_id}?expand=body.view"
               response = requests.get(endpoint, auth=AUTH, headers=HEADERS)
               response.raise_for_status()
               data = response.json()
-              return data["title"], data["body"]["storage"]["value"]
+              return data["title"], data["body"]["view"]["value"]
 
           def fetch_child_pages(page_id):
               endpoint = f"{URL}/wiki/rest/api/content/{page_id}/child/page"
