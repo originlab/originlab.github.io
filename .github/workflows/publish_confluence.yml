@@ -1,0 +1,143 @@
+name: Shared Confluence Sync
+
+on:
+  workflow_call:
+    inputs:
+      confluence_url:
+        required: false
+        type: string
+        default: "https://originlab.jira.com"
+      space_key:
+        required: false
+        type: string
+        default: "main"
+      root_page_id:
+        required: true
+        type: string
+    secrets:
+      CONFLUENCE_EMAIL:
+        required: false
+      CONFLUENCE_API_TOKEN:
+        required: false
+
+jobs:
+  sync-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout Project Repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Create Python Script Dynamically
+        run: |
+          cat << 'EOF' > run_sync.py
+          import os, re, requests
+          from requests.auth import HTTPBasicAuth
+
+          URL = os.environ["CONFLUENCE_URL"].rstrip("/")
+          SPACE_KEY = os.environ["SPACE_KEY"]
+          ROOT_PAGE_ID = os.environ["ROOT_PAGE_ID"]
+          
+          EMAIL = os.environ.get("CONFLUENCE_EMAIL", "")
+          TOKEN = os.environ.get("CONFLUENCE_API_TOKEN", "")
+
+          HEADERS = {"Accept": "application/json"}
+          OUTPUT_DIR = "pages"
+
+          os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+          AUTH = HTTPBasicAuth(EMAIL, TOKEN) if EMAIL and TOKEN else None
+          if AUTH:
+              print("Using Basic Authentication credentials.")
+          else:
+              print("No credentials found. Fetching public/anonymous pages.")
+
+          def slugify(text):
+              text = text.lower()
+              text = re.sub(r'[^a-z0-9\s-]', '', text)
+              return re.sub(r'[\s-]+', '-', text).strip('-')
+
+          def fetch_page_content(page_id):
+              endpoint = f"{URL}/wiki/rest/api/content/{page_id}?expand=body.storage"
+              response = requests.get(endpoint, auth=AUTH, headers=HEADERS)
+              response.raise_for_status()
+              data = response.json()
+              return data["title"], data["body"]["storage"]["value"]
+
+          def fetch_child_pages(page_id):
+              endpoint = f"{URL}/wiki/rest/api/content/{page_id}/child/page"
+              pages = []
+              start, limit = 0, 50
+              while True:
+                  url = f"{endpoint}?start={start}&limit={limit}"
+                  response = requests.get(url, auth=AUTH, headers=HEADERS)
+                  response.raise_for_status()
+                  data = response.json()
+                  results = data.get("results", [])
+                  pages.extend(results)
+                  if len(results) < limit: break
+                  start += limit
+              return pages
+
+          def process_page(page_id):
+              try:
+                  title, html_body = fetch_page_content(page_id)
+                  filename = f"{slugify(title)}.html"
+                  filepath = os.path.join(OUTPUT_DIR, filename)
+                  
+                  html_content = f"<!DOCTYPE html>\n<html>\n<head>\n<meta charset='UTF-8'>\n<title>{title}</title>\n<style>body {{ font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: 0 auto; }}</style>\n</head>\n<body>\n<h1>{title}</h1>\n{html_body}\n</body>\n</html>"
+                  
+                  with open(filepath, "w", encoding="utf-8") as f:
+                      f.write(html_content)
+                  print(f"Saved: {filepath}")
+                  
+                  for child in fetch_child_pages(page_id):
+                      process_page(child["id"])
+              except Exception as e:
+                  print(f"Error processing page {page_id}: {e}")
+
+          if __name__ == "__main__":
+              process_page(ROOT_PAGE_ID)
+              print("Sync complete.")
+          EOF
+
+      - name: Fetch Confluence Pages
+        env:
+          CONFLUENCE_URL: ${{ inputs.confluence_url }}
+          CONFLUENCE_EMAIL: ${{ secrets.CONFLUENCE_EMAIL }}
+          CONFLUENCE_API_TOKEN: ${{ secrets.CONFLUENCE_API_TOKEN }}
+          SPACE_KEY: ${{ inputs.space_key }}
+          ROOT_PAGE_ID: ${{ inputs.root_page_id }}
+        run: python run_sync.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "Github Actions bot"
+          git config --global user.email "github-actions[bot]@github.com"
+          git add pages/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update docs from Confluence" && git push)
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './pages'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
