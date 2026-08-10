@@ -127,7 +127,9 @@
           <page title="Tutorial for Regression with Life Data" file="App/SA_RLD_Tutorial.html" url="App/Tutorial-SA-RLD" src="App:SA_RLD_Tutorial"/>
           <page title="Algorithm: Regression with Life Data" file="App/SA_RLD_Algorithm.html" url="App/SA-RLD-Algorithm" src="App:SA_RLD_Algorithm"/>
         </page>
-        <page title="Identify Distribution for Right Censoring(Pro)" file="Category/Identify_Distribution_for_Right_Censoring(APP).html" url="App/ID-RC" src="Category:Identify_Distribution_for_Right_Censoring(APP)"/>
+        <page title="Identify Distribution for Right Censoring(Pro)" file="Category/Identify_Distribution_for_Right_Censoring(APP).html" url="App/ID-RC" src="Category:Identify_Distribution_for_Right_Censoring(APP)">
+          <page title="Tutorial for Identify Distribution (Right Censoring)" file="App/Identify_Distribution_for_Right_Censoring_Tutorial.html" url="App/Tutorial-Indentify-Distribution-Right-Censoring" src="App:Identify_Distribution_for_Right_Censoring_Tutorial"/>
+        </page>
         <page title="Transform Warranty Data" file="Category/Transform_Warranty_Data(App).html" url="App/SA-Transform-Warranty" src="Category:Transform_Warranty_Data(App)"/>
         <page title="Warranty Analysis" file="Category/Warranty_Analysis(App).html" url="App/SA-Warranty" src="Category:Warranty_Analysis(App)">
           <page title="Tutorial for Warranty Analysis" file="App/Warranty_Analysis_Tutorial.html" url="App/Tutorial-Warranty-Analysis" src="App:Warranty_Analysis_Tutorial"/>
@@ -137,7 +139,9 @@
           <page title="Tutorial for Accelerated Life Testing" file="App/SA_Accelerated_Life_Testingt_Tutorial.html" url="App/Tutorial-Accelerated-Life-Testing" src="App:SA_Accelerated_Life_Testingt_Tutorial"/>
           <page title="Algorithm: Accelerated Life Testing" file="App/SA_Accelerated_Life_Testingt_Algorithm.html" url="App/SA-Accelerated-Life-Testing-Algorithm" src="App:SA_Accelerated_Life_Testingt_Algorithm"/>
         </page>
-        <page title="Distribution Overview for Right Censoring (Pro)" file="Category/Distribution_Overview_for_Right_Censoring(APP).html" url="App/RC-Dist-Overview" src="Category:Distribution_Overview_for_Right_Censoring(APP)"/>
+        <page title="Distribution Overview for Right Censoring (Pro)" file="Category/Distribution_Overview_for_Right_Censoring(APP).html" url="App/RC-Dist-Overview" src="Category:Distribution_Overview_for_Right_Censoring(APP)">
+          <page title="Tutorial for Distribution Overview (Right Censoring)" file="App/Distribution_Overview_for_Right_Censoring_Tutorial.html" url="App/Tutorial-Distribution-Overview-Right-Censoring" src="App:Distribution_Overview_for_Right_Censoring_Tutorial"/>
+        </page>
         <page title="Nonparametric Distribution Analysis (Arbitrary Censoring) (Pro)" file="Category/Nonparametric_Distribution_Analysis(App).html" url="App/SA-Nonparametric-Dist" src="Category:Nonparametric_Distribution_Analysis(App)">
           <page title="Tutorial for Nonparametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Nonparametric_Dist_Tutorial.html" url="App/Tutorial-Nonparametric-Distribution-Analysis-Arbitrary-Censoring" src="App:SA_Nonparametric_Dist_Tutorial"/>
           <page title="Algorithm: Nonparametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Nonparametric_Dist_Algorithm.html" url="App/SA-Nonparametric-Dist-Algorithm" src="App:SA_Nonparametric_Dist_Algorithm"/>
@@ -175,8 +179,8 @@
       <page title="Slope Analyzer (Pro)" file="App/Slope_Analyzer.html" url="App/Slope-Analyzer" src="App:Slope_Analyzer"/>
       <page title="Weibull Fit with Least Squares Method" file="App/Weibull_Fit_with_Least_Squares_Method.html" url="App/Weibull-Fit-Least-Squares" src="App:Weibull_Fit_with_Least_Squares_Method"/>
       <page title="Gage Study (Pro)" file="Category/Gage_Study(App).html" url="App/GG" src="Category:Gage_Study(App)">
-        <page title="Tutorial for Gage R&amp;amp;R Study" file="App/Tutorial_GG.html" url="App/Tutorial-GG" src="App:Tutorial_GG"/>
-        <page title="Algorithm for Gage R&amp;amp;R Study" file="App/Algorithm_GG.html" url="App/Algorithm-GG" src="App:Algorithm_GG"/>
+        <page title="Tutorial for Gage Study" file="App/Tutorial_GG.html" url="App/Tutorial-GG" src="App:Tutorial_GG"/>
+        <page title="Algorithm for Gage Study" file="App/Algorithm_GG.html" url="App/Algorithm-GG" src="App:Algorithm_GG"/>
       </page>
       <page title="3D Convex Hull" file="App/3D_Convex_Hull.html" url="App/3D-Convex-Hull" src="App:3D_Convex_Hull"/>
       <page title="Overlap Area" file="App/Overlap_Area.html" url="App/Overlap-Area" src="App:Overlap_Area"/>
@@ -251,6 +255,7 @@
       <page title="Effect Size for ANOVA(Pro)" file="App/Effect_Size_for_ANOVA.html" url="App/Effect-Size-for-ANOVA" src="App:Effect_Size_for_ANOVA"/>
       <page title="Bootstrap Sampling(Pro)" file="App/Bootstrap_Sampling.html" url="App/Bootstrap-Sampling" src="App:Bootstrap_Sampling"/>
       <page title="Statistical Process Control (Pro)" file="Category/Statistical_Process_Control(App).html" url="App/SPC" src="Category:Statistical_Process_Control(App)">
+        <page title="Specifying Input Data for SPC Tools" file="App/Specify_Input_Data_SPC.html" url="App/SPC-Inpuyh" src="App:Specify_Input_Data_SPC"/>
         <page title="Identify Data Distribution" file="Category/Identify_Data_Distribution(App).html" url="App/IDD" src="Category:Identify_Data_Distribution(App)">
           <page title="Tutorial for Identify Data Distribution" file="App/Tutorial_IDD.html" url="App/Tutorial-IDD" src="App:Tutorial_IDD"/>
           <page title="Algorithm for Identify Data Distribution" file="App/Algorithm_IDD.html" url="App/Algorithm-IDD" src="App:Algorithm_IDD"/>
@@ -274,10 +279,6 @@
       </page>
       <page title="Generalized Linear Mixed Model(Pro)" file="App/Generalized_Linear_Mixed_Model.html" url="App/GLMM" src="App:Generalized_Linear_Mixed_Model"/>
       <page title="Sparse Principal Components Analysis(Pro)" file="App/Sparse_Principal_Components_Analysis.html" url="App/Sparse-PCA" src="App:Sparse_Principal_Components_Analysis"/>
-      <page title="Acceptance Sampling Analysis" file="Category/Acceptance_Sampling_Analysis(App).html" url="App/ASA" src="Category:Acceptance_Sampling_Analysis(App)">
-        <page title="Tutorial for Acceptance Sampling Analysis" file="App/Tutorial_Acceptance_Sampling_Analysis.html" url="App/ASA-Tutorial" src="App:Tutorial_Acceptance_Sampling_Analysis"/>
-        <page title="Algorithm for Acceptance Sampling Analysis" file="App/Algorithm_Acceptance_Sampling_Analysis.html" url="App/ASA-Algorithm" src="App:Algorithm_Acceptance_Sampling_Analysis"/>
-      </page>
     </page>
     <page title="Data Handling" file="Category/Data_Handling(App).html" url="App/app-data-handling" src="Category:Data_Handling(App)">
       <page title="Tafel Extrapolation" file="App/Tafel_Extrapolation.html" url="App/Tafel-Extrapolation" src="App:Tafel_Extrapolation"/>
