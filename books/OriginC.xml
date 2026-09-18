@@ -317,6 +317,7 @@
           <page title="RGBtoHSV" file="OriginC/RGBtoHSV_(global_function).html" url="OriginC/ref/RGBtoHSV" src="OriginC:RGBtoHSV_(global_function)"/>
           <page title="RGBtoLAB" file="OriginC/RGBtoLAB_(global_function).html" url="OriginC/ref/RGBtoLAB" src="OriginC:RGBtoLAB_(global_function)"/>
           <page title="RGBtoLCH" file="OriginC/RGBtoLCH_(global_function).html" url="OriginC/ref/RGBtoLCH" src="OriginC:RGBtoLCH_(global_function)"/>
+          <page title="strtod" file="OriginC/Strtod_(global_function).html" url="OriginC/ref/strtod" src="OriginC:Strtod_(global_function)"/>
           <page title="strtol" file="OriginC/Strtol_(global_function).html" url="OriginC/ref/strtol" src="OriginC:Strtol_(global_function)"/>
           <page title="_strtoi64" file="OriginC/Strtoi64_(global_function).html" url="OriginC/ref/_strtoi64" src="OriginC:Strtoi64_(global_function)"/>
         </page>
@@ -532,6 +533,7 @@
         <page title="Internal Origin Objects" file="Category/Internal_Origin_Objects_(global_function).html" url="OriginC/ref/Internal-Origin-Objects-GlobalFunction" src="Category:Internal_Origin_Objects_(global_function)">
           <page title="Graph" file="Category/Graph_(global_function).html" url="OriginC/ref/Graph-GlobalFunction" src="Category:Graph_(global_function)">
             <page title="add_plots_to_layer" file="OriginC/Add_plots_to_layer_(global_function).html" url="OriginC/ref/add_plots_to_layer" src="OriginC:Add_plots_to_layer_(global_function)"/>
+            <page title="plot_sparkline" file="OriginC/Plot_sparkline_(global_function).html" url="OriginC/ref/plot_sparkline" src="OriginC:Plot_sparkline_(global_function)"/>
             <page title="check_has_plotted_in_graph" file="OriginC/Check_has_plotted_in_graph_(global_function).html" url="OriginC/ref/check_has_plotted_in_graph" src="OriginC:Check_has_plotted_in_graph_(global_function)"/>
             <page title="create_rect_object" file="OriginC/Create_rect_object_(global_function).html" url="OriginC/ref/create_rect_object" src="OriginC:Create_rect_object_(global_function)"/>
             <page title="dataplot_set_colormap" file="OriginC/Dataplot_set_colormap_(global_function).html" url="OriginC/ref/dataplot_set_colormap" src="OriginC:Dataplot_set_colormap_(global_function)"/>
@@ -1265,6 +1267,7 @@
               <page title="invncp" file="OriginC/Invncp_(global_function).html" url="OriginC/ref/invncp" src="OriginC:Invncp_(global_function)"/>
               <page title="invprob" file="OriginC/Invprob_(global_function).html" url="OriginC/ref/invprob" src="OriginC:Invprob_(global_function)"/>
               <page title="norminv" file="OriginC/Norminv_(global_function).html" url="OriginC/ref/norminv" src="OriginC:Norminv_(global_function)"/>
+              <page title="ocmath_betainv" file="OriginC/Ocmath_betainv_(global_function).html" url="OriginC/ref/ocmath_betainv" src="OriginC:Ocmath_betainv_(global_function)"/>
               <page title="srangeinv" file="OriginC/Srangeinv_(global_function).html" url="OriginC/ref/srangeinv" src="OriginC:Srangeinv_(global_function)"/>
               <page title="tinv" file="OriginC/Tinv_(global_function).html" url="OriginC/ref/tinv" src="OriginC:Tinv_(global_function)"/>
               <page title="tTable" file="OriginC/TTable_(global_function).html" url="OriginC/ref/tTable" src="OriginC:TTable_(global_function)"/>
@@ -1299,23 +1302,30 @@
             <page title="ocmath_shapiro_wilk_test_R94" file="OriginC/Ocmath_shapiro_wilk_test_R94_(global_function).html" url="OriginC/ref/ocmath_shapiro_wilk_test_R94" src="OriginC:Ocmath_shapiro_wilk_test_R94_(global_function)"/>
           </page>
           <page title="Random Number Generators" file="Category/Random_Number_Generators_(global_function).html" url="OriginC/ref/Random-Number-Generators" src="Category:Random_Number_Generators_(global_function)">
+            <page title="bernrnd" file="OriginC/Bernrnd_(global_function).html" url="OriginC/ref/bernrnd" src="OriginC:Bernrnd_(global_function)"/>
             <page title="betarnd" file="OriginC/Betarnd_(global_function).html" url="OriginC/ref/betarnd" src="OriginC:Betarnd_(global_function)"/>
             <page title="binornd" file="OriginC/Binornd_(global_function).html" url="OriginC/ref/binornd" src="OriginC:Binornd_(global_function)"/>
             <page title="caurnd" file="OriginC/Caurnd_(global_function).html" url="OriginC/ref/caurnd" src="OriginC:Caurnd_(global_function)"/>
             <page title="chi2rnd" file="OriginC/Chi2rnd_(global_function).html" url="OriginC/ref/chi2rnd" src="OriginC:Chi2rnd_(global_function)"/>
             <page title="disrnd" file="OriginC/Disrnd_(global_function).html" url="OriginC/ref/disrnd" src="OriginC:Disrnd_(global_function)"/>
+            <page title="disrnd2" file="OriginC/Disrnd2_(global_function).html" url="OriginC/ref/disrnd2" src="OriginC:Disrnd2_(global_function)"/>
             <page title="exprnd" file="OriginC/Exprnd_(global_function).html" url="OriginC/ref/exprnd" src="OriginC:Exprnd_(global_function)"/>
             <page title="frnd" file="OriginC/Frnd_(global_function).html" url="OriginC/ref/frnd" src="OriginC:Frnd_(global_function)"/>
             <page title="gamrnd" file="OriginC/Gamrnd_(global_function).html" url="OriginC/ref/gamrnd" src="OriginC:Gamrnd_(global_function)"/>
             <page title="geornd" file="OriginC/Geornd_(global_function).html" url="OriginC/ref/geornd" src="OriginC:Geornd_(global_function)"/>
             <page title="hygernd" file="OriginC/Hygernd_(global_function).html" url="OriginC/ref/hygernd" src="OriginC:Hygernd_(global_function)"/>
+            <page title="laprnd" file="OriginC/Laprnd_(global_function).html" url="OriginC/ref/laprnd" src="OriginC:Laprnd_(global_function)"/>
+            <page title="levrnd" file="OriginC/Levrnd_(global_function).html" url="OriginC/ref/levrnd" src="OriginC:Levrnd_(global_function)"/>
             <page title="lgsrnd" file="OriginC/Lgsrnd_(global_function).html" url="OriginC/ref/lgsrnd" src="OriginC:Lgsrnd_(global_function)"/>
+            <page title="llgsrnd" file="OriginC/Llgsrnd_(global_function).html" url="OriginC/ref/llgsrnd" src="OriginC:Llgsrnd_(global_function)"/>
             <page title="lognrnd" file="OriginC/Lognrnd_(global_function).html" url="OriginC/ref/lognrnd" src="OriginC:Lognrnd_(global_function)"/>
             <page title="mvnrnd" file="OriginC/Mvnrnd_(global_function).html" url="OriginC/ref/mvnrnd" src="OriginC:Mvnrnd_(global_function)"/>
             <page title="nbinrnd" file="OriginC/Nbinrnd_(global_function).html" url="OriginC/ref/nbinrnd" src="OriginC:Nbinrnd_(global_function)"/>
             <page title="normrnd" file="OriginC/Normrnd_(global_function).html" url="OriginC/ref/normrnd" src="OriginC:Normrnd_(global_function)"/>
+            <page title="ocmath_is_matrix_positive_definite" file="OriginC/Ocmath_is_matrix_positive_definite_(global_function).html" url="OriginC/ref/ocmath_is_matrix_positive_definite" src="OriginC:Ocmath_is_matrix_positive_definite_(global_function)"/>
             <page title="permrnd" file="OriginC/Permrnd_(global_function).html" url="OriginC/ref/permrnd" src="OriginC:Permrnd_(global_function)"/>
             <page title="poissrnd" file="OriginC/Poissrnd_(global_function).html" url="OriginC/ref/poissrnd" src="OriginC:Poissrnd_(global_function)"/>
+            <page title="sevrnd" file="OriginC/Sevrnd_(global_function).html" url="OriginC/ref/sevrnd" src="OriginC:Sevrnd_(global_function)"/>
             <page title="trirnd" file="OriginC/Trirnd_(global_function).html" url="OriginC/ref/trirnd" src="OriginC:Trirnd_(global_function)"/>
             <page title="trnd" file="OriginC/Trnd_(global_function).html" url="OriginC/ref/trnd" src="OriginC:Trnd_(global_function)"/>
             <page title="unidrnd" file="OriginC/Unidrnd_(global_function).html" url="OriginC/ref/unidrnd" src="OriginC:Unidrnd_(global_function)"/>
@@ -1369,7 +1379,6 @@
           <page title="get_origin_c_data_types" file="OriginC/Get_origin_c_data_types_(global_function).html" url="OriginC/ref/get_origin_c_data_types" src="OriginC:Get_origin_c_data_types_(global_function)"/>
           <page title="get_system_font_info" file="OriginC/Get_system_font_info_(global_function).html" url="OriginC/ref/get_system_font_info" src="OriginC:Get_system_font_info_(global_function)"/>
           <page title="get_system_font_name" file="OriginC/Get_system_font_name_(global_function).html" url="OriginC/ref/get_system_font_name" src="OriginC:Get_system_font_name_(global_function)"/>
-          <page title="InstallPythonPackages" file="OriginC/InstallPythonPackages_(global_function).html" url="OriginC/ref/InstallPythonPackages" src="OriginC:InstallPythonPackages_(global_function)"/>
           <page title="IsClipboardFormatAvailable" file="OriginC/IsClipboardFormatAvailable_(global_function).html" url="OriginC/ref/IsClipboardFormatAvailable" src="OriginC:IsClipboardFormatAvailable_(global_function)"/>
           <page title="IsMenu" file="OriginC/IsMenu_(global_function).html" url="OriginC/ref/IsMenu" src="OriginC:IsMenu_(global_function)"/>
           <page title="IsWindowVisible" file="OriginC/IsWindowVisible_(global_function).html" url="OriginC/ref/IsWindowVisible" src="OriginC:IsWindowVisible_(global_function)"/>
@@ -1658,7 +1667,9 @@
             <page title="Matrix::Update" file="OriginC/Matrix-Update.html" url="OriginC/ref/Matrix-Update" src="OriginC:Matrix-Update"/>
           </page>
           <page title="matrixbase" file="Category/Matrixbase_(class).html" url="OriginC/ref/matrixbase" src="Category:Matrixbase_(class)">
+            <page title="matrixbase::AllNANUM" file="OriginC/Matrixbase-AllNANUM.html" url="OriginC/ref/matrixbase-AllNANUM" src="OriginC:Matrixbase-AllNANUM"/>
             <page title="matrixbase::AllNonZero" file="OriginC/Matrixbase-AllNonZero.html" url="OriginC/ref/matrixbase-AllNonZero" src="OriginC:Matrixbase-AllNonZero"/>
+            <page title="matrixbase::AnyNANUM" file="OriginC/Matrixbase-AnyNANUM.html" url="OriginC/ref/matrixbase-AnyNANUM" src="OriginC:Matrixbase-AnyNANUM"/>
             <page title="matrixbase::AnyNonZero" file="OriginC/Matrixbase-AnyNonZero.html" url="OriginC/ref/matrixbase-AnyNonZero" src="OriginC:Matrixbase-AnyNonZero"/>
             <page title="matrixbase::ApplyFilter" file="OriginC/Matrixbase-ApplyFilter.html" url="OriginC/ref/matrixbase-ApplyFilter" src="OriginC:Matrixbase-ApplyFilter"/>
             <page title="matrixbase::CastToDouble" file="OriginC/Matrixbase-CastToDouble.html" url="OriginC/ref/matrixbase-CastToDouble" src="OriginC:Matrixbase-CastToDouble"/>
@@ -1997,11 +2008,13 @@
             <page title="Column::IsAsCategorical" file="OriginC/Column-IsAsCategorical.html" url="OriginC/ref/Column-IsAsCategorical" src="OriginC:Column-IsAsCategorical"/>
             <page title="Column::IsEvenSampling" file="OriginC/Column-IsEvenSampling.html" url="OriginC/ref/Column-IsEvenSampling" src="OriginC:Column-IsEvenSampling"/>
             <page title="Column::IsFilterDisabled" file="OriginC/Column-IsFilterDisabled.html" url="OriginC/ref/Column-IsFilterDisabled" src="OriginC:Column-IsFilterDisabled"/>
+            <page title="Column::IsMirror" file="OriginC/Column-IsMirror.html" url="OriginC/ref/Column-IsMirror" src="OriginC:Column-IsMirror"/>
             <page title="Column::IsWriteProtected" file="OriginC/Column-IsWriteProtected.html" url="OriginC/ref/Column-IsWriteProtected" src="OriginC:Column-IsWriteProtected"/>
             <page title="Column::PutStringArray" file="OriginC/Column-PutStringArray.html" url="OriginC/ref/Column-PutStringArray" src="OriginC:Column-PutStringArray"/>
             <page title="Column::ResetFilter" file="OriginC/Column-ResetFilter.html" url="OriginC/ref/Column-ResetFilter" src="OriginC:Column-ResetFilter"/>
             <page title="Column::Reverse" file="OriginC/Column-Reverse.html" url="OriginC/ref/Column-Reverse" src="OriginC:Column-Reverse"/>
             <page title="Column::SetAsCategorical" file="OriginC/Column-SetAsCategorical.html" url="OriginC/ref/Column-SetAsCategorical" src="OriginC:Column-SetAsCategorical"/>
+            <page title="Column::SetAsMirror" file="OriginC/Column-SetAsMirror.html" url="OriginC/ref/Column-SetAsMirror" src="OriginC:Column-SetAsMirror"/>
             <page title="Column::SetComments" file="OriginC/Column-SetComments.html" url="OriginC/ref/Column-SetComments" src="OriginC:Column-SetComments"/>
             <page title="Column::SetCustomDisplay" file="OriginC/Column-SetCustomDisplay.html" url="OriginC/ref/Column-SetCustomDisplay" src="OriginC:Column-SetCustomDisplay"/>
             <page title="Column::SetDigitMode" file="OriginC/Column-SetDigitMode.html" url="OriginC/ref/Column-SetDigitMode" src="OriginC:Column-SetDigitMode"/>
@@ -3597,6 +3610,17 @@
           <page title="LTVarTempChange" file="Category/LTVarTempChange_(class).html" url="OriginC/ref/LTVarTempChange" src="Category:LTVarTempChange_(class)">
             <page title="LTVarTempChange::LTVarTempChange" file="OriginC/LTVarTempChange-LTVarTempChange.html" url="OriginC/ref/LTVarTempChange-LTVarTempChange" src="OriginC:LTVarTempChange-LTVarTempChange"/>
           </page>
+          <page title="omap" file="Category/Omap_(class).html" url="OriginC/ref/omap" src="Category:Omap_(class)">
+            <page title="omap::Contains" file="OriginC/Omap-Contains.html" url="OriginC/ref/omap-Contains" src="OriginC:Omap-Contains"/>
+            <page title="omap::Erase" file="OriginC/Omap-Erase.html" url="OriginC/ref/omap-Erase" src="OriginC:Omap-Erase"/>
+            <page title="omap::Get" file="OriginC/Omap-Get.html" url="OriginC/ref/omap-Get" src="OriginC:Omap-Get"/>
+            <page title="omap::GetKeys" file="OriginC/Omap-GetKeys.html" url="OriginC/ref/omap-GetKeys" src="OriginC:Omap-GetKeys"/>
+            <page title="omap::GetSize" file="OriginC/Omap-GetSize.html" url="OriginC/ref/omap-GetSize" src="OriginC:Omap-GetSize"/>
+            <page title="omap::GetValues" file="OriginC/Omap-GetValues.html" url="OriginC/ref/omap-GetValues" src="OriginC:Omap-GetValues"/>
+            <page title="omap::omap" file="OriginC/Omap-omap.html" url="OriginC/ref/omap-omap" src="OriginC:Omap-omap"/>
+            <page title="omap::RemoveAll" file="OriginC/Omap-RemoveAll.html" url="OriginC/ref/omap-RemoveAll" src="OriginC:Omap-RemoveAll"/>
+            <page title="omap::Set" file="OriginC/Omap-Set.html" url="OriginC/ref/omap-Set" src="OriginC:Omap-Set"/>
+          </page>
           <page title="OrgAppInfo" file="Category/OrgAppInfo_(class).html" url="OriginC/ref/OrgAppInfo" src="Category:OrgAppInfo_(class)">
             <page title="OrgAppInfo::Author" file="OriginC/OrgAppInfo-Author.html" url="OriginC/ref/OrgAppInfo-Author" src="OriginC:OrgAppInfo-Author"/>
             <page title="OrgAppInfo::Description" file="OriginC/OrgAppInfo-Description.html" url="OriginC/ref/OrgAppInfo-Description" src="OriginC:OrgAppInfo-Description"/>
@@ -3620,6 +3644,15 @@
             <page title="OrgApps::RecentApps" file="OriginC/OrgApps-RecentApps.html" url="OriginC/ref/OrgApps-RecentApps" src="OriginC:OrgApps-RecentApps"/>
           </page>
           <page title="OriginApp" file="Category/OriginApp_(class).html" url="OriginC/ref/OriginApp" src="Category:OriginApp_(class)"/>
+          <page title="oset" file="Category/Oset_(class).html" url="OriginC/ref/oset" src="Category:Oset_(class)">
+            <page title="oset::Contains" file="OriginC/Oset-Contains.html" url="OriginC/ref/oset-Contains" src="OriginC:Oset-Contains"/>
+            <page title="oset::Erase" file="OriginC/Oset-Erase.html" url="OriginC/ref/oset-Erase" src="OriginC:Oset-Erase"/>
+            <page title="oset::GetAsVector" file="OriginC/Oset-GetAsVector.html" url="OriginC/ref/oset-GetAsVector" src="OriginC:Oset-GetAsVector"/>
+            <page title="oset::GetSize" file="OriginC/Oset-GetSize.html" url="OriginC/ref/oset-GetSize" src="OriginC:Oset-GetSize"/>
+            <page title="oset::Insert" file="OriginC/Oset-Insert.html" url="OriginC/ref/oset-Insert" src="OriginC:Oset-Insert"/>
+            <page title="oset::oset" file="OriginC/Oset-oset.html" url="OriginC/ref/oset-oset" src="OriginC:Oset-oset"/>
+            <page title="oset::RemoveAll" file="OriginC/Oset-RemoveAll.html" url="OriginC/ref/oset-RemoveAll" src="OriginC:Oset-RemoveAll"/>
+          </page>
           <page title="Profiler" file="Category/Profiler_(class).html" url="OriginC/ref/Profiler" src="Category:Profiler_(class)">
             <page title="Profiler::Profiler" file="OriginC/Profiler-Profiler.html" url="OriginC/ref/Profiler-Profiler" src="OriginC:Profiler-Profiler"/>
           </page>
@@ -3772,6 +3805,16 @@
         <page title="SetUpperIndex" file="OriginC/SetUpperIndex.html" url="OriginC/ref/SetUpperIndex" src="OriginC:SetUpperIndex"/>
         <page title="STR_CURRENT_SHARE_STATE_ATTRIB" file="OriginC/STR_CURRENT_SHARE_STATE_ATTRIB.html" url="OriginC/ref/STR_CURRENT_SHARE_STATE_ATTRIB" src="OriginC:STR_CURRENT_SHARE_STATE_ATTRIB"/>
         <page title="STR_GUI_THEME_FILE_ATTRIB" file="OriginC/STR_GUI_THEME_FILE_ATTRIB.html" url="OriginC/ref/STR_GUI_THEME_FILE_ATTRIB" src="OriginC:STR_GUI_THEME_FILE_ATTRIB"/>
+      </page>
+      <page title="Keyword" file="Category/Keyword_(OriginC).html" url="OriginC/ref/Keyword" src="Category:Keyword_(OriginC)">
+        <page title="auto" file="OriginC/Auto.html" url="OriginC/ref/auto" src="OriginC:Auto"/>
+        <page title="ffor" file="OriginC/Ffor.html" url="OriginC/ref/ffor" src="OriginC:Ffor"/>
+        <page title="for" file="OriginC/For.html" url="OriginC/ref/for" src="OriginC:For"/>
+        <page title="if" file="OriginC/If.html" url="OriginC/ref/if" src="OriginC:If"/>
+        <page title="nullptr" file="OriginC/Nullptr.html" url="OriginC/ref/nullptr" src="OriginC:Nullptr"/>
+        <page title="override" file="OriginC/Override.html" url="OriginC/ref/override" src="OriginC:Override"/>
+        <page title="static_assert" file="OriginC/Static_assert.html" url="OriginC/ref/static_assert" src="OriginC:Static_assert"/>
+        <page title="switch" file="OriginC/Switch.html" url="OriginC/ref/switch" src="OriginC:Switch"/>
       </page>
       <page title="Typedef" file="Category/Typedef_(OriginC).html" url="OriginC/ref/Typedef" src="Category:Typedef_(OriginC)">
         <page title="COLORREF" file="OriginC/COLORREF.html" url="OriginC/ref/COLORREF" src="OriginC:COLORREF"/>
