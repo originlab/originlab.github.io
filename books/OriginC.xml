@@ -4228,5 +4228,6 @@
       </page>
     </page>
     <page title="Build Dialogs using HTML and JavaScript" file="OriginC/HTML_JS_Dialog.html" url="OriginC/Intro-HTML-JS-Dialog" src="OriginC:HTML_JS_Dialog"/>
+    <page title="Recent Changes in Origin C" file="Category/Recent_Changes.html" url="OriginC/Recent-Changes" src="Category:Recent_Changes"/>
   </page>
 </book>
