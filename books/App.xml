@@ -146,6 +146,9 @@
           <page title="Tutorial for Nonparametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Nonparametric_Dist_Tutorial.html" url="App/Tutorial-Nonparametric-Distribution-Analysis-Arbitrary-Censoring" src="App:SA_Nonparametric_Dist_Tutorial"/>
           <page title="Algorithm: Nonparametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Nonparametric_Dist_Algorithm.html" url="App/SA-Nonparametric-Dist-Algorithm" src="App:SA_Nonparametric_Dist_Algorithm"/>
         </page>
+        <page title="Demonstration" file="Category/Demonstration(APP).html" url="App/SA-Demonstration" src="Category:Demonstration(APP)">
+          <page title="Tutorial for Demonstration Test Plan" file="App/SA_Demonstration_Test_Plan_Tutorial.html" url="App/Tutorial-Demonostration-Test-Plan" src="App:SA_Demonstration_Test_Plan_Tutorial"/>
+        </page>
         <page title="Parametric Distribution Analysis (Arbitrary Censoring)" file="Category/Parametric_Distribution_Analysis_AC(App).html" url="App/SA-Parametric-Dist-Arbitrary-Censoring" src="Category:Parametric_Distribution_Analysis_AC(App)">
           <page title="Tutorial for Parametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Parametric_Dist_Arbitrary_Censoring_Tutorial.html" url="App/Tutorial-Parametric-Distribution-Analysis-Arbitrary-Censoring" src="App:SA_Parametric_Dist_Arbitrary_Censoring_Tutorial"/>
           <page title="Algorithm: Parametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Parametric_Dist_AC_Algorithm.html" url="App/SA-Parametric-Dist-AC-Algorithm" src="App:SA_Parametric_Dist_AC_Algorithm"/>
@@ -195,32 +198,62 @@
       <page title="Stats Advisor" file="App/Stats_Advisor.html" url="App/Stats-Advisor" src="App:Stats_Advisor"/>
       <page title="Bubble Image Area (Pro)" file="App/Bubble_Image_Area.html" url="App/Bubble-Image-Area" src="App:Bubble_Image_Area"/>
       <page title="Design of Experiments (Pro)" file="App/Design_of_Experiments.html" url="App/DOE" src="App:Design_of_Experiments"/>
-      <page title="Design of Experiments" file="Category/Design_of_Experiments(App).html" url="App/Design-of-Experiments" src="Category:Design_of_Experiments(App)">
-        <page title="Define Custom Designs" file="Category/Custom_Designs(App).html" url="App/Custom-Designs" src="Category:Custom_Designs(App)">
-          <page title="The Define Custom Design Dialog Box" file="App/The_Define_Custom_Design_Dialog_Box.html" url="App/Custom-Design-Dialog" src="App:The_Define_Custom_Design_Dialog_Box"/>
+      <page title="Design of Experiments" file="Category/Design_of_Experiments(App).html" url="App/DOE" src="Category:Design_of_Experiments(App)">
+        <page title="Power and Sample Size (DOE)" file="Category/Power_and_Sample_Size_DOE(App).html" url="App/Power-Sample-Size-DOE" src="Category:Power_and_Sample_Size_DOE(App)"/>
+        <page title="Define and Create Designs" file="Category/Define_and_Create_Designs.html" url="App/Define-Create-Designs" src="Category:Define_and_Create_Designs">
+          <page title="Define Custom Designs" file="Category/Custom_Designs(App).html" url="App/Custom-Designs" src="Category:Custom_Designs(App)">
+            <page title="The Define Custom Design Dialog Box" file="App/The_Define_Custom_Design_Dialog_Box.html" url="App/Custom-Design-Dialog" src="App:The_Define_Custom_Design_Dialog_Box"/>
+          </page>
+          <page title="Create Design" file="Category/Create_Design_DOE(App).html" url="App/Create-Design-DOE" src="Category:Create_Design_DOE(App)">
+            <page title="Definitive Screening Design" file="Category/Definitive_Screening_Design(App).html" url="App/Definitive-Screening-Design" src="Category:Definitive_Screening_Design(App)">
+              <page title="The Definitive Screening Design Dialog Box" file="App/Definitive_Screening_Design_Dialog.html" url="App/Definitive-Screening-Dialog" src="App:Definitive_Screening_Design_Dialog"/>
+            </page>
+            <page title="Factorial Design" file="Category/Factorial_Design(App).html" url="App/Factorial-Design" src="Category:Factorial_Design(App)">
+              <page title="The Factorial Design Dialog Box" file="App/Factorial_Design_Dialog.html" url="App/Factorial-Dialog" src="App:Factorial_Design_Dialog"/>
+            </page>
+            <page title="Response Surface Design" file="Category/Response_Surface_Design(App).html" url="App/Response-Surface-Design" src="Category:Response_Surface_Design(App)">
+              <page title="The Response Surface Design Dialog Box" file="App/Response_Surface_Design_Dialog.html" url="App/response-surface-design-dialog" src="App:Response_Surface_Design_Dialog"/>
+            </page>
+            <page title="Mixture Design" file="Category/Mixture_Design(App).html" url="App/Mixture-Design" src="Category:Mixture_Design(App)">
+              <page title="The Mixture Design Dialog Box" file="App/Mixture_Design_Dialog.html" url="App/mixture-dialog" src="App:Mixture_Design_Dialog"/>
+            </page>
+            <page title="Taguchi Design" file="Category/Taguchi_Design(App).html" url="App/Taguchi-Design" src="Category:Taguchi_Design(App)">
+              <page title="Key Concepts of Taguchi Design" file="App/Key_Concepts_Taguchi.html" url="App/Key-Concepts-Taguchi" src="App:Key_Concepts_Taguchi"/>
+              <page title="The Taguchi Design Dialog Box" file="App/Taguchi_Design_Dialog.html" url="App/taguchi-dialog" src="App:Taguchi_Design_Dialog"/>
+              <page title="Tutorial of Taguchi Design" file="App/Tutorial_Taguchi.html" url="App/Tutorial-Taguchi-Design" src="App:Tutorial_Taguchi"/>
+            </page>
+          </page>
+          <page title="Select Optimal Design" file="Category/Select_Optimal_Design(App).html" url="App/Select-Optimal-Design" src="Category:Select_Optimal_Design(App)">
+            <page title="The Select Optimal Design Dialog Box" file="App/Select_Optimal_Design_Dialog.html" url="App/Optimal-Design-Dialog" src="App:Select_Optimal_Design_Dialog"/>
+          </page>
         </page>
-        <page title="Create Design" file="Category/Create_Design_DOE(App).html" url="App/Create-Design-DOE" src="Category:Create_Design_DOE(App)">
-          <page title="Definitive Screening Design" file="Category/Definitive_Screening_Design(App).html" url="App/Definitive-Screening-Design" src="Category:Definitive_Screening_Design(App)">
-            <page title="The Definitive Screening Design Dialog Box" file="App/Definitive_Screening_Design_Dialog.html" url="App/Definitive-Screening-Dialog" src="App:Definitive_Screening_Design_Dialog"/>
+        <page title="Analyze Design" file="Category/Analyze_Design(App).html" url="App/Analyze-Designs" src="Category:Analyze_Design(App)">
+          <page title="The Analyze Design Dialog Box" file="Category/Analyze_Design_Dialog(App).html" url="App/Analyze-Design-Dialog" src="Category:Analyze_Design_Dialog(App)">
+            <page title="The Analyze Definitive Screening Design Dialog Box" file="App/Analyze_Definitive_Screening_Design_Dialog.html" url="App/Analyze-Definitive-Screening-Design-Dialog" src="App:Analyze_Definitive_Screening_Design_Dialog"/>
+            <page title="The Analyze Factorial Design Dialog Box" file="App/Analyze_Factorial_Design_Dialog.html" url="App/Analyze-Factorial-Design-Dialog" src="App:Analyze_Factorial_Design_Dialog"/>
+            <page title="The Analyze Response Surface Design Dialog Box" file="App/Analyze_Response_Surface_Design_Dialog.html" url="App/Analyze-Response-Surface-Design-Dialog" src="App:Analyze_Response_Surface_Design_Dialog"/>
+            <page title="The Analyze Mixure Design Dialog Box" file="App/Analyze_Mixure_Design_Dialog.html" url="App/Analyze-Mixure-Design-Dialog" src="App:Analyze_Mixure_Design_Dialog"/>
+            <page title="The Analyze Taguchi Design Dialog Box" file="App/Analyze_Taguchi_Design_Dialog.html" url="App/Analyze-Taguchi-Design-Dialog" src="App:Analyze_Taguchi_Design_Dialog"/>
           </page>
-          <page title="Factorial Design" file="Category/Factorial_Design(App).html" url="App/Factorial-Design" src="Category:Factorial_Design(App)">
-            <page title="The Factorial Design Dialog Box" file="App/Factorial_Design_Dialog.html" url="App/Factorial-Dialog" src="App:Factorial_Design_Dialog"/>
+          <page title="Model Fitting and Selection" file="Category/Model_Fitting_and_Selection.html" url="App/DOE-Model-Fit-Select" src="Category:Model_Fitting_and_Selection">
+            <page title="Stepwise Regression for Analyze Design" file="App/Stepwise_Analyze_Design.html" url="App/DOE-Stepwise-Analyze-Design" src="App:Stepwise_Analyze_Design"/>
+            <page title="Lack of Fit Test" file="App/Lack_of_Fit_Test.html" url="App/DOE-Lack-of-Fit-Test" src="App:Lack_of_Fit_Test"/>
+            <page title="Model Prediction - Find Y from X" file="App/Find_Y_from_X.html" url="App/DOE-Find-Y-from-X" src="App:Find_Y_from_X"/>
           </page>
-          <page title="Response Surface Design" file="Category/Response_Surface_Design(App).html" url="App/Response-Surface-Design" src="Category:Response_Surface_Design(App)">
-            <page title="The Response Surface Design Dialog Box" file="App/Response_Surface_Design_Dialog.html" url="App/response-surface-design-dialog" src="App:Response_Surface_Design_Dialog"/>
-          </page>
-          <page title="Mixture Design" file="Category/Mixture_Design(App).html" url="App/Mixture-Design" src="Category:Mixture_Design(App)">
-            <page title="The Mixture Design Dialog Box" file="App/Mixture_Design_Dialog.html" url="App/mixture-dialog" src="App:Mixture_Design_Dialog"/>
-          </page>
-          <page title="Taguchi Design" file="Category/Taguchi_Design(App).html" url="App/Taguchi-Design" src="Category:Taguchi_Design(App)">
-            <page title="Key Concepts of Taguchi Design" file="App/Key_Concepts_Taguchi.html" url="App/Key-Concepts-Taguchi" src="App:Key_Concepts_Taguchi"/>
-            <page title="The Taguchi Design Dialog Box" file="App/Taguchi_Design_Dialog.html" url="App/taguchi-dialog" src="App:Taguchi_Design_Dialog"/>
-            <page title="Interpreting Results of Taguchi Design" file="App/Results_Taguchi.html" url="App/Result-Taguchi" src="App:Results_Taguchi"/>
-            <page title="Tutorial of Taguchi Design" file="App/Tutorial_Taguchi.html" url="App/Tutorial-Taguchi-Design" src="App:Tutorial_Taguchi"/>
+          <page title="Results and Plots for Analyze Design" file="Category/DOE_Analyze_Results_and_Plots.html" url="App/DOE-Analyze-Results-and-Plots" src="Category:DOE_Analyze_Results_and_Plots">
+            <page title="Interpreting Results for Analyze Design" file="App/DOE_Interpreting_Results.html" url="App/DOE-Interpreting-Results" src="App:DOE_Interpreting_Results"/>
+            <page title="The Plots for Analyze Design" file="App/Plots_in_DOE.html" url="App/Plots-Analyze-Design" src="App:Plots_in_DOE"/>
+            <page title="The Simplex Design Plot" file="App/DOE_Simplex_Design_Plot.html" url="App/DOE-Simplex-Design-Plot" src="App:DOE_Simplex_Design_Plot"/>
           </page>
         </page>
-        <page title="Select Optimal Design" file="Category/Select_Optimal_Design(App).html" url="App/Select-Optimal-Design" src="Category:Select_Optimal_Design(App)">
-          <page title="The Select Optimal Design Dialog Box" file="App/Select_Optimal_Design_Dialog.html" url="App/Optimal-Design-Dialog" src="App:Select_Optimal_Design_Dialog"/>
+        <page title="Additional DOE Analysis" file="Category/Additional_DOE_Analysis(App).html" url="App/Add-DOE-Analysis" src="Category:Additional_DOE_Analysis(App)">
+          <page title="Analyze Variability" file="Category/Analyze_Variability(App).html" url="App/Analyze-Variability" src="Category:Analyze_Variability(App)"/>
+          <page title="Analyze Binary Response" file="Category/Analyze_Binary_Response(App).html" url="App/Analyze-Binary-Response" src="Category:Analyze_Binary_Response(App)"/>
+        </page>
+        <page title="The Overlaid Contour Plot in DOE" file="App/DOE_Overlaid_Contour_Plot.html" url="App/DOE-Overlaid-Contour-Plot" src="App:DOE_Overlaid_Contour_Plot"/>
+        <page title="Optimize Response" file="Category/Optimize_Response(App).html" url="App/Optimize-Response" src="Category:Optimize_Response(App)">
+          <page title="The Optimize Response Dialog Box" file="App/Optimize_Response_Dialog.html" url="App/Optimize-Response-Dialog" src="App:Optimize_Response_Dialog"/>
+          <page title="Overview of Optimize Response Results" file="App/Optimize_Response_Results.html" url="App/Optimize-Response-Results" src="App:Optimize_Response_Results"/>
         </page>
       </page>
       <page title="Correlation Shift" file="App/Correlation_Shift.html" url="App/Correlation-Shift" src="App:Correlation_Shift"/>
