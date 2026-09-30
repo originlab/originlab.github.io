@@ -198,7 +198,6 @@
       <page title="Peak Deconvolution" file="App/Peak_Deconvolution.html" url="App/Peak-Deconvolution" src="App:Peak_Deconvolution"/>
       <page title="Stats Advisor" file="App/Stats_Advisor.html" url="App/Stats-Advisor" src="App:Stats_Advisor"/>
       <page title="Bubble Image Area (Pro)" file="App/Bubble_Image_Area.html" url="App/Bubble-Image-Area" src="App:Bubble_Image_Area"/>
-      <page title="Design of Experiments (Pro)" file="App/Design_of_Experiments.html" url="App/DOE" src="App:Design_of_Experiments"/>
       <page title="Design of Experiments" file="Category/Design_of_Experiments(App).html" url="App/design-of-experiments" src="Category:Design_of_Experiments(App)">
         <page title="Power and Sample Size (DOE)" file="Category/Power_and_Sample_Size_DOE(App).html" url="App/Power-Sample-Size-DOE" src="Category:Power_and_Sample_Size_DOE(App)">
           <page title="The Power and Sample Size (DOE) Dialog Box" file="App/DOE_PSS_Dialog.html" url="App/DOE-PSS-Dialog" src="App:DOE_PSS_Dialog"/>
