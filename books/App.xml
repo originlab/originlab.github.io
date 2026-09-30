@@ -148,6 +148,7 @@
         </page>
         <page title="Demonstration" file="Category/Demonstration(APP).html" url="App/SA-Demonstration" src="Category:Demonstration(APP)">
           <page title="Tutorial for Demonstration Test Plan" file="App/SA_Demonstration_Test_Plan_Tutorial.html" url="App/Tutorial-Demonostration-Test-Plan" src="App:SA_Demonstration_Test_Plan_Tutorial"/>
+          <page title="Algorithm: Demonostration Test Plan" file="App/SA_Demonostration_Test_Plan_Algorithm.html" url="App/Demonostration-Test-Plan-Algorithm" src="App:SA_Demonostration_Test_Plan_Algorithm"/>
         </page>
         <page title="Parametric Distribution Analysis (Arbitrary Censoring)" file="Category/Parametric_Distribution_Analysis_AC(App).html" url="App/SA-Parametric-Dist-Arbitrary-Censoring" src="Category:Parametric_Distribution_Analysis_AC(App)">
           <page title="Tutorial for Parametric Distribution Analysis (Arbitrary Censoring)" file="App/SA_Parametric_Dist_Arbitrary_Censoring_Tutorial.html" url="App/Tutorial-Parametric-Distribution-Analysis-Arbitrary-Censoring" src="App:SA_Parametric_Dist_Arbitrary_Censoring_Tutorial"/>
@@ -199,8 +200,11 @@
       <page title="Bubble Image Area (Pro)" file="App/Bubble_Image_Area.html" url="App/Bubble-Image-Area" src="App:Bubble_Image_Area"/>
       <page title="Design of Experiments (Pro)" file="App/Design_of_Experiments.html" url="App/DOE" src="App:Design_of_Experiments"/>
       <page title="Design of Experiments" file="Category/Design_of_Experiments(App).html" url="App/design-of-experiments" src="Category:Design_of_Experiments(App)">
-        <page title="Power and Sample Size (DOE)" file="Category/Power_and_Sample_Size_DOE(App).html" url="App/Power-Sample-Size-DOE" src="Category:Power_and_Sample_Size_DOE(App)"/>
-        <page title="Define and Create Designs" file="Category/Define_and_Create_Designs.html" url="App/Define-Create-Designs" src="Category:Define_and_Create_Designs">
+        <page title="Power and Sample Size (DOE)" file="Category/Power_and_Sample_Size_DOE(App).html" url="App/Power-Sample-Size-DOE" src="Category:Power_and_Sample_Size_DOE(App)">
+          <page title="The Power and Sample Size (DOE) Dialog Box" file="App/DOE_PSS_Dialog.html" url="App/DOE-PSS-Dialog" src="App:DOE_PSS_Dialog"/>
+          <page title="Tutorial of Power and Sample Size in DOE" file="App/Tutorial_PSS_DOE.html" url="App/Tutorial-PSS-DOE" src="App:Tutorial_PSS_DOE"/>
+        </page>
+        <page title="Define and Create Designs" file="Category/Define_and_Create_Designs(App).html" url="App/Define-Create-Designs" src="Category:Define_and_Create_Designs(App)">
           <page title="Define Custom Designs" file="Category/Custom_Designs(App).html" url="App/Custom-Designs" src="Category:Custom_Designs(App)">
             <page title="The Define Custom Design Dialog Box" file="App/The_Define_Custom_Design_Dialog_Box.html" url="App/Custom-Design-Dialog" src="App:The_Define_Custom_Design_Dialog_Box"/>
           </page>
@@ -210,9 +214,11 @@
             </page>
             <page title="Factorial Design" file="Category/Factorial_Design(App).html" url="App/Factorial-Design" src="Category:Factorial_Design(App)">
               <page title="The Factorial Design Dialog Box" file="App/Factorial_Design_Dialog.html" url="App/Factorial-Dialog" src="App:Factorial_Design_Dialog"/>
+              <page title="Tutorial of Factorial Design" file="App/Tutorial_Factorial.html" url="App/Tutorial-Factorial-Design" src="App:Tutorial_Factorial"/>
             </page>
             <page title="Response Surface Design" file="Category/Response_Surface_Design(App).html" url="App/Response-Surface-Design" src="Category:Response_Surface_Design(App)">
               <page title="The Response Surface Design Dialog Box" file="App/Response_Surface_Design_Dialog.html" url="App/response-surface-design-dialog" src="App:Response_Surface_Design_Dialog"/>
+              <page title="Tutorial of Response Surface Design" file="App/Response_Surface_Design_Tutorial.html" url="App/Tutorial-Response-Surface-Design" src="App:Response_Surface_Design_Tutorial"/>
             </page>
             <page title="Mixture Design" file="Category/Mixture_Design(App).html" url="App/Mixture-Design" src="Category:Mixture_Design(App)">
               <page title="The Mixture Design Dialog Box" file="App/Mixture_Design_Dialog.html" url="App/mixture-dialog" src="App:Mixture_Design_Dialog"/>
@@ -235,12 +241,12 @@
             <page title="The Analyze Mixure Design Dialog Box" file="App/Analyze_Mixure_Design_Dialog.html" url="App/Analyze-Mixure-Design-Dialog" src="App:Analyze_Mixure_Design_Dialog"/>
             <page title="The Analyze Taguchi Design Dialog Box" file="App/Analyze_Taguchi_Design_Dialog.html" url="App/Analyze-Taguchi-Design-Dialog" src="App:Analyze_Taguchi_Design_Dialog"/>
           </page>
-          <page title="Model Fitting and Selection" file="Category/Model_Fitting_and_Selection.html" url="App/DOE-Model-Fit-Select" src="Category:Model_Fitting_and_Selection">
+          <page title="Model Fitting and Selection" file="Category/Model_Fitting_and_Selection(App).html" url="App/DOE-Model-Fit-Select" src="Category:Model_Fitting_and_Selection(App)">
             <page title="Stepwise Regression for Analyze Design" file="App/Stepwise_Analyze_Design.html" url="App/DOE-Stepwise-Analyze-Design" src="App:Stepwise_Analyze_Design"/>
             <page title="Lack of Fit Test" file="App/Lack_of_Fit_Test.html" url="App/DOE-Lack-of-Fit-Test" src="App:Lack_of_Fit_Test"/>
             <page title="Model Prediction - Find Y from X" file="App/Find_Y_from_X.html" url="App/DOE-Find-Y-from-X" src="App:Find_Y_from_X"/>
           </page>
-          <page title="Results and Plots for Analyze Design" file="Category/DOE_Analyze_Results_and_Plots.html" url="App/DOE-Analyze-Results-and-Plots" src="Category:DOE_Analyze_Results_and_Plots">
+          <page title="Results and Plots for Analyze Design" file="Category/DOE_Analyze_Results_and_Plots(App).html" url="App/DOE-Analyze-Results-and-Plots" src="Category:DOE_Analyze_Results_and_Plots(App)">
             <page title="Interpreting Results for Analyze Design" file="App/DOE_Interpreting_Results.html" url="App/DOE-Interpreting-Results" src="App:DOE_Interpreting_Results"/>
             <page title="The Plots for Analyze Design" file="App/Plots_in_DOE.html" url="App/Plots-Analyze-Design" src="App:Plots_in_DOE"/>
             <page title="The Simplex Design Plot" file="App/DOE_Simplex_Design_Plot.html" url="App/DOE-Simplex-Design-Plot" src="App:DOE_Simplex_Design_Plot"/>
