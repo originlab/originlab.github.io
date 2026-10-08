@@ -637,6 +637,7 @@
       <page title="FAQ-1211 What is Scale Error with sqrt and why can't I uncheck it?" file="QuickHelp/Scale_error_sqrt.html" url="Quick-Help/Scale-error-sqrt" src="QuickHelp:Scale_error_sqrt"/>
       <page title="FAQ-1230 Why is Gravity Center from peak analysis missing for some peaks?" file="QuickHelp/Why_is_Gravity_Center_from_peak_analysis_missing_for_some_peaks.html" url="Quick-Help/Missing-Gravity-Center-from-Peak-Analysis" src="QuickHelp:Why_is_Gravity_Center_from_peak_analysis_missing_for_some_peaks"/>
       <page title="FAQ-1231 How to fit with the Langmuir function?" file="QuickHelp/How_to_fit_with_Langmuir_function.html" url="Quick-Help/Fit-with-Langmuir-Function" src="QuickHelp:How_to_fit_with_Langmuir_function"/>
+      <page title="FAQ-1242 How to Fix &quot;Automatic installation failed&quot; Error for Design of Experiments App?" file="QuickHelp/Automatic_installation_failed_Error_for_DOE.html" url="Quick-Help/DOE-R-installation-failure" src="QuickHelp:Automatic_installation_failed_Error_for_DOE"/>
     </page>
     <page title="Programming" file="Category/Programming_(QuickHelp).html" url="Quick-Help/Programming" src="Category:Programming_(QuickHelp)">
       <page title="FAQ-286 How do I define global functions, global variables, and constants?" file="QuickHelp/How_do_I_define_global_constants.html" url="Quick-Help/Global-Constants" src="QuickHelp:How_do_I_define_global_constants"/>
@@ -814,6 +815,7 @@
       <page title="FAQ-1232 How to delete multiple folders in a project?" file="QuickHelp/How_to_delete_multiple_folders_in_a_project.html" url="Quick-Help/Delete-Multi-Folder" src="QuickHelp:How_to_delete_multiple_folders_in_a_project"/>
       <page title="FAQ-1234 How do I change a system variable value without opening Origin?" file="QuickHelp/How_to_modify_a_system_variable_value_without_opening_Origin.html" url="Quick-Help/Change-System-Variables-without-Origin-Open" src="QuickHelp:How_to_modify_a_system_variable_value_without_opening_Origin"/>
       <page title="FAQ-1241 Why can't I download Apps or templates in Origin on Windows 7?" file="QuickHelp/Why_does_my_Origin_fail_to_download_Apps_templates_in_Win7.html" url="Quick-Help/Win7-Cannot-Download-App-Template" src="QuickHelp:Why_does_my_Origin_fail_to_download_Apps_templates_in_Win7"/>
+      <page title="FAQ-1243 Why do some dialogs disappear when running Origin on a Mac with Parallels??" file="QuickHelp/Dialogs_Disappear_Mac_with_Parallels.html" url="Quick-Help/Dialogs-Disappear-Mac-with-Parallels" src="QuickHelp:Dialogs_Disappear_Mac_with_Parallels"/>
     </page>
     <page title="Licensing and Installation" file="Category/Installing_Licensing(QuickHelp).html" url="Quick-Help/Inst-Lic" src="Category:Installing_Licensing(QuickHelp)">
       <page title="FAQ-2 My trial time ran out but I didn't finish evaluating" file="QuickHelp/My_evaluation_time_ran_out.html" url="Quick-Help/Demo-Expired" src="QuickHelp:My_evaluation_time_ran_out"/>
