@@ -145,21 +145,11 @@ span.db, span.tb {
     margin: .1in 0 .1in 20px;
 }
 
-table.simple th {
+table.simple th, table.treetable th, table.treenode th {
     background-color: #C9C9C9;
     font-size: 9pt;
     font-family: Arial, sans-serif;
     text-align: center;
-    border-color: gray;
-    border-style: solid;
-    border-width: 1px;
-    padding: 8px;
-}
-
-table.treetable th {
-    background-color: #C9C9C9;
-    font-size: 9pt;
-    font-family: Arial, sans-serif;
     border-color: gray;
     border-style: solid;
     border-width: 1px;
@@ -619,7 +609,7 @@ span.fileext, span.url, span.unnamedwin {
     text-transform: lowercase;
 }
 
-table.simple, table.treetable, table.TableGrid {
+table.simple, table.treetable, table.treenode, table.TableGrid {
     border-collapse: collapse;
     margin-top: 6pt;
     margin-bottom: 6pt;
@@ -629,7 +619,7 @@ table.simple, table.treetable, table.TableGrid {
     border-width: 1px;
 }
 
-    table.simple td, table.treetable td {
+    table.simple td, table.treetable td, table.treenode td {
         font-size: 9pt;
         font-weight: normal;
         font-style: normal;
@@ -640,6 +630,7 @@ table.simple, table.treetable, table.TableGrid {
         border-width: 1px;
         padding: 8px;
     }
+
 .simple-LTFunc, .simple-FitFunc{
 	border-width: 1px;
 	border-style: solid;
