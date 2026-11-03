@@ -7,8 +7,8 @@ abstract class DocsToGithubPages : DocsGenerator
 {
     protected string BaseUrl { get; }
 
-    protected DocsToGithubPages(string baseUrl, string sourceFolder, string outputFolder, DocumentTransformer transformer, ProblemRecorder problems)
-        : base(sourceFolder, outputFolder, transformer, problems)
+    protected DocsToGithubPages(string baseUrl, DocsTransformationArgs args, DocumentTransformer transformer, ProblemRecorder problems)
+        : base(args, transformer, problems)
     {
         BaseUrl = baseUrl;
     }
@@ -27,6 +27,7 @@ abstract class DocsToGithubPages : DocsGenerator
             Language = language,
             AvailableLanguages = AvailableLanguages,
             BookUrlName = BaseUrl,
+            IsDevServer = IsDevServer,
         });
         var dir = Path.Combine(OutputFolder, language);
 

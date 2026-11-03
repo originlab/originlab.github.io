@@ -7,19 +7,22 @@ namespace OriginLab.DocumentGeneration.Generator;
 
 abstract class DocsGenerator : IDocsGenerator
 {
-    protected string SourceFolder { get; }
+    protected string SourceFolder => TransformationArgs.SourceFolder;
 
-    protected string OutputFolder { get; }
+    protected string OutputFolder => TransformationArgs.OutputFolder;
+
+    protected bool IsDevServer => TransformationArgs.IsDevServer;
 
     protected DocumentTransformer Transformer { get; }
 
     protected string[] AvailableLanguages { get; }
 
+    private readonly DocsTransformationArgs TransformationArgs;
     private readonly ProblemRecorder Problems;
 
-    protected DocsGenerator(string sourceFolder, string outputFolder, DocumentTransformer transformer, ProblemRecorder problems)
+    protected DocsGenerator(DocsTransformationArgs args, DocumentTransformer transformer, ProblemRecorder problems)
     {
-        var languages = (from subPath in Directory.EnumerateDirectories(sourceFolder)
+        var languages = (from subPath in Directory.EnumerateDirectories(args.SourceFolder)
                          let name = Path.GetFileName(subPath)
                          where name.Length == 2
                          select name).ToArray();
@@ -27,7 +30,7 @@ abstract class DocsGenerator : IDocsGenerator
         var enIndex = languages.IndexOf("en");
         if (enIndex < 0)
         {
-            throw new ArgumentException("Expect en folder exists within SourceFolder", nameof(sourceFolder));
+            throw new ArgumentException($"Expect en folder exists within {nameof(args.SourceFolder)}", nameof(args));
         }
         else if (enIndex > 0)
         {
@@ -36,8 +39,7 @@ abstract class DocsGenerator : IDocsGenerator
         }
 
         AvailableLanguages = languages;
-        SourceFolder = sourceFolder;
-        OutputFolder = outputFolder;
+        TransformationArgs = args;
         Transformer = transformer;
         Problems = problems;
     }

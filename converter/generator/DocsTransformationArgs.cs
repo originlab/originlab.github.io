@@ -2,6 +2,8 @@
 
 public class DocsTransformationArgs
 {
+    public bool IsDevServer { get; init; }
+
     public required string SourceFolder { get; init; }
 
     public required string OutputFolder { get; init; }

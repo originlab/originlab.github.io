@@ -12,4 +12,7 @@ internal class ProgramArgs
 
     [Option]
     public bool Webp { get; init; }
+
+    [Option]
+    public bool Dev { get; init; }
 }

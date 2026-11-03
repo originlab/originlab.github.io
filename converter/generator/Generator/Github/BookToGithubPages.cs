@@ -18,7 +18,7 @@ internal sealed class BookToGithubPages : DocsToGithubPages
     private new DocumentToGithubPage Transformer => (DocumentToGithubPage)base.Transformer;
 
     public BookToGithubPages(DocsToStaticPagesTransformationArgs args, DocumentToGithubPage transformer, ProblemRecorder problems)
-        : base(args.BaseUrl, args.SourceFolder, args.OutputFolder, transformer, problems)
+        : base(args.BaseUrl, args, transformer, problems)
     {
         AvailableLanguagesExpression = String.Join(',', AvailableLanguages);
         BookDirName = Path.GetFileName(Directory.EnumerateDirectories(Path.Combine(SourceFolder, "en")).Single());

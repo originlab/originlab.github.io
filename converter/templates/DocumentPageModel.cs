@@ -3,4 +3,6 @@
 public class DocumentPageModel : WebPageModel
 {
     public required string BookUrlName { get; set; }
+
+    public bool IsDevServer { get; set; }
 }

@@ -58,6 +58,7 @@ class Program
 
         services.AddSingleton(sp => new DocsToStaticPagesTransformationArgs()
         {
+            IsDevServer = args.Dev,
             SourceFolder = srcBookPath,
             OutputFolder = outputPath,
             BooksXmlFolder = booksXmlPath,

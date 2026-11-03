@@ -41,6 +41,18 @@
             </ul>
         </div>
     }
+    @if (Model.IsDevServer)
+    {
+        <div class="btn-group">
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Publish <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="/_publish/page">This page</a></li>
+                <li><a href="/_publish/book">The whole book</a></li>
+            </ul>
+        </div>
+    }
 </div>
 <div class="col-sm-6">
     <div class="form-inline pull-right hidden-xs">
